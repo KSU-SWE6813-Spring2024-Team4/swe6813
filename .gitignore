@@ -1,1 +1,7 @@
 .idea
+
+# python
+__pycache__/
+venv
+
+secrets.json
