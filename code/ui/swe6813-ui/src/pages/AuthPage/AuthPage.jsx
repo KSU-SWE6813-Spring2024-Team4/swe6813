@@ -1,9 +1,11 @@
 import styled from 'styled-components';
-import SignUp from '../../components/SignUp/SignUp';
-import Login from '../../components/Login/Login';
+import SignUp from '../../components/SignUpBox/SignUpBox';
+import Login from '../../components/LoginBox/LoginBox';
 import { useState, useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import LoginBox from '../../components/LoginBox/LoginBox';
+import SignUpBox from '../../components/SignUpBox/SignUpBox';
 
 const Box = styled.div`
     width: 300px;
@@ -68,10 +70,7 @@ function AuthPage () {
 
             { activeBox === 'LOGIN' && (
                 // {/* TODO: actually hook up the login box up to design */}
-                <div>
-                    <Button onClick={loginUser} title="Log In"/>
-                    <div onClick={() => changeBox('REGISTER')}>Create account here</div>
-                </div>
+                <LoginBox onRegisterClick={() => changeBox('REGISTER')}/>
             ) }
             { activeBox === 'REGISTER' && (
                 // {/* TODO: actually hook up the login box up to design */}

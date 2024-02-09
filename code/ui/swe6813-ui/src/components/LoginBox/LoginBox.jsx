@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-function Login({loginUser}) {
+function LoginBox({loginUser}) {
+    //You can write html within the return()
     return (
         <div>
             <h1>Login page</h1>  
@@ -9,8 +10,8 @@ function Login({loginUser}) {
         </div>
     );
 };
-Login.propTypes = {
+LoginBox.propTypes = {
     loginUser: PropTypes.func.isRequired
 }
 
-export default Login;
+export default LoginBox;
