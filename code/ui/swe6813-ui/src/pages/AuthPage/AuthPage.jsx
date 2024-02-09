@@ -3,6 +3,7 @@ import SignUp from '../../components/SignUp/SignUp';
 import Login from '../../components/Login/Login';
 import { useState, useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import Button from '../../components/Button/Button';
 
 const Box = styled.div`
     width: 300px;
@@ -29,6 +30,10 @@ function AuthPage () {
         // setLogin(false)
     }, [navigate]);
 
+    const registerUser = useCallback(() => {
+        // TODO: actually register the user
+    }, [])
+
     return (
         <div>
             {user && (
@@ -36,7 +41,12 @@ function AuthPage () {
             )}
 
             <h1>Auth screen</h1>
-            <button onClick={loginUser}>Log In</button> 
+
+            {/* TODO: REMOVE just three references */}
+            {/* <button onClick={loginUser}>Log In</button>  */}
+            <Button onClick={loginUser} title="Log In"/>
+            <Button onClick={registerUser} title="Register"/>
+
 
             {/* <Box>
             {isLogin && 
