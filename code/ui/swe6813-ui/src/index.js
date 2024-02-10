@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import {createBrowserRouter,  RouterProvider} from "react-router-dom";
 import Root from './pages/Root/Root';
 import AuthPage from './pages/AuthPage/AuthPage';
 
@@ -16,14 +13,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
-    element: <AuthPage />
-  }
+    element: <AuthPage/>
+  },
 ]);
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-   <RouterProvider router={router} />
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 

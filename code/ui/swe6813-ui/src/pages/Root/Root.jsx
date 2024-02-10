@@ -1,7 +1,9 @@
-export default function Root() {
-  return (
-    <div>
-      <div>NAV BAR PLACEHOLDER</div>
-    </div>
-  )
+export default function Root(){
+    console.log("say hello");
+    //anything that all pages will have; like a nav bar
+    return(
+        <div>
+            <h1>Hi, Team 4 Project</h1>
+        </div>
+    )
 }
