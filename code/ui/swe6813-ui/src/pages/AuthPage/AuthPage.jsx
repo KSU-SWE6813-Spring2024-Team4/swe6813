@@ -9,22 +9,23 @@ import Button from '../../components/Button/Button';
 const MainLoginContainer = styled.div`
     float: left;
     width: 61.8%;
-    height: 100px;
-    background-color:#129129
+    height: 100vh;
+    background-color: #fff;
 `;
-const sideGraphicContainer = styled.div`
+const SideGraphicContainer = styled.div`
     float: right;
     width: 38.2%;
-    height: 100px;
-    background-color: #000;
+    height: 100vh;
+    background-color: #fff;
+    background-image: url("test-graphic.png");
+    background-size: 100% 100%;
 `;
 const Box = styled.div`
     margin: auto;
-    position: absolute;
+    width: 50%;
+    position: relative;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    vertical-align: middle;
+    transform: translateY(-50%);
     padding: 50px;
     background-color: #FFF;
     box-shadow: 0px 4px 4px 0px #444;
@@ -78,7 +79,7 @@ function AuthPage () {
                     ) }
                 </Box>
             </MainLoginContainer>
-            <sideGraphicContainer></sideGraphicContainer>
+            <SideGraphicContainer></SideGraphicContainer>
         </>
     );
 }

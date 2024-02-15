@@ -49,7 +49,7 @@ const Text = styled.div`
 `;
 
 const Header = styled.h1`
-    font-size: 29px;
+    font-size: 30px;
     padding-bottom: 0px;
 `;
 

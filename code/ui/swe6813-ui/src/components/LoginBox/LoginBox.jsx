@@ -47,7 +47,7 @@ const Password = styled.div`
 `;
 
 const Header = styled.div`
-    font-size: 29px;
+    font-size: 30px;
     padding-bottom: 0px;
 `;
 function LoginBox({loginUser,onRegisterClick}) {
