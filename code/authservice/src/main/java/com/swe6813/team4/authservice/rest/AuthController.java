@@ -29,8 +29,12 @@ public class AuthController {
 
   @PostMapping(path="/register")
   public ResponseEntity<User> register(@RequestBody User user) {
-    if (user.getUsername().trim().isEmpty() || user.getPassword().trim().isEmpty()) {
+    if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getPassword() == null || user.getPassword().trim().isEmpty()) {
       throw new BadInputException("Request body must include username and password");
+    }
+
+    if (user.getId() != 0) {
+      user.setId(0);
     }
 
     // should fail if user with name already exists
@@ -53,7 +57,7 @@ public class AuthController {
 
   @PostMapping(path="/login")
   public ResponseEntity<User> login(@RequestBody User user) {
-    if (user.getUsername().trim().isEmpty() || user.getPassword().trim().isEmpty()) {
+    if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getPassword() == null || user.getPassword().trim().isEmpty()) {
       throw new BadInputException("Request body must include username and password");
     }
 

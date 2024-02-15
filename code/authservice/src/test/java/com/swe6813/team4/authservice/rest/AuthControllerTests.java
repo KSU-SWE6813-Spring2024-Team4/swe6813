@@ -2,6 +2,7 @@ package com.swe6813.team4.authservice.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swe6813.team4.authservice.dao.UserRepo;
+import com.swe6813.team4.authservice.model.TokenRequest;
 import com.swe6813.team4.authservice.model.User;
 import com.swe6813.team4.authservice.util.TokenUtil;
 import org.junit.jupiter.api.AfterEach;
@@ -54,6 +55,22 @@ public class AuthControllerTests {
     mockMvc.perform(req)
         .andExpect(status().isBadRequest())
         .andExpect(content().json(objectMapper.writeValueAsString(new ErrorResponse("Request body must include username and password"))));
+  }
+
+  @Test
+  void loginFailsForWrongPassword() throws Exception {
+    User user = new User("swe6813", passwordEncoder.encode("swe6813"));
+    userRepo.save(user);
+
+    user.setPassword("swe6812");
+
+    MockHttpServletRequestBuilder req = post("/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(user));
+
+    mockMvc.perform(req)
+        .andExpect(status().isBadRequest())
+        .andExpect(content().json(objectMapper.writeValueAsString(new ErrorResponse("Invalid username and password"))));
   }
 
   @Test
@@ -118,6 +135,27 @@ public class AuthControllerTests {
   }
 
   @Test
+  void registerIgnoresIdIfProvided() throws Exception {
+    userRepo.save(new User("swe6813", "swe6813"));
+
+    User user = new User("blah", "blah");
+    user.setId(1);
+
+    MockHttpServletRequestBuilder req = post("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(user));
+
+    mockMvc.perform(req).andExpect(status().isCreated());
+
+    // ensure that the user is saved to the DB
+    User savedUser = userRepo.findOneByUsername(user.getUsername());
+    assertThat(savedUser).isNotNull();
+    assertThat(savedUser.getId()).isNotEqualTo(1);
+
+    assertThat(userRepo.count()).isEqualTo(2);
+  }
+
+  @Test
   void registerSucceeds() throws Exception {
     User user = new User("swe6813", "swe6813");
     MockHttpServletRequestBuilder req = post("/register")
@@ -142,5 +180,27 @@ public class AuthControllerTests {
 
     String token = authHeader.substring(authHeader.indexOf(" ") + 1);
     assertThat(TokenUtil.validateToken(token)).isTrue();
+  }
+
+  @Test
+  void validateTokenReturnsFalseWhenMalformed() throws Exception {
+    TokenRequest tokenRequest = new TokenRequest("malformed");
+
+    MockHttpServletRequestBuilder req = post("/validate-token")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(tokenRequest));
+
+    mockMvc.perform(req).andExpect(status().isOk()).andExpect(content().string(Boolean.toString(false)));
+  }
+
+  @Test
+  void validateTokenReturnsTrueWhenValid() throws Exception {
+    TokenRequest tokenRequest = new TokenRequest(TokenUtil.generateToken(1));
+
+    MockHttpServletRequestBuilder req = post("/validate-token")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(tokenRequest));
+
+    mockMvc.perform(req).andExpect(status().isOk()).andExpect(content().string(Boolean.toString(true)));
   }
 }
