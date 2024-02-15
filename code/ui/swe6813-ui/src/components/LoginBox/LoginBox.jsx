@@ -1,29 +1,21 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import Button from '../Button/Button';
 import PropTypes from 'prop-types';
-
-const GlobalStyle = createGlobalStyle`
-    body {
-        font-family: Courier New;
-        padding: 12px 20px;
-        font-weight: bold;
-        letter-spacing: 1.5px;
-    }
-`;
+import '../../index.css';
 
 const InputField = styled.div`
-    width: 97%;
+    width: 100%;
     background: transparent;
     outline: none;
     font-size: 12px;
     color: #333;
     position: relative;
     border-bottom: 2px solid #ccc;
-    margin: 40px 20px 40px 15px;
+    margin: 40px 0px 40px 0px;
 `;
 
 const InputElement = styled.input`
-    width: 99%;
+    width: 100%;
     border: none;
     outline: none;
     font-size: 12px;
@@ -41,20 +33,8 @@ const FormContainer = styled.div`
     flex-direction: column;
 `;
 
-const Wrapper = styled.div`
-    width: 400px;
-    border-radius: 8px;
-    padding: 30px;
-    text-align: left; 
-    border: 1px solid;
-    box-shadow: 5px 10px 18px gray;
-    backdrop-filter: blur(9px);
-    -webkit-backdrop-filter: blue(9px);
-`;
-
 const Text = styled.div`
     font-size: 12px;
-    padding-left: 15px;
 `;
 
 const Password = styled.div`
@@ -68,31 +48,27 @@ const Password = styled.div`
 
 const Header = styled.div`
     font-size: 29px;
-    padding-left: 15px;
     padding-bottom: 0px;
 `;
 function LoginBox({loginUser,onRegisterClick}) {
     return (
         <>
-            <GlobalStyle />
-            <Wrapper className="wrapper">
-                <FormContainer>
-                    <form>
-                        <Header>Login</Header>
-                        <InputField>
-                            <InputElement type="text" required/>
-                            <Label>Email Address</Label>
-                        </InputField>
-                        <InputField>
-                            <InputElement type="password" required/>
-                            <Label>Password</Label>
-                        </InputField>
-                        <Password>Forgot Password</Password>
-                        <Button onClick={loginUser} title="Log In"/>
-                        <Text onClick={onRegisterClick}>Don't have an account? Create one here.</Text>
-                    </form>
-                </FormContainer>
-            </Wrapper>
+            <FormContainer>
+                <form>
+                    <Header className="audiowide-regular">Login</Header>
+                    <InputField>
+                        <InputElement type="text" required/>
+                        <Label>Email Address</Label>
+                    </InputField>
+                    <InputField>
+                        <InputElement type="password" required/>
+                        <Label>Password</Label>
+                    </InputField>
+                    <Password>Forgot Password</Password>
+                    <Button onClick={loginUser} title="Log In"/>
+                    <Text onClick={onRegisterClick}>Don't have an account? Create one here.</Text>
+                </form>
+            </FormContainer>
         </>
     );
 }

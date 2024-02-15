@@ -1,29 +1,20 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 
-const GlobalStyle = createGlobalStyle`
-    body {
-        font-family: Courier New;
-        padding: 12px 20px;
-        font-weight: bold;
-        letter-spacing: 1.5px;
-    }
-`;
-
 const InputField = styled.div`
-    width: 97%;
+    width: 100%;
     background: transparent;
     outline: none;
     font-size: 12px;
     color: #333;
     position: relative;
     border-bottom: 2px solid #ccc;
-    margin: 40px 20px 40px 15px;
+    margin: 40px 0px 40px 0px;
 `;
 
 const InputElement = styled.input`
-    width: 99%;
+    width: 100%;
     border: none;
     outline: none;
     font-size: 12px;
@@ -59,7 +50,6 @@ const Text = styled.div`
 
 const Header = styled.h1`
     font-size: 29px;
-    padding-left: 15px;
     padding-bottom: 0px;
 `;
 
@@ -71,36 +61,31 @@ const UnorderedList = styled.div`
 function SignUpBox({registerUser, onLoginClick}) {
     return (
         <>
-            <GlobalStyle />
-            <Wrapper className="wrapper">
-                <FormContainer>
-                    <form>
-                        <Header>Sign Up</Header>
-                        <InputField>
-                            <InputElement type="text" required/>
-                            <Label>Email Address</Label>
-                        </InputField>
-                        <InputField>
-                            <InputElement type="password" required/>
-                            <Label>Password</Label>
-                        </InputField>
-                        <InputField>
-                            <InputElement type="password" required/>
-                            <Label>Re-type Password</Label>
-                        </InputField>
-                        <UnorderedList>
-                        <ul>
-                            <li>Password matches re-type Password</li>
-                            <li>Password has at least one Uppercase and one Lowercase letter</li>
-                            <li>Password is between 8 and 16 characters</li>
-                            <li>Password contains one symbol (!.;-=+*#$@%^&())</li>
-                        </ul>
-                        </UnorderedList>
-                        <Button onClick={registerUser} title="Register"/>
-                        <Text onClick={onLoginClick}>Already have an account? Sign in</Text>
-                    </form>
-                </FormContainer>
-            </Wrapper>
+        <form>
+            <Header>Sign Up</Header>
+            <InputField>
+                <InputElement type="text" required/>
+                <Label>Email Address</Label>
+            </InputField>
+            <InputField>
+                <InputElement type="password" required/>
+                <Label>Password</Label>
+            </InputField>
+            <InputField>
+                <InputElement type="password" required/>
+                <Label>Re-type Password</Label>
+            </InputField>
+            <UnorderedList>
+            <ul>
+                <li>Password matches re-type Password</li>
+                <li>Password has at least one Uppercase and one Lowercase letter</li>
+                <li>Password is between 8 and 16 characters</li>
+                <li>Password contains one symbol (!.;-=+*#$@%^&())</li>
+            </ul>
+            </UnorderedList>
+            <Button onClick={registerUser} title="Register"/>
+            <Text onClick={onLoginClick}>Already have an account? Sign in</Text>
+        </form>
         </>
     );
 }
