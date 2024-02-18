@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import '../../index.css';
 
 const StyledButton = styled.button`
   width: 100%;
@@ -9,16 +10,14 @@ const StyledButton = styled.button`
   padding: 12px;
   cursor: pointer;
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 20px;
   border: 2px solid transparent;
   transition: 0.3s ease;
-  font-family: Courier New;
-  font-weight: bold;
   letter-spacing: 1.5px;
 `
 
 export default function Button ({ title, onClick }) {
   return (
-    <StyledButton onClick={onClick}>{ title }</StyledButton>
+    <StyledButton className="electrolize-regular" onClick={onClick}>{ title }</StyledButton>
   )
 }
