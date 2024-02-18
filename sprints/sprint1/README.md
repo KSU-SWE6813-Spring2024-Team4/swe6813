@@ -31,7 +31,7 @@ Daily scrums were conducted using the Geekbot tool integrated with teams. Asynch
 
 ## Pair programming
 
-We were able to pair program on some of the foundatioal UI work. The recording can be seen [with your KSU account here](https://login.microsoftonline.com/45f26ee5-f134-439e-bc93-e6c7e33d61c2/oauth2/authorize?client%5Fid=00000003%2D0000%2D0ff1%2Dce00%2D000000000000&response%5Fmode=form%5Fpost&response%5Ftype=code%20id%5Ftoken&resource=00000003%2D0000%2D0ff1%2Dce00%2D000000000000&scope=openid&nonce=C57100A0A1811EB5B7737E68385FE11248724006CAE582C4%2DB4823A493886782015785CEE6897C487DE45A007A2F255093D82BB099A13A6F6&redirect%5Furi=https%3A%2F%2Fkennesawedu%2Dmy%2Esharepoint%2Ecom%2F%5Fforms%2Fdefault%2Easpx&state=OD0w&claims=%7B%22id%5Ftoken%22%3A%7B%22xms%5Fcc%22%3A%7B%22values%22%3A%5B%22CP1%22%5D%7D%7D%7D&wsucxt=1&cobrandid=11bd8083%2D87e0%2D41b5%2Dbb78%2D0bc43c8a8e8a&client%2Drequest%2Did=51f60ca1%2D90bf%2D4000%2Df0b0%2D6060738314cc&sso_reload=true)
+We were able to pair program on some of the foundatioal UI work. The recording can be seen [with your KSU account here](https://kennesawedu-my.sharepoint.com/:v:/r/personal/shamza1_students_kennesaw_edu/Documents/Recordings/SWE%206813%20UI%20Setup-20240209_125443-Meeting%20Recording.mp4?csf=1&web=1&e=GCcP0k&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D)
 
 ## Testing
 
