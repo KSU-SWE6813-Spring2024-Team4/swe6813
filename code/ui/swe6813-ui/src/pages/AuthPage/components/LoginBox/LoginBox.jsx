@@ -50,12 +50,12 @@ const Password = styled.div`
 `;
 
 const Header = styled.h1`
-    font-size: 32px;
+    font-size: 40px;
     padding-bottom: 0px;
     margin: 0px;
 `;
 
-function LoginBox({loginUser,onRegisterClick}) {
+function LoginBox({loginUser,onRegisterClick, onForgotPassClick}) {
     return (
         <form>
             <Header data-testid="login-header" className="audiowide-regular">Login</Header>
@@ -67,9 +67,9 @@ function LoginBox({loginUser,onRegisterClick}) {
                 <InputElement className="roboto-regular" type="password" required/>
                 <Label className="electrolize-regular">Password</Label>
             </InputField>
-            <Password className="roboto-regular">Forgot Password</Password>
+            <Password data-testid="forgot-pass-link" className="roboto-regular" onClick={onForgotPassClick}>Forgot Password</Password>
             <Button onClick={loginUser} title="Log In"/>
-            <Text className="roboto-regular">Don't have an account? <SignUpText onClick={onRegisterClick}>Create one here.</SignUpText></Text>
+            <Text className="roboto-regular">Don't have an account? <SignUpText data-testid="sign-up-login" onClick={onRegisterClick}>Create one here.</SignUpText></Text>
         </form>
     );
 }

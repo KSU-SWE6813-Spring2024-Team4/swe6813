@@ -34,6 +34,7 @@ const SignUpText = styled.span`
     color: #0B4F6C;
     cursor: pointer;
 `;
+
 const UnorderedList = styled.div`
     font-size: 10px;
     padding-left: 5px;
@@ -42,7 +43,7 @@ const UnorderedList = styled.div`
 `;
 
 const Header = styled.h1`
-    font-size: 32px;
+    font-size: 40px;
     padding-bottom: 0px;
     margin: 0px;
 `;
@@ -72,7 +73,7 @@ function SignUpBox({registerUser, onLoginClick}) {
                 </ul>
             </UnorderedList>
             <Button onClick={registerUser} title="Register"/>
-            <Text className="roboto-regular">Already have an account? <SignUpText onClick={onLoginClick}>Sign in</SignUpText></Text>
+            <Text className="roboto-regular">Already have an account? <SignUpText data-testid="sign-up-sign-up" onClick={onLoginClick}>Sign in</SignUpText></Text>
         </form>
     );
 }

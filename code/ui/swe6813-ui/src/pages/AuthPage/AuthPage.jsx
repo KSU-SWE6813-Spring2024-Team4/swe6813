@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import SignUpBox from './components/SignUpBox/SignUpBox';
 import LoginBox from './components/LoginBox/LoginBox';
+import SignOut from './components/SignOut/SignOut';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import ChangePassword from './components/ChangePassword/ChangePassword';
 import { useState, useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import '../../index.css';
@@ -50,7 +53,6 @@ function AuthPage () {
         // TODO: actually login the user before navigating to root app
         navigate("/");
 
-        // setLogin(false)
     }, [navigate]);
 
     const registerUser = useCallback(() => {
@@ -75,7 +77,9 @@ function AuthPage () {
                 <Box data-testid="auth-box">
                     { activeBox === 'LOGIN' && (
                         // {/* TODO: actually hook up the login box up to design */}
-                        <LoginBox onRegisterClick={() => changeBox('SIGNUP')} loginUser={loginUser}/>
+                        <LoginBox onRegisterClick={() => changeBox('SIGNUP')} 
+                            onForgotPassClick={() => changeBox('FORGOTPASSWORD')} 
+                            loginUser={loginUser}/>
                     ) }
                     { activeBox === 'SIGNUP' && (
                         // {/* TODO: actually hook up the login box up to design */}
@@ -84,15 +88,19 @@ function AuthPage () {
                     { activeBox === 'SIGNOUT' && (
                         // {/* TODO: actually hook up the login box up to design */}
                         <>
-                            <Header className="audiowide-regular">Sign Up</Header>
                             <SignUpBox onLoginClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
                         </>
                     ) }
-                    { activeBox === 'REGISTER' && (
+                    { activeBox === 'CHANGEPASSWORD' && (
                         // {/* TODO: actually hook up the login box up to design */}
                         <>
-                            <Header className="audiowide-regular">Sign Up</Header>
-                            <SignUpBox onLoginClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
+                            <ChangePassword onReturnClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
+                        </>
+                    ) }
+                    { activeBox === 'FORGOTPASSWORD' && (
+                        // {/* TODO: actually hook up the login box up to design */}
+                        <>
+                            <ForgotPassword onReturnClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
                         </>
                     ) }
                 </Box>
