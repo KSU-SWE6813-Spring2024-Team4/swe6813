@@ -1,5 +1,4 @@
 export default function Root(){
-    console.log("say hello");
     //anything that all pages will have; like a nav bar
     return(
         <div>
