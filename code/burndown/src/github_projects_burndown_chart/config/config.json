@@ -1,0 +1,96 @@
+{
+  "repository": {
+    "sprint1": {
+      "query_variables": {
+        "repo_owner": "KSU-SWE6813-Spring2024-Team4",
+        "repo_name": "swe6813",
+        "project_number": 2,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-02-07",
+        "sprint_end_date": "2024-02-20",
+        "points_label": "Points: ",
+        "version": 2
+      }
+    },
+    "sprint2": {
+      "query_variables": {
+        "repo_owner": "KSU-SWE6813-Spring2024-Team4",
+        "repo_name": "swe6813",
+        "project_number": 3,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-02-20",
+        "sprint_end_date": "2024-03-20",
+        "points_label": "Points: ",
+        "version": 2
+      }
+    },
+    "sprint3": {
+      "query_variables": {
+        "repo_owner": "KSU-SWE6813-Spring2024-Team4",
+        "repo_name": "swe6813",
+        "project_number": 4,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-3-20",
+        "sprint_end_date": "2024-04-15",
+        "points_label": "Points: ",
+        "version": 2
+      }
+    }
+  },
+  "organization": {
+    "sprint1": {
+      "query_variables": {
+        "organization_name": "KSU-SWE6813-Spring2024-Team4",
+        "project_number": 2,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-02-07",
+        "sprint_end_date": "2024-02-20",
+        "points_label": "Points: "
+      }
+    },
+    "sprint2": {
+      "query_variables": {
+        "organization_name": "KSU-SWE6813-Spring2024-Team4",
+        "project_number": 3,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-02-20",
+        "sprint_end_date": "2024-3-20",
+        "points_label": "Points: "
+      }
+    },
+    "sprint3": {
+      "query_variables": {
+        "organization_name": "KSU-SWE6813-Spring2024-Team4",
+        "project_number": 4,
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "2024-03-20",
+        "sprint_end_date": "2024-4-15",
+        "points_label": "Points: "
+      }
+    }
+  }
+}
