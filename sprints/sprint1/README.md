@@ -37,6 +37,10 @@ We were able to pair program on some of the foundatioal UI work. The recording c
 
 Different components of our application have tests provided. 
 * [Auth service tests](https://github.com/KSU-SWE6813-Spring2024-Team4/swe6813/blob/main/code/authservice/src/test/java/com/swe6813/team4/authservice/rest/AuthControllerTests.java)
+
+![Auth Service](https://github.com/KSU-SWE6813-Spring2024-Team4/swe6813/assets/10526932/2b776daa-e4f6-4219-a153-d852a82f97df)
+
+
 * [UI tests]()
 
 ## Sprint Review
