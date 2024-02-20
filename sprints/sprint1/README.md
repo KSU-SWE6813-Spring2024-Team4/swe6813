@@ -21,13 +21,13 @@ Our sprint backlog Kanban board can be found on [the Sprint 1 project board](htt
 
 ## Sprint Burndown Chart
 
-The [sprint burndown chart]() is available in the sprint 1 directory
+The [sprint burndown chart](https://github.com/KSU-SWE6813-Spring2024-Team4/swe6813/blob/main/sprints/sprint1/S1Burndown.png) is available in the sprint 1 directory
 
 ## Daily scrums
 
 Daily scrums were conducted using the Geekbot tool integrated with teams. Asynchronous communication works best for our team due to it's distributed nature, and this tool makes it very easy to constantly communicate.
 
-[Scrum logs]() can be seen in the Sprint 1 folder.
+[Scrum logs]() can be seen in the Sprint 1 folder:
 
 ## Pair programming
 
@@ -45,7 +45,7 @@ Different components of our application have tests provided.
 
 ## Sprint Review
 
-We conducted a sprint review. The recording is available [with your KSU account here]()
+We conducted a sprint review. The recording is available [with your KSU account here](https://kennesawedu-my.sharepoint.com/:v:/g/personal/shamza1_students_kennesaw_edu/ESVnIkIXVT5Hh9RSw_AnAJ0BeynH4G_QekbldKOWAH-iCg?referrer=Teams.TEAMS-ELECTRON&referrerScenario=MeetingChicletGetLink.view.view)
 
 ## Product increment
 
