@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import SignUpBox from './components/SignUpBox/SignUpBox';
 import LoginBox from './components/LoginBox/LoginBox';
-import SignOut from './components/SignOut/SignOut';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import ChangePassword from './components/ChangePassword/ChangePassword';
 import { useState, useCallback } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import '../../index.css';
 
 const MainLoginContainer = styled.div`
@@ -34,11 +33,6 @@ const Box = styled.div`
 `;
 const Header = styled.h1`
     font-size: 32px;
-    padding-bottom: 0px;
-`;
-const LoginButton = styled.button`
-    width: 100%;
-    margin: 0;
 `;
 
 function AuthPage () {
@@ -47,23 +41,9 @@ function AuthPage () {
 
     const [activeBox, setActiveBox] = useState('LOGIN')
 
-    const navigate = useNavigate();
-
-    const loginUser = useCallback(() => {
-        // TODO: actually login the user before navigating to root app
-        navigate("/");
-
-    }, [navigate]);
-
-    const registerUser = useCallback(() => {
-        // TODO: actually register the user
-    }, [])
-
     const changeBox = useCallback((box) => {
         setActiveBox(box)
     }, [setActiveBox])
-
-    
 
     return (
         <>
@@ -73,39 +53,31 @@ function AuthPage () {
                 )}
 
                 {/* TODO: REMOVE just three references */}
-                {/* <button onClick={loginUser}>Log In</button>  */}
                 <Box data-testid="auth-box">
                     { activeBox === 'LOGIN' && (
                         // {/* TODO: actually hook up the login box up to design */}
-                        <LoginBox onRegisterClick={() => changeBox('SIGNUP')} 
+                        <LoginBox 
+                            onRegisterClick={() => changeBox('SIGNUP')} 
                             onForgotPassClick={() => changeBox('FORGOTPASSWORD')} 
-                            loginUser={loginUser}/>
+                        />
                     ) }
                     { activeBox === 'SIGNUP' && (
                         // {/* TODO: actually hook up the login box up to design */}
-                            <SignUpBox onLoginClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
+                            <SignUpBox onLoginClick={() => changeBox('LOGIN')}/>
                     ) }
                     { activeBox === 'SIGNOUT' && (
                         // {/* TODO: actually hook up the login box up to design */}
-                        <>
-                            <SignUpBox onLoginClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
-                        </>
+                        <SignUpBox onLoginClick={() => changeBox('LOGIN')}/>
                     ) }
                     { activeBox === 'CHANGEPASSWORD' && (
-                        // {/* TODO: actually hook up the login box up to design */}
-                        <>
-                            <ChangePassword onReturnClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
-                        </>
+                        <ChangePassword onReturnClick={() => changeBox('LOGIN')} />
                     ) }
                     { activeBox === 'FORGOTPASSWORD' && (
-                        // {/* TODO: actually hook up the login box up to design */}
-                        <>
-                            <ForgotPassword onReturnClick={() => changeBox('LOGIN')} registerUser={registerUser}/>
-                        </>
+                        <ForgotPassword onReturnClick={() => changeBox('LOGIN')}/>
                     ) }
                 </Box>
             </MainLoginContainer>
-            <SideGraphicContainer></SideGraphicContainer>
+            <SideGraphicContainer/>
         </>
     );
 }
