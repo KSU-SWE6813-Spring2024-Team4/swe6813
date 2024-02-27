@@ -1,22 +1,9 @@
-let baseUrl = ""
-switch (process.env.NODE_ENV) {
-  case 'development':
-    baseUrl = 'http://localhost:8080'
-    break
-  case 'production':
-    // TODO: REPLACE WITH REAL URL ONCE DEPLOYED
-    baseUrl = 'TODO'
-}
-
 export async function register({ username, password }) {
-  const opts = { 
-    body: JSON.stringify({ username, password }), 
-    headers: { 'Content-Type': 'application/json' },
-    method: "POST" 
-  }
-
   try {
-    const res = await fetch(`${baseUrl}/register`, opts)
+    const res = await fetch(getUrl('/register'), getOptions({
+      body: JSON.stringify({ username, password }), 
+      method: "POST" 
+    }))
     const json = await res.json()
     if (res.status !== 201) {
       return Promise.reject(json)
@@ -30,14 +17,11 @@ export async function register({ username, password }) {
 }
 
 export async function login({ username, password }) {
-  const opts = { 
-    body: JSON.stringify({ username, password }), 
-    headers: { 'Content-Type': 'application/json' },
-    method: "POST" 
-  }
-
   try {
-    const res = await fetch(`${baseUrl}/login`, opts)
+    const res = await fetch(getUrl('/login'), getOptions({ 
+      body: JSON.stringify({ username, password }), 
+      method: "POST" 
+    }))
     const json = await res.json()
     if (res.status !== 200) {
       return Promise.reject(json)
@@ -48,6 +32,37 @@ export async function login({ username, password }) {
   } catch (err) {
     throw err
   }
+}
+
+export async function checkToken(token) {
+  try {
+    const res = await fetch(getUrl('/validate-token'), getOptions({ 
+      body: JSON.stringify({ token }), 
+      method: "POST" 
+    }))
+    const isValid = await res.text()
+    return Promise.resolve(isValid)
+  } catch (err) {
+    throw err
+  }
+}
+
+function getUrl(path) {
+  let baseUrl = ""
+  switch (process.env.NODE_ENV) {
+    case 'development':
+      baseUrl = 'http://localhost:8080'
+      break
+    case 'production':
+      // TODO: REPLACE WITH REAL URL ONCE DEPLOYED
+      baseUrl = 'TODO'
+  }
+
+  return `${baseUrl}${path}`
+}
+
+function getOptions(opts) {
+  return { headers: { 'Content-Type': 'application/json' }, ...opts }
 }
 
 /**

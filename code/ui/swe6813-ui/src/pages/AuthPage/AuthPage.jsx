@@ -1,11 +1,12 @@
+import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SignUpBox from './components/SignUpBox/SignUpBox';
 import LoginBox from './components/LoginBox/LoginBox';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import ChangePassword from './components/ChangePassword/ChangePassword';
-import { useState, useCallback } from 'react';
-import { Navigate } from 'react-router-dom';
 import '../../index.css';
+import { checkToken } from '../../util/Api';
 
 const MainLoginContainer = styled.div`
     float: left;
@@ -31,27 +32,37 @@ const Box = styled.div`
     background-color: #FFF;
     box-shadow: 0px 4px 4px 0px #444;
 `;
-const Header = styled.h1`
-    font-size: 32px;
-`;
 
 function AuthPage () {
-    // TODO: actually check for a real user session
-    const [user, setUser] = useState(null);
+    const [activeBox, setActiveBox] = useState('LOGIN');
 
-    const [activeBox, setActiveBox] = useState('LOGIN')
+    const navigate = useNavigate();
 
     const changeBox = useCallback((box) => {
         setActiveBox(box)
     }, [setActiveBox])
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return
+        }
+        
+        checkToken(token)
+            .then((isValid) => {
+                if (!isValid) {
+                    localStorage.removeItem('token')
+                    return
+                }
+
+                navigate('/')
+            })
+            .catch(console.log)
+    }, [])
+
     return (
         <>
             <MainLoginContainer>
-                {user && (
-                    <Navigate to="/" replace={true} />
-                )}
-
                 {/* TODO: REMOVE just three references */}
                 <Box data-testid="auth-box">
                     { activeBox === 'LOGIN' && (

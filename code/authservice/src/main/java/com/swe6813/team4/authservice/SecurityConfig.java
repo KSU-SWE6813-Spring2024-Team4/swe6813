@@ -27,6 +27,7 @@ public class SecurityConfig {
 
         registry.addMapping("/register").allowedOrigins(ALLOWED_ORIGINS);
         registry.addMapping("/login").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/validate-token").allowedOrigins(ALLOWED_ORIGINS);
       }
     };
   }

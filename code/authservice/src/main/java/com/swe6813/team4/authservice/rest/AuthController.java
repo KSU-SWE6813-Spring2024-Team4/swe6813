@@ -79,7 +79,7 @@ public class AuthController {
         .body(foundUser);
   }
 
-  @PostMapping(path="validate-token")
+  @PostMapping(path="/validate-token")
   public ResponseEntity<Boolean> validateToken(@RequestBody TokenRequest tokenRequest) {
     return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
   }
