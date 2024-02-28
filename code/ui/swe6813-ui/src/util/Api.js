@@ -41,12 +41,17 @@ export async function checkToken(token) {
       method: "POST" 
     }))
     const isValid = await res.text()
-    return Promise.resolve(isValid)
+    return Promise.resolve(Boolean(isValid))
   } catch (err) {
     throw err
   }
 }
 
+/**
+ * Constructs the full URL for an API request
+ * @param {string} path 
+ * @returns {string}
+ */
 function getUrl(path) {
   let baseUrl = ""
   switch (process.env.NODE_ENV) {
@@ -61,8 +66,16 @@ function getUrl(path) {
   return `${baseUrl}${path}`
 }
 
+/**
+ * Constructs request options with defaults + passed in options
+ * @param {*} opts 
+ * @returns {RequestInit}
+ */
 function getOptions(opts) {
-  return { headers: { 'Content-Type': 'application/json' }, ...opts }
+  return { 
+    headers: { 'Content-Type': 'application/json' }, 
+    ...opts 
+  }
 }
 
 /**

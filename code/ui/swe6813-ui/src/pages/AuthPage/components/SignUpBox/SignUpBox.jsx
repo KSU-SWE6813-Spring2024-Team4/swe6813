@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
     useCallback,
@@ -63,14 +64,25 @@ function SignUpBox({ onLoginClick }) {
 
     return (
         <>
-            <Header data-testid="sign-up-header" className="audiowide-regular">Sign Up</Header>
-            <Input label="Username" onChange={onUsernameChange} />
+            <Header
+                data-testid="sign-up-header" 
+                className="audiowide-regular">
+                Sign Up
+            </Header>
+            <Input
+                label="Username"
+                onChange={onUsernameChange} 
+            />
             <Input
                 label="Password"
                 onChange={onPasswordChange} 
                 type='password'
             />
-            <Input label="Confirm Password" onChange={onConfirmedPasswordChange} type='password'/>
+            <Input
+                label="Confirm Password"
+                onChange={onConfirmedPasswordChange}
+                type='password'
+            />
             <Rules className="roboto-regular">
                 <ul>
                     <li>Password matches re-type Password</li>
@@ -79,13 +91,24 @@ function SignUpBox({ onLoginClick }) {
                     <li>Password contains one symbol (!.;-=+*#$@%^&())</li>
                 </ul>
             </Rules>
-            <Button onClick={ onRegister } title="Register"/>
+            <Button
+                onClick={ onRegister }
+                title="Register"
+            />
             <Text className="roboto-regular">
                 Already have an account?&nbsp;
-                <SignUpText data-testid="sign-up-sign-up" onClick={onLoginClick}>Sign in</SignUpText>
+                <SignUpText
+                    data-testid="sign-up-sign-up" 
+                    onClick={onLoginClick}>
+                    Sign in
+                </SignUpText>
             </Text>
         </>
     );
 }
+
+SignUpBox.propTypes = {
+    onLoginClick: PropTypes.func.isRequired
+};
 
 export default SignUpBox;

@@ -1,4 +1,7 @@
-import { useCallback, useEffect } from "react";
+import {
+    useCallback,
+    useEffect
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { checkToken } from "../../util/Api";
 import Button from '../../components/Button/Button';
@@ -33,7 +36,11 @@ export default function Root() {
     return(
         <div>
             <h1>Hi, Team 4 Project</h1>
-            <Button title="Sign Out" onClick={ signoutHandler }/>
+            {/* TODO: just here for testing full auth flow */}
+            <Button
+                title="Sign Out"
+                onClick={ signoutHandler }
+            />
         </div>
     )
 }

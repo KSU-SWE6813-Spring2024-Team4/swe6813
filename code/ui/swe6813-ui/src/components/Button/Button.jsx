@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import '../../index.css';
 
 const StyledButton = styled.button`
@@ -16,8 +17,17 @@ const StyledButton = styled.button`
   letter-spacing: 1.5px;
 `
 
-export default function Button ({ title, onClick }) {
+function Button ({ title, onClick }) {
   return (
-    <StyledButton className="electrolize-regular" onClick={onClick}>{ title }</StyledButton>
+    <StyledButton className="electrolize-regular" onClick={onClick}>
+      { title }
+    </StyledButton>
   )
 }
+
+Button.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
+}
+
+export default Button;

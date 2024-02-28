@@ -73,11 +73,6 @@ function AuthPage () {
                         />
                     ) }
                     { activeBox === 'SIGNUP' && (
-                        // {/* TODO: actually hook up the login box up to design */}
-                            <SignUpBox onLoginClick={() => changeBox('LOGIN')}/>
-                    ) }
-                    { activeBox === 'SIGNOUT' && (
-                        // {/* TODO: actually hook up the login box up to design */}
                         <SignUpBox onLoginClick={() => changeBox('LOGIN')}/>
                     ) }
                     { activeBox === 'CHANGEPASSWORD' && (

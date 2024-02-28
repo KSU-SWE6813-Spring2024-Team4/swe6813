@@ -35,7 +35,12 @@ function Input({ label, onChange, type = 'text' }) {
 
   return (
     <Container>
-      <InputElement className="roboto-regular" type={type} onChange={changeHandler} required/>
+      <InputElement
+        className="roboto-regular" 
+        type={type} 
+        onChange={changeHandler} 
+        required
+      />
       <Label className="electrolize-regular">{label}</Label>
     </Container>
   )

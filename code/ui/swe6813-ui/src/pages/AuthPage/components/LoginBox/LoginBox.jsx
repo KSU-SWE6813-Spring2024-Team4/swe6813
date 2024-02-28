@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import { useCallback, useState } from 'react';
+import {
+    useCallback,
+    useState 
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { login } from '../../../../util/Api';
@@ -60,14 +63,36 @@ function LoginBox({ onRegisterClick, onForgotPassClick }) {
 
     return (
         <>
-            <Header data-testid="login-header" className="audiowide-regular">Login</Header>
-            <Input label="Username" onChange={onUsernameChange} />
-            <Input label="Password" onChange={onPasswordChange} />
-            <ForgotPassword data-testid="forgot-pass-link" className="roboto-regular" onClick={onForgotPassClick}>Forgot Password</ForgotPassword>
-            <Button onClick={ onLogin } title="Log In"/>
+            <Header 
+                data-testid="login-header" 
+                className="audiowide-regular">
+                Login
+            </Header>
+            <Input
+                label="Username"
+                onChange={onUsernameChange} 
+            />
+            <Input 
+                label="Password" 
+                onChange={onPasswordChange} 
+            />
+            <ForgotPassword
+                data-testid="forgot-pass-link"
+                className="roboto-regular"
+                onClick={onForgotPassClick}>
+                Forgot Password
+            </ForgotPassword>
+            <Button
+                onClick={ onLogin }
+                title="Log In"
+            />
             <Text className="roboto-regular">
                 Don't have an account?&nbsp;
-                <SignUpText data-testid="sign-up-login" onClick={ onRegisterClick }>Create one here.</SignUpText>
+                <SignUpText
+                    data-testid="sign-up-login" 
+                    onClick={ onRegisterClick }>
+                    Create one here.
+                </SignUpText>
             </Text>
         </>
     );
