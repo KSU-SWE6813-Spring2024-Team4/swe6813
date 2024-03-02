@@ -9,14 +9,30 @@ import uuid
 bp = Blueprint('games', __name__, url_prefix='/games')
 
 
-@bp.get('/list/')
+@bp.get('/list')
 def list_games():
-    return f'List games!'
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    game_list = db_conn.run(
+        """
+        MATCH (game: Game{}) return game;
+        """
+    ).data()
+
+    return game_list
 
 
 @bp.get('/show/<game_id>')
 def show_game(game_id):
-    return f'Show single game with ID {game_id} !'
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    game = db_conn.run(
+        """
+        MATCH (game: Game {id: $id}) return game;
+        """, {'id': game_id}
+    ).data()
+
+    return game
 
 
 @bp.post('/add')
@@ -55,7 +71,22 @@ def delete_game():
 
 @bp.put('/edit')
 def edit_game():
-    return f'Edit game!'
+    id = request.form['id']
+    name = request.form['name']
+    description = request.form['description']
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+
+    game_updated = db_conn.run(
+        """
+        MATCH(game: Game{id: $id}) SET game.name = $name, game.description = $description
+        RETURN game
+        """, {'id': id, 'name': name, 'description': description}
+    ).data()
+
+    return game_updated
+
 
 
 class Game():
