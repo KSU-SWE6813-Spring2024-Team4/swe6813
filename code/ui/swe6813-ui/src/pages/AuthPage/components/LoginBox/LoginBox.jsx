@@ -57,6 +57,7 @@ function LoginBox({ onRegisterClick, onForgotPassClick }) {
 
         login({ username, password })
             .then(() => navigate('/'))
+            // TODO: dispatch error modal action with message
             .catch(console.log)
 
     }, [navigate, password, username]);

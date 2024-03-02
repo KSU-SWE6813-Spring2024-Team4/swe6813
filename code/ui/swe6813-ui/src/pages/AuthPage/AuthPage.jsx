@@ -14,6 +14,7 @@ const MainLoginContainer = styled.div`
     height: 100vh;
     background-color: #fff;
 `;
+
 const SideGraphicContainer = styled.div`
     float: right;
     width: 38.2%;
@@ -22,7 +23,8 @@ const SideGraphicContainer = styled.div`
     background-image: url("test-graphic.png");
     background-size: 100% 100%;
 `;
-const Box = styled.div`
+
+const Container = styled.div`
     margin: auto;
     width: 50%;
     position: relative;
@@ -33,8 +35,13 @@ const Box = styled.div`
     box-shadow: 0px 4px 4px 0px #444;
 `;
 
+const Box = {
+    Login: 'LOGIN',
+    Signup: 'SIGNUP'
+}
+
 function AuthPage () {
-    const [activeBox, setActiveBox] = useState('LOGIN');
+    const [activeBox, setActiveBox] = useState(Box.Login);
 
     const navigate = useNavigate();
 
@@ -57,6 +64,7 @@ function AuthPage () {
 
                 navigate('/')
             })
+            // TODO: dispatch error modal action with message
             .catch(console.log)
     }, [])
 
@@ -64,24 +72,24 @@ function AuthPage () {
         <>
             <MainLoginContainer>
                 {/* TODO: REMOVE just three references */}
-                <Box data-testid="auth-box">
-                    { activeBox === 'LOGIN' && (
+                <Container data-testid="auth-box">
+                    { activeBox === Box.Login && (
                         // {/* TODO: actually hook up the login box up to design */}
                         <LoginBox 
-                            onRegisterClick={() => changeBox('SIGNUP')} 
+                            onRegisterClick={() => changeBox(Box.Signup)} 
                             onForgotPassClick={() => changeBox('FORGOTPASSWORD')} 
                         />
                     ) }
-                    { activeBox === 'SIGNUP' && (
-                        <SignUpBox onLoginClick={() => changeBox('LOGIN')}/>
+                    { activeBox === Box.Signup && (
+                        <SignUpBox onLoginClick={() => changeBox(Box.Login)}/>
                     ) }
                     { activeBox === 'CHANGEPASSWORD' && (
-                        <ChangePassword onReturnClick={() => changeBox('LOGIN')} />
+                        <ChangePassword onReturnClick={() => changeBox(Box.Login)} />
                     ) }
                     { activeBox === 'FORGOTPASSWORD' && (
-                        <ForgotPassword onReturnClick={() => changeBox('LOGIN')}/>
+                        <ForgotPassword onReturnClick={() => changeBox(Box.Login)}/>
                     ) }
-                </Box>
+                </Container>
             </MainLoginContainer>
             <SideGraphicContainer/>
         </>

@@ -1,5 +1,6 @@
 package com.swe6813.team4.authservice;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -10,8 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SecurityConfig {
-  //  TODO: ADD PROD ORIGIN
-  public static String[] ALLOWED_ORIGINS = {"http://localhost:3000"};
+  @Value("${allowedOrigins}")
+  private String[] allowedOrigins;
 
   @Bean
   public PasswordEncoder encoder() {
@@ -25,9 +26,9 @@ public class SecurityConfig {
       public void addCorsMappings(@NonNull CorsRegistry registry) {
         WebMvcConfigurer.super.addCorsMappings(registry);
 
-        registry.addMapping("/register").allowedOrigins(ALLOWED_ORIGINS);
-        registry.addMapping("/login").allowedOrigins(ALLOWED_ORIGINS);
-        registry.addMapping("/validate-token").allowedOrigins(ALLOWED_ORIGINS);
+        registry.addMapping("/register").allowedOrigins(allowedOrigins);
+        registry.addMapping("/login").allowedOrigins(allowedOrigins);
+        registry.addMapping("/validate-token").allowedOrigins(allowedOrigins);
       }
     };
   }

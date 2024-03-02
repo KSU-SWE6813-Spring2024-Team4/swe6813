@@ -59,6 +59,7 @@ function SignUpBox({ onLoginClick }) {
 
         register({ username, password })
             .then(() => navigate('/'))
+            // TODO: dispatch error modal action with message
             .catch(console.log)
     }, [confirmedPassword, navigate, password, username])
 

@@ -29,6 +29,7 @@ export default function Root() {
                 localStorage.removeItem('token')
                 navigate('/auth')
             })
+            // TODO: dispatch error modal action with message
             .catch(console.log)
     }, [])
     

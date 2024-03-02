@@ -10,7 +10,7 @@
 
 ### Setting up the database:
 ````
-CREATE DATABASE IF NOT EXISTS `swe6813`;
+CREATE DATABASE IF NOT EXISTS `swe6813_auth`;
 CREATE USER 'swe6813'@'%' IDENTIFIED BY 'swe6813';
 GRANT ALL PRIVILEGES ON * . * TO 'swe6813'@'%';
 ````
