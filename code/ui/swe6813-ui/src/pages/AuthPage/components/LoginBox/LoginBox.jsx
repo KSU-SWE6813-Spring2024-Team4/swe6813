@@ -1,33 +1,14 @@
-import styled from 'styled-components';
-import Button from '../../../../components/Button/Button';
 import PropTypes from 'prop-types';
+import {
+    useCallback,
+    useState 
+} from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { login } from '../../../../util/Api';
+import Button from '../../../../components/Button/Button';
+import Input from '../../../../components/Input/Input';
 import '../../../../index.css';
-
-const InputField = styled.div`
-    width: 100%;
-    background: transparent;
-    outline: none;
-    font-size: 12px;
-    color: #333;
-    position: relative;
-    border-bottom: 2px solid #ccc;
-    margin: 40px 0px 40px 0px;
-`;
-
-const InputElement = styled.input`
-    width: 100%;
-    border: none;
-    outline: none;
-    font-size: 12px;
-    color: #333;
-`;
-
-const Label = styled.div`
-    color: black;
-    font-size: 14px;
-    position: absolute;
-    top: 25px; 
-`;
 
 const Text = styled.div`
     font-size: 12px;
@@ -39,7 +20,7 @@ const SignUpText = styled.span`
     cursor: pointer;
 `;
 
-const Password = styled.div`
+const ForgotPassword = styled.div`
     font-size: 12px;
     padding-left: 15px;
     text-align: right;
@@ -55,27 +36,71 @@ const Header = styled.h1`
     margin: 0px;
 `;
 
-function LoginBox({loginUser,onRegisterClick, onForgotPassClick}) {
+function LoginBox({ onRegisterClick, onForgotPassClick }) {
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    
+    const navigate = useNavigate();
+
+    const onUsernameChange = useCallback((newUsername) => {
+        setUsername(newUsername)
+    }, [setUsername])
+
+    const onPasswordChange = useCallback((newPassword) => {
+        setPassword(newPassword)
+    }, [setPassword])
+
+    const onLogin = useCallback(() => {
+        if (username.length === 0 || password.length === 0) {
+            return
+        }
+
+        login({ username, password })
+            .then(() => navigate('/'))
+            // TODO: dispatch error modal action with message
+            .catch(console.log)
+
+    }, [navigate, password, username]);
+
     return (
-        <form>
-            <Header data-testid="login-header" className="audiowide-regular">Login</Header>
-            <InputField>
-                <InputElement className="roboto-regular" type="text" required/>
-                <Label className="electrolize-regular">Email Address</Label>
-            </InputField>
-            <InputField>
-                <InputElement className="roboto-regular" type="password" required/>
-                <Label className="electrolize-regular">Password</Label>
-            </InputField>
-            <Password data-testid="forgot-pass-link" className="roboto-regular" onClick={onForgotPassClick}>Forgot Password</Password>
-            <Button onClick={loginUser} title="Log In"/>
-            <Text className="roboto-regular">Don't have an account? <SignUpText data-testid="sign-up-login" onClick={onRegisterClick}>Create one here.</SignUpText></Text>
-        </form>
+        <>
+            <Header 
+                data-testid="login-header" 
+                className="audiowide-regular">
+                Login
+            </Header>
+            <Input
+                label="Username"
+                onChange={onUsernameChange} 
+            />
+            <Input 
+                label="Password" 
+                onChange={onPasswordChange} 
+            />
+            <ForgotPassword
+                data-testid="forgot-pass-link"
+                className="roboto-regular"
+                onClick={onForgotPassClick}>
+                Forgot Password
+            </ForgotPassword>
+            <Button
+                onClick={ onLogin }
+                title="Log In"
+            />
+            <Text className="roboto-regular">
+                Don't have an account?&nbsp;
+                <SignUpText
+                    data-testid="sign-up-login" 
+                    onClick={ onRegisterClick }>
+                    Create one here.
+                </SignUpText>
+            </Text>
+        </>
     );
 }
 
 LoginBox.propTypes = {
-    loginUser: PropTypes.func.isRequired
+    onRegisterClick: PropTypes.func.isRequired
 }
 
 export default LoginBox;

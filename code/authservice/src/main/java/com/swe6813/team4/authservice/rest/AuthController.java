@@ -8,6 +8,7 @@ import com.swe6813.team4.authservice.rest.exception.UserNotFoundException;
 import com.swe6813.team4.authservice.rest.exception.UsernameTakenException;
 import com.swe6813.team4.authservice.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -51,7 +52,8 @@ public class AuthController {
     String token = TokenUtil.generateToken(user.getId());
 
     return ResponseEntity.status(HttpStatus.CREATED)
-        .header("Authorization", "Bearer " + token)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Authorization")
         .body(savedUser);
   }
 
@@ -72,11 +74,12 @@ public class AuthController {
     String token = TokenUtil.generateToken(foundUser.getId());
 
     return ResponseEntity.status(HttpStatus.OK)
-        .header("Authorization", "Bearer " + token)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Authorization")
         .body(foundUser);
   }
 
-  @PostMapping(path="validate-token")
+  @PostMapping(path="/validate-token")
   public ResponseEntity<Boolean> validateToken(@RequestBody TokenRequest tokenRequest) {
     return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
   }
