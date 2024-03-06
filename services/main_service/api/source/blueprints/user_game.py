@@ -6,7 +6,8 @@ from flask import (
 )
 import uuid
 
-bp = Blueprint('user_game', __name__, url_prefix='/user/game')
+prefix='/user/game'
+bp = Blueprint('user_game', __name__, url_prefix=prefix)
 
 
 @bp.get('/list')

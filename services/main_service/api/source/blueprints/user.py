@@ -5,8 +5,8 @@ from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
 import uuid
-
-bp = Blueprint('user', __name__, url_prefix='/user')
+prefix = "/user"
+bp = Blueprint('user', __name__, url_prefix=prefix)
 
 
 @bp.get('/list')
@@ -37,6 +37,9 @@ def show_user(user_id):
 
 @bp.post('/add')
 def add_user():
+    if not 'name' in request.form:
+        return "Error: Missing form field { name }"
+
     name = request.form['name']
 
     user = User(name)
@@ -45,9 +48,11 @@ def add_user():
 
     graph = GraphDb()
     db_conn = graph.get_database_driver()
+
     user_inserted = db_conn.run(
         """
-        CREATE(user: User { name: $name, id: $id }) RETURN user
+        CREATE(user: User { name: $name, id: $id })
+        RETURN user
         """, loaded
     ).single()
 

@@ -5,8 +5,8 @@ from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
 import uuid
-
-bp = Blueprint('games', __name__, url_prefix='/games')
+prefix = "/games"
+bp = Blueprint('games', __name__, url_prefix=prefix)
 
 
 @bp.get('/list')
