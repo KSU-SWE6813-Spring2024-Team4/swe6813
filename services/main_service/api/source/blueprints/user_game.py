@@ -39,12 +39,18 @@ def add_user_game():
         MATCH(user: User), (game: Game)
         WHERE (user).id = $uid
         AND (game).id = $gid
+        AND NOT EXISTS {
+            (user)-[:OWNS_GAME]->(game)
+        } 
         CREATE (user)-[owns_game :OWNS_GAME]->(game)
-        RETURN  owns_game
+        RETURN user, owns_game, game
         """, {'uid': uid, 'gid': gid}
     ).single()
 
-    return user_game_inserted.data()
+    if user_game_inserted is None:
+        return "ERROR: Game cannot be added at this time.\n"
+    else:
+        return user_game_inserted.data()
 
 
 @bp.delete('/delete')
