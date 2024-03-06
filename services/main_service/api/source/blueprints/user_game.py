@@ -41,6 +41,30 @@ def add_user_game():
 
     graph = GraphDb()
     db_conn = graph.get_database_driver()
+
+    uid_exists = db_conn.run(
+        """
+        MATCH(user: User)
+        WHERE user.id = $uid
+        RETURN count(user) as usercount
+        """, {'uid': uid}
+    ).single().data()
+    print(uid_exists)
+
+    if uid_exists['usercount'] != 1:
+        return "Error: A user with that id does not exist"
+
+    gid_exists = db_conn.run(
+        """
+        MATCH(game: Game)
+        WHERE game.id = $gid
+        RETURN count(game) as gamecount
+        """, {'gid': gid}
+    ).single().data()
+
+    if gid_exists['gamecount'] != 1:
+        return "Error: A game with that id does not exist"
+
     user_game_inserted = db_conn.run(
         """
         MATCH(user: User), (game: Game)
