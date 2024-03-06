@@ -30,6 +30,12 @@ def show_user_game(user_id):
 
 @bp.post('/add')
 def add_user_game():
+    if 'uid' not in request.form:
+        return "Error: Missing form field { uid }"
+
+    if 'gid' not in request.form:
+        return "Error: Missing form field { gid }"
+
     uid = request.form['uid']
     gid = request.form['gid']
 

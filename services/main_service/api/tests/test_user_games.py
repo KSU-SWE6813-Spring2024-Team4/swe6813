@@ -1,3 +1,5 @@
+import uuid
+
 from ..source.blueprints.user_game import prefix as user_game_prefix
 from ..source.blueprints.user import prefix as user_prefix
 from ..source.blueprints.games import prefix as game_prefix
@@ -31,11 +33,19 @@ def test_add_user_game(client):
     assert result_response['game']['id'] == game_id
 
 
-# def test_create_user_no_name_error(client):
-#     result = client.post(endpoint + 'add', data={
-#
-#     })
-#     assert result.status_code == 200
-#     assert result.get_data(as_text=True) == "Error: Missing form field { name }"
+def test_create_user_no_uid_error(client):
+    result = client.post(user_game_prefix + '/add', data={
+        'gid': str(uuid.uuid4())
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: Missing form field { uid }"
+
+
+def test_create_user_no_gid_error(client):
+    result = client.post(user_game_prefix + '/add', data={
+        'uid': str(uuid.uuid4())
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: Missing form field { gid }"
 
 
