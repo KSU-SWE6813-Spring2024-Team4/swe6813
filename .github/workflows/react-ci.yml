@@ -16,7 +16,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [18.x]
+
+    defaults:
+      run:
+        working-directory: ./code/ui/swe6813-ui/
 
     steps:
     - name: Checkout repo
@@ -26,8 +30,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Navigate to client
-      run: cd code/ui/swe6813-ui/
     - name: Clean install deps
       run: npm ci
     # - run: npm run build --if-present
