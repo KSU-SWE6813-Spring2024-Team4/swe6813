@@ -23,14 +23,25 @@ def list_user_games():
 
 @bp.get('/show/<user_id>')
 def show_user_game(user_id):
-    pass
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+
+    if not db_helpers.user_id_exists(db_conn, user_id):
+        return "Error: A user with that id does not exist"
+
+    user_games = db_conn.run(
+        """
+        MATCH(user: User {id: $uid})-[:OWNS_GAME]->(game: Game)
+        RETURN game
+        """, {'uid': user_id}
+    )
+
+    return user_games.data()
 
 
 @bp.post('/add')
 def add_user_game():
-    if 'uid' not in request.form:
-        return "Error: Missing form field { uid }"
-
     if 'gid' not in request.form:
         return "Error: Missing form field { gid }"
 
