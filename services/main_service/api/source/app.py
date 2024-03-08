@@ -16,8 +16,10 @@ def create_app(test_config=None):
         graph = graph_db.GraphDb()
         graph.get_database_driver()
 
-    from .blueprints import games
+    from .blueprints import games, user, user_game
     app.register_blueprint(games.bp)
+    app.register_blueprint(user.bp)
+    app.register_blueprint(user_game.bp)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -33,8 +35,3 @@ def create_app(test_config=None):
         pass
 
     return app
-
-
-if __name__ == "__main__":
-    create_app()
-
