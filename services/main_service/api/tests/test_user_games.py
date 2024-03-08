@@ -33,7 +33,7 @@ def test_add_user_game(client):
     assert result_response['game']['id'] == game_id
 
 
-def test_create_user_no_uid_error(client):
+def test_create_user_game_no_uid_error(client):
     result = client.post(user_game_prefix + '/add', data={
         'gid': str(uuid.uuid4())
     })
@@ -41,14 +41,15 @@ def test_create_user_no_uid_error(client):
     assert result.get_data(as_text=True) == "Error: Missing form field { uid }"
 
 
-def test_create_user_no_gid_error(client):
+def test_create_user_game_no_gid_error(client):
     result = client.post(user_game_prefix + '/add', data={
         'uid': str(uuid.uuid4())
     })
     assert result.status_code == 200
     assert result.get_data(as_text=True) == "Error: Missing form field { gid }"
 
-def test_create_user_invalid_uid_error(client):
+
+def test_create_user_game_invalid_uid_error(client):
     random_user_game_combo_query = """
     MATCH(user: User), (game: Game) 
     WHERE NOT (user)-[:OWNS_GAME]->(game) 
@@ -70,7 +71,7 @@ def test_create_user_invalid_uid_error(client):
     assert result.get_data(as_text=True) == "Error: A user with that id does not exist"
 
 
-def test_create_user_invalid_gid_error(client):
+def test_create_user_game_invalid_gid_error(client):
     random_user_game_combo_query = """
     MATCH(user: User), (game: Game) 
     WHERE NOT (user)-[:OWNS_GAME]->(game) 
