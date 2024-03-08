@@ -1,10 +1,8 @@
-import functools
-import json
 from ..graph_db import GraphDb
+from  ..helpers import db_helpers
 from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
-import uuid
 
 prefix='/user/game'
 bp = Blueprint('user_game', __name__, url_prefix=prefix)
@@ -42,27 +40,14 @@ def add_user_game():
     graph = GraphDb()
     db_conn = graph.get_database_driver()
 
-    uid_exists = db_conn.run(
-        """
-        MATCH(user: User)
-        WHERE user.id = $uid
-        RETURN count(user) as usercount
-        """, {'uid': uid}
-    ).single().data()
-    print(uid_exists)
+    uid_exists = db_helpers.user_id_exists(db_conn, uid)
 
-    if uid_exists['usercount'] != 1:
+    if not uid_exists:
         return "Error: A user with that id does not exist"
 
-    gid_exists = db_conn.run(
-        """
-        MATCH(game: Game)
-        WHERE game.id = $gid
-        RETURN count(game) as gamecount
-        """, {'gid': gid}
-    ).single().data()
+    gid_exists = db_helpers.game_id_exists(db_conn, gid)
 
-    if gid_exists['gamecount'] != 1:
+    if not gid_exists:
         return "Error: A game with that id does not exist"
 
     user_game_inserted = db_conn.run(
@@ -86,7 +71,38 @@ def add_user_game():
 
 @bp.delete('/delete')
 def delete_user_game():
-    pass
+    if 'uid' not in request.form:
+        return "Error: Missing form field { uid }"
+
+    if 'gid' not in request.form:
+        return "Error: Missing form field { gid }"
+
+    uid = request.form['uid']
+    gid = request.form['gid']
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+
+    uid_exists = db_helpers.user_id_exists(db_conn, uid)
+
+    if not uid_exists:
+        return "Error: A user with that id does not exist"
+
+    gid_exists = db_helpers.game_id_exists(db_conn, gid)
+
+    if not gid_exists:
+        return "Error: A game with that id does not exist"
+
+    user_game_deleted = db_conn.run(
+        """
+        MATCH(user: User {id: $uid})-[owns_game:OWNS_GAME]->(game: Game {id: $gid}) 
+        DELETE owns_game
+        RETURN user, owns_game, game
+        """, {'uid': uid, 'gid': gid}
+    ).single()
+
+    return user_game_deleted.data()
+
 
 @bp.put('/edit')
 def edit_user_game():
