@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     defaults:
       run:
@@ -30,6 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: ./code/ui/swe6813-ui/package-lock.json
     - name: Clean install deps
       run: npm ci
     # - run: npm run build --if-present
