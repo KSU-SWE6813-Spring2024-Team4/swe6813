@@ -1,6 +1,8 @@
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 import styled from 'styled-components';
+import TextField from '@mui/material/TextField';
 
 const Container = styled.div`
     width: 100%;
@@ -13,7 +15,7 @@ const Container = styled.div`
     margin: 40px 0px 40px 0px;
 `;
 
-const InputElement = styled.input`
+const InputElement = styled(TextField)`
     width: 100%;
     border: none;
     outline: none;
@@ -25,7 +27,7 @@ const Label = styled.div`
     color: black;
     font-size: 14px;
     position: absolute;
-    top: 25px; 
+    top: 45px; 
 `;
 
 function Input({ label, onChange, type = 'text' }) {
@@ -35,12 +37,12 @@ function Input({ label, onChange, type = 'text' }) {
 
   return (
     <Container>
-      <InputElement
-        className="roboto-regular" 
-        type={type} 
+      <InputElement 
+        className="roboto-regular"  
+        id="standard-basic" 
+        variant="standard" 
         onChange={changeHandler} 
-        required
-      />
+        required/>
       <Label className="electrolize-regular">{label}</Label>
     </Container>
   )
