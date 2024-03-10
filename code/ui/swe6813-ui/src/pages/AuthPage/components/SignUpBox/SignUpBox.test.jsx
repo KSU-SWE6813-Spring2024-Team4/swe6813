@@ -6,7 +6,7 @@ describe('Main Auth Page Tests', () => {
     test('render main auth page', () => {
         render(
             <BrowserRouter>
-                <SignUpBox />
+                <SignUpBox onLoginClick={ jest.fn() }/>
             </BrowserRouter>
         );
         expect(screen.getByTestId('sign-up-header')).toBeInTheDocument();

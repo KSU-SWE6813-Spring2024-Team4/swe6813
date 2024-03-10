@@ -6,7 +6,7 @@ describe('Login Auth Box Tests', () => {
     test('render Login Box page', () => {
         render(
             <BrowserRouter>
-                <LoginBox loginUser={jest.fn()}/>
+                <LoginBox loginUser={jest.fn()} onRegisterClick={ jest.fn() }/>
             </BrowserRouter>
         );
         expect(screen.getByTestId('login-header')).toBeInTheDocument();

@@ -44,7 +44,7 @@ const Header = styled.h1`
     margin: 0px;
 `;
 
-function ForgotPassword( {registerUser, onReturnClick} ) {
+function ForgotPassword({ onReturnClick }) {
     return (
         <form>
             <Header data-testid="forgot-password-header" 
@@ -53,7 +53,7 @@ function ForgotPassword( {registerUser, onReturnClick} ) {
                 <InputElement className="roboto-regular" type="text" required/>
                 <Label className="electrolize-regular">Email Address</Label>
             </InputField>
-            <Button onClick={registerUser} title="Get Verification Email"/>
+            {/* <Button onClick={registerUser} title="Get Verification Email"/> */}
             <Text className="roboto-regular">Remembered your password? <SignUpText data-testid="sign-up-forgot-pass" onClick={onReturnClick}>Sign in</SignUpText></Text>
         </form>
     );
