@@ -16,10 +16,12 @@ def create_app(test_config=None):
         graph = graph_db.GraphDb()
         graph.get_database_driver()
 
-    from .blueprints import games, user, user_game
+    from .blueprints import games, user, user_game, friend_requests
     app.register_blueprint(games.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(user_game.bp)
+    app.register_blueprint(friend_requests.bp)
+
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
