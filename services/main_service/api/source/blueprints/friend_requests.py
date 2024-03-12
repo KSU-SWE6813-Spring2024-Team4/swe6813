@@ -94,6 +94,25 @@ def delete_friend_request():
     return friend_request_query_res
 
 
+@bp.post('/approve')
+def approve_friend_request():
+    if 'fr_id' not in request.form:
+        return 'Error: Missing form field { fr_id }'
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    create_friend_relationship_query = db_conn.run("""
+        MATCH (fr: FriendRequest { id: $fr_id }), (user1: User { id: fr.from_user_id }), 
+        (user2: User { id: fr.to_user_id })
+        CREATE (user1)-[:IS_FRIENDS_WITH]->(user2),(user2)-[:IS_FRIENDS_WITH]->(user1)
+        DELETE fr
+        RETURN user1, user2
+    """, {'fr_id': request.form['fr_id']}).data()
+
+    return create_friend_relationship_query
+
+
+
 class FriendRequest:
     def __init__(self, from_uid, to_uid):
         self.from_uid = from_uid
