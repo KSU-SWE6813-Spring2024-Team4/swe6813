@@ -16,11 +16,12 @@ def create_app(test_config=None):
         graph = graph_db.GraphDb()
         graph.get_database_driver()
 
-    from .blueprints import games, user, user_game, friend_requests
+    from .blueprints import games, user, user_game, friend_requests, friends
     app.register_blueprint(games.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(user_game.bp)
     app.register_blueprint(friend_requests.bp)
+    app.register_blueprint(friends.bp)
 
 
     if test_config is None:
