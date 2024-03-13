@@ -92,3 +92,87 @@ def test_create_user_game_invalid_gid_error(client):
     assert result.get_data(as_text=True) == "Error: A game with that id does not exist"
 
 
+def test_delete_user_game(client):
+    random_user_game_combo_query = """
+    MATCH(user: User), (game: Game) 
+    WHERE (user)-[:OWNS_GAME]->(game) 
+    WITH user, game, rand() as r 
+    ORDER BY r RETURN user, game 
+    LIMIT 1;
+    """
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    random_data = db_conn.run(random_user_game_combo_query).data()
+    user_id = random_data[0]['user']['id']
+    game_id = random_data[0]['game']['id']
+
+    result = client.delete(user_game_prefix + '/delete', data={
+        'uid': user_id,
+        'gid': game_id
+    })
+    assert result.status_code == 200
+    result_response = result.get_json()
+    print(result_response)
+    assert result_response['user']['id'] == user_id
+    assert result_response['game']['id'] == game_id
+
+
+def test_delete_user_game_no_uid_error(client):
+    result = client.delete(user_game_prefix + '/delete', data={
+        'gid': str(uuid.uuid4())
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: Missing form field { uid }"
+
+
+def test_delete_user_game_no_gid_error(client):
+    result = client.delete(user_game_prefix + '/delete', data={
+        'uid': str(uuid.uuid4())
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: Missing form field { gid }"
+
+
+def test_delete_user_game_invalid_uid_error(client):
+    random_user_game_combo_query = """
+    MATCH(user: User), (game: Game) 
+    WHERE (user)-[:OWNS_GAME]->(game) 
+    WITH user, game, rand() as r 
+    ORDER BY r RETURN user, game 
+    LIMIT 1;
+    """
+
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    random_data = db_conn.run(random_user_game_combo_query).data()
+    game_id = random_data[0]['game']['id']
+
+    result = client.delete(user_game_prefix + '/delete', data={
+        'uid': str(uuid.uuid4()),
+        'gid': game_id
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: A user with that id does not exist"
+
+
+def test_delete_user_game_invalid_gid_error(client):
+    random_user_game_combo_query = """
+    MATCH(user: User), (game: Game) 
+    WHERE (user)-[:OWNS_GAME]->(game) 
+    WITH user, game, rand() as r 
+    ORDER BY r RETURN user, game 
+    LIMIT 1;
+    """
+    graph = GraphDb()
+    db_conn = graph.get_database_driver()
+    random_data = db_conn.run(random_user_game_combo_query).data()
+    user_id = random_data[0]['user']['id']
+
+    result = client.delete(user_game_prefix + '/delete', data={
+        'uid': user_id,
+        'gid': str(uuid.uuid4())
+    })
+    assert result.status_code == 200
+    assert result.get_data(as_text=True) == "Error: A game with that id does not exist"
+

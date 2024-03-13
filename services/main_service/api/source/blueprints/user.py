@@ -5,7 +5,7 @@ from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
 import uuid
-prefix = "/user"
+prefix = '/user'
 bp = Blueprint('user', __name__, url_prefix=prefix)
 
 
