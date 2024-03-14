@@ -2,6 +2,7 @@ jobs:
   on:
     push:
       branches: [ "main" ]
+
     pull_request:
       branches: [ "main" ]
   deploy_auth_service:
