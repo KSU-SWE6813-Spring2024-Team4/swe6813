@@ -84,10 +84,10 @@ public class AuthController {
     return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
   }
   
-  
   @GetMapping(path="/ping")
-  public ResponseEntity<String> ping(){
-    return ResponseEntity.ok("Ping!");
+  public ResponseEntity<String> ping() {
+    String response = "Ping!";
+    return ResponseEntity.ok(response);
   }
   
 }
