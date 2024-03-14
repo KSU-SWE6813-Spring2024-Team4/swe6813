@@ -55,7 +55,7 @@ def add_game():
     return game_inserted.data()
 
 
-@bp.post('/ping')
+@bp.get('/ping')
 def ping():
     return "Ping!"
 
