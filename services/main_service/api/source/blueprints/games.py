@@ -55,6 +55,11 @@ def add_game():
     return game_inserted.data()
 
 
+@bp.post('/ping')
+def ping():
+    return "Ping!"
+
+
 @bp.delete('/delete')
 def delete_game():
     game_id = request.form['id']
