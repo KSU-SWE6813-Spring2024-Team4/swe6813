@@ -1,6 +1,6 @@
 jobs:
   deploy_auth_service:
-    runs-on: ubuntu-latest
+    runs-on: api-server-runner
     defaults:
       run:
         working-directory: ./scripts
@@ -12,7 +12,7 @@ jobs:
         - name: Run the auth_service install script
           run: ./auth_service_install.sh
   deploy_main_service:
-  runs-on: ubuntu-latest
+  runs-on: api-server-runner
     defaults:
       run:
         working-directory: ./scripts
