@@ -27,7 +27,6 @@ public class AuthController {
     this.userRepo = userRepo;
     this.passwordEncoder = passwordEncoder;
   }
-
   @PostMapping(path="/register")
   public ResponseEntity<User> register(@RequestBody User user) {
     if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getPassword() == null || user.getPassword().trim().isEmpty()) {
@@ -83,4 +82,11 @@ public class AuthController {
   public ResponseEntity<Boolean> validateToken(@RequestBody TokenRequest tokenRequest) {
     return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
   }
+  
+  
+  @GetMapping(path="/ping")
+  public ResponseEntity<String> ping(){
+    return ResponseEntity.ok("Ping!");
+  }
+  
 }
