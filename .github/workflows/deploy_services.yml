@@ -9,7 +9,7 @@ jobs:
     runs-on: api-server-runner
     defaults:
       run:
-        working-directory: ./scripts
+        working-directory: ./code/authservice
     steps:
       - name: Checkout the repository to the runner
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
     runs-on: api-server-runner
     defaults:
       run:
-        working-directory: ./scripts
+        working-directory: ./services/main_service/api
     steps:
       - name: Checkout the repository to the runner
         uses: actions/checkout@v3
