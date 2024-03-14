@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
 jobs:
   deploy_ui:
-    runs-on: ui-runner
+    runs-on: ui-pipeline
     defaults:
       run:
         working-directory: ./code/ui/swe6813-ui
