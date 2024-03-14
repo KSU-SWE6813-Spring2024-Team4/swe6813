@@ -1,4 +1,4 @@
-name: Service deployment
+name: UI deployment
 on:
   push:
     branches: ["main", "eallmann/*"]
