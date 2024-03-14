@@ -13,13 +13,13 @@ jobs:
           run: ./auth_service_install.sh
   deploy_main_service:
     runs-on: api-server-runner
-      defaults:
-        run:
-          working-directory: ./scripts
-        steps:
-          - name: Checkout the repository to the runner
-            uses: actions/checkout@4
-          - name: Make the script files executable
-            run: chmod +x *.sh
-          - name: Run the auth_service install script
-            run: ./main_service_install.sh
+    defaults:
+      run:
+        working-directory: ./scripts
+      steps:
+        - name: Checkout the repository to the runner
+          uses: actions/checkout@4
+        - name: Make the script files executable
+          run: chmod +x *.sh
+        - name: Run the auth_service install script
+          run: ./main_service_install.sh
