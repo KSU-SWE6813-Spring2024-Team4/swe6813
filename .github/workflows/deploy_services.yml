@@ -12,7 +12,7 @@ jobs:
         working-directory: ./scripts
     steps:
       - name: Checkout the repository to the runner
-        uses: actions/checkout@4
+        uses: actions/checkout@3
       - name: Make the script files executable
         run: chmod +x *.sh
       - name: Run the auth_service install script
@@ -24,7 +24,7 @@ jobs:
         working-directory: ./scripts
     steps:
       - name: Checkout the repository to the runner
-        uses: actions/checkout@4
+        uses: actions/checkout@3
       - name: Make the script files executable
         run: chmod +x *.sh
       - name: Run the auth_service install script
