@@ -2,8 +2,8 @@
 
 echo "Building WAR file"
 
-whoami
-
+rm ./src/main/resources/application.properties
+cp /var/www/application.properties ./src/main/resources/application.properties
 ./mvnw package -DskipTests
 
 echo "Moving war file to deployment directory directory"
