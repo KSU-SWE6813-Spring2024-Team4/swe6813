@@ -7,7 +7,8 @@ import os
 # Then store it in the app
 class GraphDb:
     def get_database_driver(g):
-        load_dotenv(find_dotenv())
+        dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+        load_dotenv(dotenv_path)
         db = GraphDatabase.driver(os.environ['DATABASE_URL'], auth=basic_auth(os.environ['DATABASE_USER'],
                                                                               str(os.environ['DATABASE_PASSWORD'])))
 
