@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 import {
     useCallback,
     useState 
@@ -6,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { login } from '../../../../util/Api';
-import Button from '../../../../components/Button/Button';
+import SWEButton from '../../../../components/SWEButton/SWEButton';
 import Input from '../../../../components/Input/Input';
 import '../../../../index.css';
 
@@ -83,7 +84,7 @@ function LoginBox({ onRegisterClick, onForgotPassClick }) {
                 onClick={onForgotPassClick}>
                 Forgot Password
             </ForgotPassword>
-            <Button
+            <SWEButton
                 onClick={ onLogin }
                 title="Log In"
             />

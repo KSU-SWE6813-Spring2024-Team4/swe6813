@@ -1,5 +1,6 @@
+import React from 'react';
 import styled from 'styled-components';
-import Button from '../../../../components/Button/Button';
+import SWEButton from '../../../../components/SWEButton/SWEButton';
 import '../../../../index.css';
 
 const InputField = styled.div`
@@ -53,7 +54,10 @@ function ForgotPassword({ onReturnClick }) {
                 <InputElement className="roboto-regular" type="text" required/>
                 <Label className="electrolize-regular">Email Address</Label>
             </InputField>
-            {/* <Button onClick={registerUser} title="Get Verification Email"/> */}
+            <SWEButton
+                onClick={ onReturnClick }
+                title="Send Verification Email"
+            />
             <Text className="roboto-regular">Remembered your password? <SignUpText data-testid="sign-up-forgot-pass" onClick={onReturnClick}>Sign in</SignUpText></Text>
         </form>
     );

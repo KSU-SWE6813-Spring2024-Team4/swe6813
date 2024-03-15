@@ -1,5 +1,6 @@
+import React from 'react';
 import styled from 'styled-components';
-import Button from '../../../../components/Button/Button';
+import SWEButton from '../../../../components/SWEButton/SWEButton';
 import '../../../../index.css';
 
 const InputField = styled.div`
@@ -72,7 +73,7 @@ function ChangePassword( {registerUser, onReturnClick} ) {
                     <li>Password contains one symbol (!.;-=+*#$@%^&())</li>
                 </ul>
             </UnorderedList>
-            <Button onClick={registerUser} title="Change Password"/>
+            <SWEButton onClick={registerUser} title="Change Password"/>
             <Text className="roboto-regular">Remembered your password? <SignUpText onClick={onReturnClick}>Sign in</SignUpText></Text>
         </form>
     );
