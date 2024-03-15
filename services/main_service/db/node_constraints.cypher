@@ -1,3 +1,3 @@
-"CREATE CONSTRAINT username IF NOT EXSITS FOR (user: User) REQUIRE user.name IS UNIQUE"
+"CREATE CONSTRAINT username IF NOT EXISTS FOR (user: User) REQUIRE user.name IS UNIQUE"
 
 
