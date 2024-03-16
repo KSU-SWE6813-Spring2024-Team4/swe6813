@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,6 @@ public class AuthController {
     this.userRepo = userRepo;
     this.passwordEncoder = passwordEncoder;
   }
-
   @PostMapping(path="/register")
   public ResponseEntity<User> register(@RequestBody User user) {
     if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getPassword() == null || user.getPassword().trim().isEmpty()) {
@@ -83,4 +83,11 @@ public class AuthController {
   public ResponseEntity<Boolean> validateToken(@RequestBody TokenRequest tokenRequest) {
     return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
   }
+  
+  @GetMapping(path="/ping")
+  public ResponseEntity<String> ping() {
+    String response = "Ping!";
+    return ResponseEntity.ok(response);
+  }
+  
 }

@@ -38,6 +38,7 @@ export default function Root() {
     return(
         <div>
             <h1>Hi, Team 4 Project</h1>
+            <h2>Our CI/CD Workflow works correctly!</h2>
             {/* TODO: just here for testing full auth flow */}
             <SWEButton
                 title="Sign Out"

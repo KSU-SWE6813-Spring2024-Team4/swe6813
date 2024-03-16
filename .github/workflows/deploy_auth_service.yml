@@ -1,0 +1,21 @@
+name: Auth Service deployment
+on:
+  push:
+    branches: ["main", "eallmann/*"]
+    paths:
+      - '/code/authservice/**'
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  deploy_auth_service:
+    runs-on: api-server-runner
+    defaults:
+      run:
+        working-directory: ./code/authservice
+    steps:
+      - name: Checkout the repository to the runner
+        uses: actions/checkout@v3
+      - name: Make the script files executable
+        run: chmod +x *.sh
+      - name: Run the auth_service install script
+        run: ./auth_service_install.sh
