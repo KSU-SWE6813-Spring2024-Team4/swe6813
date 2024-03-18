@@ -10,12 +10,11 @@ import com.swe6813.team4.authservice.rest.exception.UsernameTakenException;
 import com.swe6813.team4.authservice.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +29,16 @@ public class AuthController {
   private final UserRepo userRepo;
   private final PasswordEncoder passwordEncoder;
   private final TokenUtil tokenUtil;
+  private final RestTemplate rest;
 
   @Autowired
-  public AuthController(UserRepo userRepo, PasswordEncoder passwordEncoder, TokenUtil tokenUtil) {
+  public AuthController(UserRepo userRepo, PasswordEncoder passwordEncoder, TokenUtil tokenUtil, RestTemplate rest) {
     this.userRepo = userRepo;
     this.passwordEncoder = passwordEncoder;
     this.tokenUtil = tokenUtil;
+    this.rest = rest;
   }
+
   @PostMapping(path="/register")
   public ResponseEntity<User> register(@RequestBody User user) {
     if (user.getUsername() == null || user.getUsername().trim().isEmpty() || user.getPassword() == null || user.getPassword().trim().isEmpty()) {
@@ -103,12 +105,14 @@ public class AuthController {
   }
 
   private MainUser createMainUser(String token, String name) {
-    RestTemplate rest = new RestTemplate();
-
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    HttpEntity<MainUser> request = new HttpEntity<>(new MainUser(name), headers);
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+    map.add("name", name);
+
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
     return rest.postForObject(mainServiceUrl + "/user/add", request, MainUser.class);
   }
