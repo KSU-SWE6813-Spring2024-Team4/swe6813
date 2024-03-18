@@ -3,11 +3,14 @@ package com.swe6813.team4.authservice.rest;
 import com.swe6813.team4.authservice.dao.UserRepo;
 import com.swe6813.team4.authservice.model.TokenRequest;
 import com.swe6813.team4.authservice.model.User;
+import com.swe6813.team4.authservice.model.MainUser;
 import com.swe6813.team4.authservice.rest.exception.BadInputException;
 import com.swe6813.team4.authservice.rest.exception.UserNotFoundException;
 import com.swe6813.team4.authservice.rest.exception.UsernameTakenException;
 import com.swe6813.team4.authservice.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +20,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class AuthController {
+  @Value("${main_service_url}")
+  private String mainServiceUrl;
+
   private final UserRepo userRepo;
   private final PasswordEncoder passwordEncoder;
+  private final TokenUtil tokenUtil;
 
   @Autowired
-  public AuthController(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+  public AuthController(UserRepo userRepo, PasswordEncoder passwordEncoder, TokenUtil tokenUtil) {
     this.userRepo = userRepo;
     this.passwordEncoder = passwordEncoder;
+    this.tokenUtil = tokenUtil;
   }
   @PostMapping(path="/register")
   public ResponseEntity<User> register(@RequestBody User user) {
@@ -49,7 +58,10 @@ public class AuthController {
     // TODO: replace with a client-safe DTO
     savedUser.setPassword(null);
 
-    String token = TokenUtil.generateToken(user.getId());
+    String token = tokenUtil.generateToken(user.getId());
+
+    // create user in the main service
+    createMainUser(token, savedUser.getUsername());
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -71,7 +83,7 @@ public class AuthController {
 
     // TODO: replace with a client-safe DTO
     foundUser.setPassword(null);
-    String token = TokenUtil.generateToken(foundUser.getId());
+    String token = tokenUtil.generateToken(foundUser.getId());
 
     return ResponseEntity.status(HttpStatus.OK)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -81,7 +93,7 @@ public class AuthController {
 
   @PostMapping(path="/validate-token")
   public ResponseEntity<Boolean> validateToken(@RequestBody TokenRequest tokenRequest) {
-    return ResponseEntity.ok(TokenUtil.validateToken(tokenRequest.token()));
+    return ResponseEntity.ok(tokenUtil.validateToken(tokenRequest.token()));
   }
   
   @GetMapping(path="/ping")
@@ -89,5 +101,15 @@ public class AuthController {
     String response = "Ping!";
     return ResponseEntity.ok(response);
   }
-  
+
+  private MainUser createMainUser(String token, String name) {
+    RestTemplate rest = new RestTemplate();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "Bearer " + token);
+
+    HttpEntity<MainUser> request = new HttpEntity<>(new MainUser(name), headers);
+
+    return rest.postForObject(mainServiceUrl + "/user/add", request, MainUser.class);
+  }
 }

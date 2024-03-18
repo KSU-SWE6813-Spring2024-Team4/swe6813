@@ -40,6 +40,9 @@ public class AuthControllerTests {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
+  @Autowired
+  private TokenUtil tokenUtil;
+
   @AfterEach
   void tearDown() {
     JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
@@ -103,7 +106,7 @@ public class AuthControllerTests {
     assertThat(authHeader).isNotNull();
 
     String token = authHeader.substring(authHeader.indexOf(" ") + 1);
-    assertThat(TokenUtil.validateToken(token)).isTrue();
+    assertThat(tokenUtil.validateToken(token)).isTrue();
   }
 
   @Test
@@ -179,7 +182,7 @@ public class AuthControllerTests {
     assertThat(authHeader).isNotNull();
 
     String token = authHeader.substring(authHeader.indexOf(" ") + 1);
-    assertThat(TokenUtil.validateToken(token)).isTrue();
+    assertThat(tokenUtil.validateToken(token)).isTrue();
   }
 
   @Test
@@ -195,7 +198,7 @@ public class AuthControllerTests {
 
   @Test
   void validateTokenReturnsTrueWhenValid() throws Exception {
-    TokenRequest tokenRequest = new TokenRequest(TokenUtil.generateToken(1));
+    TokenRequest tokenRequest = new TokenRequest(tokenUtil.generateToken(1));
 
     MockHttpServletRequestBuilder req = post("/validate-token")
         .contentType(MediaType.APPLICATION_JSON)
