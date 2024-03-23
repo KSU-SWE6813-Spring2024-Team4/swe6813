@@ -44,14 +44,7 @@ function App() {
           path: 'users/:userId',
           element: <UserPage />,
           loader: ({ params }) => ({ 
-            ratings: Object.values(state.ratings).reduce((acc, userRatings) => {
-              if (userRatings[params.userId]) {
-                acc['attribute'] = [...acc['attribute'], ...userRatings[params.userId].attribute]
-                acc['skill'] = [...acc['skill'], ...userRatings[params.userId].skill]
-              }
-              return acc;
-            }, { attribute: [], skill: [] }), 
-            user: state.users[params.userId] 
+            user: state.users[params.userId]
           })
         }
       ]

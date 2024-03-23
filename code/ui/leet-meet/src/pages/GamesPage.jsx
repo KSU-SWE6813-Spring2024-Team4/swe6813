@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { store } from '../store';
 
 const columns = [
-  { field: 'title', headerName: 'Title' },
+  { field: 'title', headerName: 'Title', width: 200 },
   { field: 'followerCount', headerName: 'Followers' }
 ]
 

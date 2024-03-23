@@ -10,17 +10,30 @@ const createRandomUser = (id) => ({
   username: faker.internet.userName()
 });
 
-const games = [{ id: 1, imageUrl: '', title: 'Loop Hero' }, { id: 2, imageUrl: '', title: 'Watch Dogs' }]
+const games = [
+  { id: 1, imageUrl: '', title: 'Loop Hero' }, 
+  { id: 2, imageUrl: '', title: 'Watch Dogs' },
+  { id: 3, imageUrl: '', title: 'Assassin\'s Creed Valhalla' }, 
+  { id: 4, imageUrl: '', title: 'Vampire Survivors' },
+  { id: 5, title: 'Call of Duty' }
+]
 
 const users = {}
 for (let i = 1; i <= RANDOM_COUNT; i++) {
   users[i] = createRandomUser(i)
 }
 
+const seedFollowers = () => Object.keys(users).sort(() => 0.5 - Math.random()).slice(0, getRandomInt(RANDOM_COUNT));
+
 const gameFollowers = games.reduce((acc, game) => {
-  acc[game.id] = Object.keys(users).sort(() => 0.5 - Math.random()).slice(0, getRandomInt(50));
-  return acc
-}, {})
+  acc[game.id] = seedFollowers();
+  return acc;
+}, {});
+
+const userFollowers = Object.keys(users).reduce((acc, userId) => {
+  acc[userId] = seedFollowers();
+  return acc;
+}, {});
 
 const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
   allRatings[gameId] = gameFollowers[gameId].reduce((userRatings, userId) => {
@@ -45,9 +58,10 @@ const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
 }, {})
 
 export default {
-  // friends,
   games,
   gameFollowers,
   ratings,
+  seedFollowers,
   users,
+  userFollowers,
 };

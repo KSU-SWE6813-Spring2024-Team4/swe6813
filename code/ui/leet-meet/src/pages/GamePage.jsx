@@ -2,19 +2,18 @@ import { Button, Container, Stack, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useCallback, useContext, useMemo } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-import { store } from '../store';
+import { Action, store } from '../store';
 
 const columns = [
-  { field: 'username', headerName: 'Username' },
+  { field: 'id' },
+  { field: 'username', headerName: 'Username', width: 250 },
   { field: 'type', headerName: 'Type' }
 ]
 
 export default function GamePage() {
   const { game, ratings } = useLoaderData();
-  const { state } = useContext(store);
+  const { dispatch, state } = useContext(store);
   const navigate = useNavigate();
-
-  console.log({ ratings })
 
   const followers = useMemo(() => {
     if (!game) {
@@ -24,16 +23,30 @@ export default function GamePage() {
     return state.gameFollowers[game.id].map((userId) => ({ ...state.users[userId] }));
   }, [game, state.gameFollowers, state.users])
 
+  const isFollowing = useMemo(() => {
+    return followers.find((follower) => follower.id === state.user?.id)
+  }, [followers, state.user])
+
+  const onFollow = useCallback(() => {
+    dispatch({ type: Action.FollowGame, payload: { gameId: game.id, userId: state.user?.id } })
+  }, [dispatch, game, state.user]);
+
+  const onUnfollow = useCallback(() => {
+    dispatch({ type: Action.UnfollowGame, payload: { gameId: game.id, userId: state.user?.id } })
+  }, [dispatch, game, state.user]);
+
   const onClick = useCallback(({ row }) => {
-  }, [])
+    navigate(`/users/${row.id}`)
+  }, [navigate])
 
   return (
     <Stack>
       <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
         <Typography>{ game?.title ?? '' }</Typography>
-        <Button>Follow</Button>
+        { state.user && !isFollowing && <Button onClick={onFollow}>Follow</Button> }
+        { state.user && isFollowing && <Button onClick={onUnfollow}>Unfollow</Button> }
       </Container>
-      <DataGrid columns={ columns } onRowClick={ onClick } rows={ followers } slots={{ toolbar: () => <Typography>Followers</Typography> }}/>
+      <DataGrid columnVisibilityModel={{ id: false }} columns={ columns } onRowClick={ onClick } rows={ followers } slots={{ toolbar: () => <Typography>Followers</Typography> }}/>
     </Stack>
   )
 }
