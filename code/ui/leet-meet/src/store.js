@@ -10,6 +10,7 @@ const Action = {
   LoadUsers: 'LOAD_USERS',
   LoadUserFollowers: 'LOAD_USER_FOLLOWERS',
   LoginUser: 'LOGIN_USER',
+  SubmitRating: 'SUBMIT_RATING',
   UnfollowGame: 'UNFOLLOW_GAME',
   UnfollowUser: 'UNFOLLOW_USER'
 }
@@ -50,6 +51,18 @@ const StateProvider = ({ children }) => {
         return { ...state, userFollowers: action.payload };
       case Action.LoginUser:
         return { ...state, user: action.payload, users: { ...state.users, [action.payload.id]: action.payload } };
+      case Action.SubmitRating:
+        return { 
+          ...state,
+          ratings: { 
+            ...state.ratings,
+            [action.payload.gameId]: { 
+              ...state.ratings[action.payload.gameId], 
+              [action.payload.toId]: { ...state.ratings[action.payload.gameId][action.payload.toId] 
+              } 
+            } 
+          } 
+        };
       case Action.UnfollowGame: {
         const index = state.gameFollowers[action.payload.gameId].indexOf(action.payload.userId);
         const newFollowers = [...state.gameFollowers[action.payload.gameId]];
@@ -58,7 +71,7 @@ const StateProvider = ({ children }) => {
         return { ...state, gameFollowers: { ...state.gameFollowers, [action.payload.gameId]: newFollowers } };
       }
       case Action.UnfollowUser:
-        const index = state.userFollowers[action.payload.followedUserId] ? state.userFollowers[action.payload.followedUserId] : [];
+        const index = state.userFollowers[action.payload.followedUserId].indexOf(action.payload.followedUserId);
         const newFollowers = [...state.userFollowers[action.payload.followedUserId]];
         newFollowers.splice(index, 1);
 

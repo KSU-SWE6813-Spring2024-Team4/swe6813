@@ -1,22 +1,58 @@
-import { Button, Container, Paper, Stack, Typography } from '@mui/material';
+import { 
+  Container, 
+  Paper, 
+  Stack, 
+  Typography
+} from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid';
-import { useCallback, useContext, useMemo } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { Action, store } from '../store';
-import { getRatingCounts, getTopRatingsForUser } from '../util/Calculator';
-import { ATTRIBUTES, SKILLS } from '../util/Constants';
+import { 
+  useCallback, 
+  useContext, 
+  useMemo 
+} from 'react';
+import { 
+  useLoaderData, 
+  useNavigate 
+} from 'react-router-dom';
+import { 
+  Action, 
+  store 
+} from '../store';
+import { 
+  getOrdinal, 
+  getRatingCounts, 
+  getTopRatingsForUser 
+} from '../util/Calculator';
+import { 
+  ATTRIBUTES, 
+  SKILLS 
+} from '../util/Constants';
+import FollowButton from '../components/FollowButton';
 
 const columns = [
   { field: 'id' },
-  { field: 'username', headerName: 'Username', width: 250 },
-  { field: 'attribute', headerName: 'Attribute' },
-  { field: 'skill', headerName: 'Skill' }
+  { 
+    field: 'username', 
+    headerName: 'Username', 
+    width: 250 
+  },
+  { 
+    field: 'attribute', 
+    headerName: 'Attribute' 
+  },
+  { 
+    field: 'skill', 
+    headerName: 'Skill' 
+  }
 ]
 
 export default function GamePage() {
   const { game } = useLoaderData();
-  const { dispatch, state } = useContext(store);
+  const { 
+    dispatch, 
+    state 
+  } = useContext(store);
   const navigate = useNavigate();
 
   const topRatingsByUser = useMemo(() => {
@@ -71,6 +107,13 @@ export default function GamePage() {
     return followers.find((follower) => follower.id === state.user?.id)
   }, [followers, state.user])
 
+  const gameRank = useMemo(
+    () => Object.keys(state.gameFollowers)
+      .sort((a, b) => state.gameFollowers[a].length < state.gameFollowers[b].length)
+      .findIndex((gameId) => gameId === `${game?.id}`) + 1, 
+    [state.gameFollowers, game]
+  );
+
   const onFollow = useCallback(() => {
     dispatch({ type: Action.FollowGame, payload: { gameId: game.id, userId: state.user?.id } })
   }, [dispatch, game, state.user]);
@@ -86,12 +129,29 @@ export default function GamePage() {
   return (
     <Stack>
       <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Typography>{ game?.title ?? '' }</Typography>
-        { state.user && !isFollowing && <Button onClick={onFollow}>Follow</Button> }
-        { state.user && isFollowing && <Button onClick={onUnfollow}>Unfollow</Button> }
+        <Typography variant="h3">{ game?.title ?? '' }</Typography>
+        { state.user && (
+          <FollowButton 
+            isFollowing={isFollowing} 
+            onClick={isFollowing ? onUnfollow : onFollow} 
+          />
+        ) }
       </Container>
-      <Stack direction="row" sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}>
-        <Paper elevation={3} sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}>
+      <Paper
+        elevation={3}
+        sx={{ padding: 2 }}
+      >
+        <Typography>Total Follows: {game ? state.gameFollowers[game.id].length : 0}</Typography>
+        <Typography>Current Rank: {gameRank}{getOrdinal(gameRank)}</Typography>
+      </Paper>
+      <Stack 
+        direction="row" 
+        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
+      >
+        <Paper
+          elevation={3} 
+          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+        >
           <Typography>Skill Ratings</Typography>
           <BarChart
             series={ratingsData.skill}
@@ -99,7 +159,10 @@ export default function GamePage() {
             xAxis={[{ data: SKILLS, scaleType: 'band' }]}
           />
         </Paper>
-        <Paper elevation={3} sx={{ flexGrow: 1, padding: 3 }}>
+        <Paper
+          elevation={3} 
+          sx={{ flexGrow: 1, padding: 3 }}
+        >
           <Typography>Attribute Ratings</Typography>
           <BarChart
             layout="horizontal"

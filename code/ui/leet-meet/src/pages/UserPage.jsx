@@ -1,11 +1,12 @@
-import { Button, FormControlLabel, Paper, Radio, RadioGroup, Stack, Typography } from '@mui/material';
+import { Button, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Typography } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import FollowButton from '../components/FollowButton';
+import { Action, store } from '../store';
 import { ATTRIBUTES, SKILLS } from '../util/Constants';
 import { getRatingCounts, getTopRatingsForUser } from '../util/Calculator';
-import { Action, store } from '../store';
 
 const gameColumns = [
   { field: 'id' },
@@ -24,6 +25,7 @@ export default function UserPage() {
   const { dispatch, state } = useContext(store);
   const navigate = useNavigate();
 
+  const [reviewGame, setReviewGame] = useState(null);
   const [reviewAttribute, setReviewAttribute] = useState(null);
   const [reviewSkill, setReviewSkill] = useState(null);
 
@@ -111,6 +113,10 @@ export default function UserPage() {
     return !!state.userFollowers[user.id].find((followerId) => followerId === state.user?.id)
   }, [state.userFollowers, state.user, user])
 
+  const onChangeReviewGame = useCallback(({ target }) => {
+    setReviewGame(target.value)
+  }, [setReviewGame]);
+
   const onChangeReviewAttribute = useCallback(({ target }) => {
     setReviewAttribute(target.value);
   }, [setReviewAttribute]);
@@ -135,12 +141,21 @@ export default function UserPage() {
     navigate(`/users/${row.id}`)
   }, [navigate])
 
+  const onSubmitReview = useCallback(() => {
+    if (!reviewGame || !reviewAttribute || !reviewSkill) {
+      return;
+    }
+
+    dispatch({ type: Action.SubmitRating, payload: { gameId: reviewGame, fromId: state.user?.id, toId: user.id, skill: reviewSkill, attribute: reviewAttribute } })
+  }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
+
+  console.log(state.ratings)
+
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
         <Typography>{user?.username}</Typography>
-        { state.user && !isSelf && !isFollowing && <Button onClick={onFollow}>Follow</Button> }
-        { state.user && !isSelf && isFollowing && <Button onClick={onUnfollow}>Unfollow</Button> }
+        { state.user && !isSelf && <FollowButton isFollowing={isFollowing} onClick={isFollowing ? onUnfollow : onFollow} /> }
       </Stack>
       <Paper elevation={3}>
         <Typography>Top Player Skill: {topRatings.skill}</Typography>
@@ -187,8 +202,18 @@ export default function UserPage() {
         </Paper>
       )}
       { state.user && !isSelf && (
-        <Paper elevation={3}>
-          <Typography>Review Player</Typography>
+        <Paper elevation={3} sx={{ padding: 2 }}>
+          <Typography sx={{ marginBottom: 2 }} variant="h4">Review Player</Typography>
+          <FormControl sx={{ minWidth: 300 }}>
+            <InputLabel>Game</InputLabel>
+            <Select
+              value={reviewGame}
+              label="Game"
+              onChange={onChangeReviewGame}
+            >
+              { gamesData.map((game) => (<MenuItem value={game.id}>{game.title}</MenuItem>)) }
+            </Select>
+          </FormControl>
           <Typography>How would you describe this player?</Typography>
           <RadioGroup
             row
