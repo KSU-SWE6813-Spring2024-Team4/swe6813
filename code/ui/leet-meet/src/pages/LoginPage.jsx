@@ -1,5 +1,17 @@
-import { Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useCallback, useContext, useState } from 'react';
+import { 
+  Button,
+  Container,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
+import {
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Action, store } from '../store';
 import mocks from '../mocks';
@@ -17,13 +29,23 @@ export default function LoginPage() {
       return;
     }
 
-    dispatch({ type: Action.LoginUser, payload: { id: Object.keys(mocks.users).length + 1, username } })
+    dispatch({ 
+      type: Action.LoginUser, 
+      payload: { 
+        id: Object.keys(mocks.users).length + 1, 
+        username 
+      }
+    })
+
     navigate('/games')
   }, [dispatch, navigate, password, username])
 
   return (
     <Container>
-      <Paper elevation={3} sx={{ padding: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{ padding: 2 }}
+      >
         <Stack>
           <TextField
             label="Username"
@@ -37,8 +59,16 @@ export default function LoginPage() {
             required
             value={password} 
           />
-          <Button onClick={onSignIn} variant="contained">Sign In</Button> 
-          <Typography>Don't have an account? <Link href="/register">Create one here</Link></Typography>
+          <Button
+            onClick={onSignIn}
+            variant="contained"
+          >
+            Sign In
+          </Button> 
+          <Typography>
+            Don't have an account?&nbsp;
+            <Link href="/register">Create one here</Link>
+          </Typography>
         </Stack>
       </Paper>
     </Container>

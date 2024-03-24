@@ -33,28 +33,77 @@ const { Provider } = store;
 const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
-      case Action.FollowGame:
+      case Action.FollowGame: {
+        const {
+          gameId,
+          userId
+        } = action.payload;
+
         return { 
           ...state,
-          gameFollowers: { ...state.gameFollowers, [action.payload.gameId]: [...state.gameFollowers[action.payload.gameId], action.payload.userId] } 
+          gameFollowers: {
+            ...state.gameFollowers, 
+            [gameId]: [
+              ...state.gameFollowers[gameId], 
+              userId
+            ]
+          } 
         };
-      case Action.FollowUser:
-        const current = state.userFollowers[action.payload.followedUserId] ? state.userFollowers[action.payload.followedUserId] : [];
-        return { ...state, userFollowers: { ...state.userFollowers, [action.payload.followedUserId]: [...current, action.payload.userId] } };
+      }
+      case Action.FollowUser: {
+        const {
+          followedUserId,
+          userId
+        } = action.payload;
+
+        const current = state.userFollowers[followedUserId] ?? [];
+
+        return {
+          ...state,
+          userFollowers: {
+            ...state.userFollowers,
+            [followedUserId]: [...current, userId] }
+        };
+      }
       case [Action.LoadFriends]:
-        return { ...state, friends: action.payload };
+        return {
+          ...state,
+          friends: action.payload
+        };
       case Action.LoadGames:
-        return { ...state, games: action.payload };
+        return {
+          ...state,
+          games: action.payload
+        };
       case Action.LoadGameFollowers:
-        return { ...state, gameFollowers: action.payload };
+        return {
+          ...state,
+          gameFollowers: action.payload
+        };
       case Action.LoadRatings:
-        return { ...state, ratings: action.payload };
+        return {
+          ...state,
+          ratings: action.payload
+        };
       case Action.LoadUsers:
-        return { ...state, users: action.payload };
+        return {
+          ...state,
+          users: action.payload
+        };
       case Action.LoadUserFollowers:
-        return { ...state, userFollowers: action.payload };
+        return {
+          ...state,
+          userFollowers: action.payload
+        };
       case Action.LoginUser:
-        return { ...state, user: action.payload, users: { ...state.users, [action.payload.id]: action.payload } };
+        return { 
+          ...state, 
+          user: action.payload, 
+          users: { 
+            ...state.users,
+            [action.payload.id]: action.payload 
+          } 
+        };
       case Action.SubmitRating:
         const { gameId, toId, fromId, skill, attribute } = action.payload;
 
@@ -95,14 +144,30 @@ const StateProvider = ({ children }) => {
         const newFollowers = [...state.gameFollowers[action.payload.gameId]];
         newFollowers.splice(index, 1);
 
-        return { ...state, gameFollowers: { ...state.gameFollowers, [action.payload.gameId]: newFollowers } };
+        return {
+          ...state,
+          gameFollowers: {
+            ...state.gameFollowers, [action.payload.gameId]: newFollowers }
+        };
       }
       case Action.UnfollowUser:
-        const index = state.userFollowers[action.payload.followedUserId].indexOf(action.payload.followedUserId);
-        const newFollowers = [...state.userFollowers[action.payload.followedUserId]];
+        const {
+          followedUserId,
+          userId 
+        } = action.payload;
+        
+        const followers = state.userFollowers[followedUserId]
+        const index = followers.indexOf(userId);
+        const newFollowers = [...followers];
         newFollowers.splice(index, 1);
 
-        return { ...state, userFollowers: { ...state.userFollowers, [action.payload.followedUserId]: newFollowers } };
+        return {
+          ...state,
+          userFollowers: {
+            ...state.userFollowers,
+            [followedUserId]: newFollowers
+          }
+        };
       default:
         throw new Error("unrecognized action: " + action.type);
     }

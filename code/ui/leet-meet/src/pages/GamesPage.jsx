@@ -1,12 +1,26 @@
-import { Paper, Typography } from '@mui/material';
+import {
+  Paper,
+  Typography
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { useCallback, useContext, useMemo } from 'react';
+import {
+  useCallback,
+  useContext,
+  useMemo
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { store } from '../store';
 
 const columns = [
-  { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'followerCount', headerName: 'Followers' }
+  { 
+    field: 'title',
+    headerName: 'Title',
+    width: 200
+  },
+  {
+    field: 'followerCount',
+    headerName: 'Followers'
+  }
 ]
 
 export default function GamesPage() {
@@ -23,7 +37,10 @@ export default function GamesPage() {
   }, [navigate])
 
   return (
-    <Paper elevation={3} sx={{ padding: 2 }}>
+    <Paper
+      elevation={3}
+      sx={{ padding: 2 }}
+    >
       <DataGrid
         columns={ columns }
         onRowClick={ onClick }

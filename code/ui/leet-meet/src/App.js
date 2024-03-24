@@ -1,4 +1,7 @@
-import { useContext, useEffect } from 'react';
+import {
+  useContext,
+  useEffect
+} from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -10,10 +13,16 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UserPage from './pages/UserPage';
 import mocks from './mocks';
-import { Action, store } from './store';
+import {
+  Action,
+  store
+} from './store';
 
 function App() {
-  const { dispatch, state } = useContext(store);
+  const {
+    dispatch,
+    state
+  } = useContext(store);
 
   const router = createBrowserRouter([
     {
