@@ -1,31 +1,46 @@
 import React from 'react';
 
-export function MainReducer(state, action) {
+const initialState = {
+    authUser : {
+        id: '',
+        username: '',
+        games: [],
+        attribute: '',
+        skillLevel: '',
+        signInToken: ''
+    },
+    gamesList : {
+        games: []
+    },
+    singleGame : {
+        id: '',
+        name: '',
+        description: ''
+    },
+    friends : {
+        id: '',
+        friends: []
+    }
+}
+export function MainReducer(state = initialState, action) {
     switch(action.type) {
-        case 'authUser':
-            return { 
-                id: '',
-                username: '',
-                games: [],
-                attribute: '',
-                skillLevel: '',
-                signInToken: ''
-            };
-        case 'games': 
-            return {
-                games: []
-            };
-        case 'singleGame':
-            return {
-                id: '',
-                name: '',
-                description: ''
-            };
-        case 'friends': 
-            return {
-                id: '',
-                friends: [] // based on friend's user ID
-            };
+        case 'user/getUser':
+            return state.authUser;
+        case 'games/getGameList': 
+            return state.gamesList;
+        case 'games/setGameList':
+            state.gameList = action.payload;
+            break;
+        case 'games/getGame':
+            return state.singleGame;
+        case 'games/setGame':
+            state.singleGame = action.payload;
+            break;
+        case 'friend/getFriendsList': 
+            return state.friends;
+        case 'friend/setFriendList' :
+            state.friends = action.payload;
+            break;
         default:
             throw error('unknown action');   
     }
