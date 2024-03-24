@@ -12,9 +12,10 @@ export default function GamesPage() {
   const { state } = useContext(store);
   const navigate = useNavigate();
 
-  const games = useMemo(() => {
-    return state.games.map((game) => ({ ...game, followerCount: state.gameFollowers[game.id].length }))
-  }, [state.games, state.gameFollowers]);
+  const games = useMemo(() => state.games.map((game) => ({ 
+    ...game, 
+    followerCount: state.gameFollowers[game.id].length 
+  })), [state.games, state.gameFollowers]);
 
   const onClick = useCallback(({ row }) => {
     navigate(`/games/${row.id}`)

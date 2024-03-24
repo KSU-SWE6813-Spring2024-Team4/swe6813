@@ -1,5 +1,9 @@
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { AppBar, Container, IconButton, Menu, MenuItem, Stack, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Container, 
+  IconButton, Menu, MenuItem, Stack, Toolbar, Typography 
+} from '@mui/material';
 import { useCallback, useContext, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Action, store } from '../store';

@@ -4,12 +4,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { ATTRIBUTES, SKILLS } from '../util/Constants';
-import { getRatingCountsForUser, getTopRatingsForUser } from '../util/Calculator';
+import { getRatingCounts, getTopRatingsForUser } from '../util/Calculator';
 import { Action, store } from '../store';
 
 const gameColumns = [
   { field: 'id' },
   { field: 'title', headerName: 'Title', width: 200 },
+  { field: 'attribute', headerName: 'Attribute' },
+  { field: 'skill', headerName: 'Skill' }
 ]
 
 const followedUserColumns = [
@@ -31,12 +33,33 @@ export default function UserPage() {
         acc['attribute'] = [...acc['attribute'], ...userRatings[user?.id].attribute]
         acc['skill'] = [...acc['skill'], ...userRatings[user?.id].skill]
       }
+
       return acc;
     }, { attribute: [], skill: [] });
   }, [state.ratings]);
 
+  const topRatingsByGame = useMemo(() => {
+    const ratingsByGame = Object.keys(state.ratings).reduce((acc, gameId) => {
+      if (state.ratings[gameId][user?.id]) {
+        if (!acc[gameId]) {
+          acc[gameId] = { attribute: [], skill: [] };
+        }
+        
+        acc[gameId]['attribute'] = [...acc[gameId]['attribute'], ...state.ratings[gameId][user?.id].attribute]
+        acc[gameId]['skill'] = [...acc[gameId]['skill'], ...state.ratings[gameId][user?.id].skill]
+      }
+
+      return acc;
+    }, {});
+
+    return Object.keys(ratingsByGame).reduce((acc, gameId) => {
+      acc[gameId] = getTopRatingsForUser(ratingsByGame[gameId]);
+      return acc
+    }, {});
+  }, [state.ratings, user]);
+
   const ratingData = useMemo(() => {
-    const { skill, attribute } = getRatingCountsForUser(ratings);
+    const { skill, attribute } = getRatingCounts(ratings);
 
     return {
       skill: [{ data: SKILLS.map((SKILL) => skill[SKILL]) }],
@@ -46,14 +69,15 @@ export default function UserPage() {
 
   const gamesData = useMemo(() => {
     const games = Object.keys(state.gameFollowers).reduce((acc, gameId) => {
-      if (state.gameFollowers[gameId].find((followerId) => followerId === user?.id)) {
-        acc.push(state.games.find((game) => `${game.id}` === gameId))
+      const isFollowing = state.gameFollowers[gameId].find((followerId) => `${followerId}` === `${user?.id}`);
+      if (isFollowing) {
+        acc.push({ ...state.games.find((game) => `${game.id}` === gameId), ...topRatingsByGame[gameId] })
       }
       return acc;
     }, [])
 
     return games
-  }, [state.gameFollowers])
+  }, [state.games, state.gameFollowers, user])
 
   const followedUsersData = useMemo(() => {
     const followedUsers = Object.keys(state.userFollowers).reduce((acc, userId) => {
@@ -73,11 +97,19 @@ export default function UserPage() {
     }
 
     return getTopRatingsForUser(ratings);
-  }, [ratings])
+  }, [ratings, user])
 
   const isSelf = useMemo(() => {
     return user?.id === state.user?.id
   }, [user, state.user])
+
+  const isFollowing = useMemo(() => {
+    if (!state.userFollowers[user?.id]) {
+      return false;
+    }
+
+    return !!state.userFollowers[user.id].find((followerId) => followerId === state.user?.id)
+  }, [state.userFollowers, state.user, user])
 
   const onChangeReviewAttribute = useCallback(({ target }) => {
     setReviewAttribute(target.value);
@@ -99,11 +131,16 @@ export default function UserPage() {
     dispatch({ type: Action.UnfollowUser, payload: { followedUserId: user.id, userId: state.user?.id } })
   }, [dispatch, user, state.user]);
 
+  const onFollowedUserClick = useCallback(({ row }) => {
+    navigate(`/users/${row.id}`)
+  }, [navigate])
+
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
         <Typography>{user?.username}</Typography>
-        { state.user && !isSelf && <Button onClick={onFollow}>Follow</Button> }
+        { state.user && !isSelf && !isFollowing && <Button onClick={onFollow}>Follow</Button> }
+        { state.user && !isSelf && isFollowing && <Button onClick={onUnfollow}>Unfollow</Button> }
       </Stack>
       <Paper elevation={3}>
         <Typography>Top Player Skill: {topRatings.skill}</Typography>
@@ -114,7 +151,9 @@ export default function UserPage() {
           columnVisibilityModel={{ id: false }}
           columns={ gameColumns }
           onRowClick={ onGameClick }
-          rows={ gamesData } slots={{ toolbar: () => <Typography>Games</Typography> }}/>
+          rows={ gamesData }
+          slots={{ toolbar: () => <Typography>Games</Typography> }}
+        />
       </Paper>
       <Stack direction="row" sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}>
         <Paper elevation={3} sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}>
@@ -136,14 +175,17 @@ export default function UserPage() {
           />
         </Paper>
       </Stack>
-      <Paper elevation={3}>
-        <DataGrid
-          columnVisibilityModel={{ id: false }}
-          columns={ followedUserColumns }
-          rows={ followedUsersData }
-          slots={{ toolbar: () => <Typography>Followed Users</Typography> }}
-        />
-      </Paper>
+      { isSelf && (
+        <Paper elevation={3}>
+          <DataGrid
+            columnVisibilityModel={{ id: false }}
+            columns={ followedUserColumns }
+            rows={ followedUsersData }
+            onRowClick={ onFollowedUserClick }
+            slots={{ toolbar: () => <Typography>Followed Users</Typography> }}
+          />
+        </Paper>
+      )}
       { state.user && !isSelf && (
         <Paper elevation={3}>
           <Typography>Review Player</Typography>
@@ -170,7 +212,11 @@ export default function UserPage() {
           >
             { SKILLS.map((skill) => (
               <FormControlLabel
-                key={skill} value={skill} control={<Radio />} label={skill} />
+                key={skill}
+                value={skill}
+                control={<Radio />}
+                label={skill} 
+              />
             )) }
           </RadioGroup>
           <Button>Submit</Button>

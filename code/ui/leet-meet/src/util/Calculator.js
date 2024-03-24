@@ -1,16 +1,18 @@
-export const getRatingCountsForUser = (ratings) => ({
-  skill: ratings.skill.reduce((acc, curr) => {
-    acc[curr.type] = acc[curr.type] ? acc[curr.type] + 1 : 1;
-    return acc;
-  }, {}),
-  attribute: ratings.attribute.reduce((acc, curr) => {
-    acc[curr.type] = acc[curr.type] ? acc[curr.type] + 1 : 1;
-    return acc;
-  }, {})
-});
+export const getRatingCounts = (ratings) => {
+  return {
+    skill: ratings.skill.reduce((acc, curr) => {
+      acc[curr.type] = acc[curr.type] ? acc[curr.type] + 1 : 1;
+      return acc;
+    }, {}),
+    attribute: ratings.attribute.reduce((acc, curr) => {
+      acc[curr.type] = acc[curr.type] ? acc[curr.type] + 1 : 1;
+      return acc;
+    }, {})
+  }
+};
 
 export function getTopRatingsForUser(ratings) {
-  const { skill, attribute } = getRatingCountsForUser(ratings);
+  const { skill, attribute } = getRatingCounts(ratings);
 
   return {
     skill: Object.keys(skill).reduce((acc, curr) => {

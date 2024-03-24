@@ -34,8 +34,7 @@ const StateProvider = ({ children }) => {
           ...state, gameFollowers: { ...state.gameFollowers, [action.payload.gameId]: [...state.gameFollowers[action.payload.gameId], action.payload.userId] } 
         };
       case Action.FollowUser:
-        console.log(action.payload)
-        const current = state.userFollowers[action.payload.followedUserId] ? state.userFollowers[action.payload.followedUserId] : []
+        const current = state.userFollowers[action.payload.followedUserId] ? state.userFollowers[action.payload.followedUserId] : [];
         return { ...state, userFollowers: { ...state.userFollowers, [action.payload.followedUserId]: [...current, action.payload.userId] } };
       case [Action.LoadFriends]:
         return { ...state, friends: action.payload };
@@ -51,13 +50,19 @@ const StateProvider = ({ children }) => {
         return { ...state, userFollowers: action.payload };
       case Action.LoginUser:
         return { ...state, user: action.payload, users: { ...state.users, [action.payload.id]: action.payload } };
-      case Action.UnfollowGame:
+      case Action.UnfollowGame: {
         const index = state.gameFollowers[action.payload.gameId].indexOf(action.payload.userId);
         const newFollowers = [...state.gameFollowers[action.payload.gameId]];
-        newFollowers.splice(index, 1)
+        newFollowers.splice(index, 1);
 
         return { ...state, gameFollowers: { ...state.gameFollowers, [action.payload.gameId]: newFollowers } };
+      }
       case Action.UnfollowUser:
+        const index = state.userFollowers[action.payload.followedUserId] ? state.userFollowers[action.payload.followedUserId] : [];
+        const newFollowers = [...state.userFollowers[action.payload.followedUserId]];
+        newFollowers.splice(index, 1);
+
+        return { ...state, userFollowers: { ...state.userFollowers, [action.payload.followedUserId]: newFollowers } };
       default:
         throw new Error("unrecognized action: " + action.type);
     }

@@ -24,8 +24,18 @@ export default function LoginPage() {
   return (
     <Container>
       <Stack>
-        <TextField label="Username" onChange={({ target }) => setUsername(target.value)} required value={username} />
-        <TextField label="Password" onChange={({ target }) => setPassword(target.value)} required value={password} />
+        <TextField
+          label="Username"
+          onChange={({ target }) => setUsername(target.value)}
+          required 
+          value={username} 
+        />
+        <TextField
+          label="Password"
+          onChange={({ target }) => setPassword(target.value)}
+          required
+          value={password} 
+        />
         <Button onClick={onSignIn} variant="contained">Sign In</Button> 
       </Stack>
     </Container>

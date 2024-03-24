@@ -36,8 +36,7 @@ function App() {
           path: 'games/:gameId',
           element: <GamePage />,
           loader: ({ params }) => ({
-            game: state.games.find((game) => `${game.id}` === params.gameId),
-            ratings: state.ratings[params.gameId]
+            game: state.games.find((game) => `${game.id}` === params.gameId)
           })
         },
         {
