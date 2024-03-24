@@ -1,5 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { ATTRIBUTES, SKILLS } from './util/Constants';
+import { 
+  ATTRIBUTES,
+  SKILLS
+} from './util/Constants';
 
 const RANDOM_COUNT = 50;
 
@@ -23,7 +26,9 @@ for (let i = 1; i <= RANDOM_COUNT; i++) {
   users[i] = createRandomUser(i)
 }
 
-const seedFollowers = () => Object.keys(users).sort(() => 0.5 - Math.random()).slice(0, getRandomInt(RANDOM_COUNT));
+const seedFollowers = () => Object.keys(users)
+  .sort(() => 0.5 - Math.random())
+  .slice(0, getRandomInt(RANDOM_COUNT));
 
 const gameFollowers = games.reduce((acc, game) => {
   acc[game.id] = seedFollowers();
@@ -44,10 +49,21 @@ const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
 
     const ticks = getRandomInt(RANDOM_COUNT);
     for (let i = 0; i <= ticks; i++) {
-      let maybeFrom = getRandomInt(RANDOM_COUNT);
+      const maybeFrom = getRandomInt(RANDOM_COUNT);
       if (maybeFrom !== userId && maybeFrom !== 0) {
-        userRatings[userId].attribute.push({ gameId, fromId: maybeFrom, toId: userId, type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)] });
-        userRatings[userId].skill.push({ gameId, fromId: maybeFrom, toId: userId, type: SKILLS[getRandomInt(SKILLS.length)] });
+        userRatings[userId].attribute.push({ 
+          gameId, 
+          fromId: maybeFrom, 
+          toId: userId, 
+          type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)] 
+        });
+
+        userRatings[userId].skill.push({ 
+          gameId, 
+          fromId: maybeFrom, 
+          toId: userId, 
+          type: SKILLS[getRandomInt(SKILLS.length)] 
+        });
       }
     }
 

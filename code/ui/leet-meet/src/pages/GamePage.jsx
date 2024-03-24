@@ -64,9 +64,11 @@ export default function GamePage() {
       if (!acc[userId]) {
         acc[userId] = { attribute: [], skill: [] };
       }
+
+      const { attribute, skill } = state.ratings[game.id][userId];
         
-      acc[userId]['attribute'] = [...acc[userId]['attribute'], ...state.ratings[game.id][userId].attribute];
-      acc[userId]['skill'] = [...acc[userId]['skill'], ...state.ratings[game.id][userId].skill];
+      acc[userId]['attribute'] = [...acc[userId]['attribute'], ...attribute];
+      acc[userId]['skill'] = [...acc[userId]['skill'], ...skill];
       return acc;
     }, {})
 
@@ -139,7 +141,7 @@ export default function GamePage() {
       </Container>
       <Paper
         elevation={3}
-        sx={{ padding: 2 }}
+        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
       >
         <Typography>Total Follows: {game ? state.gameFollowers[game.id].length : 0}</Typography>
         <Typography>Current Rank: {gameRank}{getOrdinal(gameRank)}</Typography>
@@ -178,7 +180,8 @@ export default function GamePage() {
         columns={ columns }
         onRowClick={ onClick }
         rows={ followers }
-        slots={{ toolbar: () => <Typography>Followers</Typography> }}/>
+        slots={{ toolbar: () => <Typography>Followers</Typography> }}
+      />
     </Stack>
   )
 }

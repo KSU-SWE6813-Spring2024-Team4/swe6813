@@ -1,3 +1,4 @@
+import { Paper, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useCallback, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +23,13 @@ export default function GamesPage() {
   }, [navigate])
 
   return (
-    <DataGrid columns={ columns } onRowClick={ onClick } rows={ games } />
+    <Paper elevation={3} sx={{ padding: 2 }}>
+      <DataGrid
+        columns={ columns }
+        onRowClick={ onClick }
+        rows={ games }
+        slots={{ toolbar: () => <Typography sx={{ margin: 1 }} variant="h3">Games</Typography> }}
+      />
+    </Paper>
   )
 }

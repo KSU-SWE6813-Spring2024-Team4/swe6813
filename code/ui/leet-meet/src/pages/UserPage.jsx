@@ -25,9 +25,9 @@ export default function UserPage() {
   const { dispatch, state } = useContext(store);
   const navigate = useNavigate();
 
-  const [reviewGame, setReviewGame] = useState(null);
-  const [reviewAttribute, setReviewAttribute] = useState(null);
-  const [reviewSkill, setReviewSkill] = useState(null);
+  const [reviewGame, setReviewGame] = useState('');
+  const [reviewAttribute, setReviewAttribute] = useState('');
+  const [reviewSkill, setReviewSkill] = useState('');
 
   const ratings = useMemo(() => {
     return Object.values(state.ratings).reduce((acc, userRatings) => {
@@ -149,15 +149,13 @@ export default function UserPage() {
     dispatch({ type: Action.SubmitRating, payload: { gameId: reviewGame, fromId: state.user?.id, toId: user.id, skill: reviewSkill, attribute: reviewAttribute } })
   }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
 
-  console.log(state.ratings)
-
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
-        <Typography>{user?.username}</Typography>
+        <Typography variant="h3">{user?.username}</Typography>
         { state.user && !isSelf && <FollowButton isFollowing={isFollowing} onClick={isFollowing ? onUnfollow : onFollow} /> }
       </Stack>
-      <Paper elevation={3}>
+      <Paper elevation={3} sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}>
         <Typography>Top Player Skill: {topRatings.skill}</Typography>
         <Typography>Top Player Attribute: {topRatings.attribute}</Typography>
       </Paper>
@@ -201,7 +199,7 @@ export default function UserPage() {
           />
         </Paper>
       )}
-      { state.user && !isSelf && (
+      { state.user && !isSelf && isFollowing && (
         <Paper elevation={3} sx={{ padding: 2 }}>
           <Typography sx={{ marginBottom: 2 }} variant="h4">Review Player</Typography>
           <FormControl sx={{ minWidth: 300 }}>
@@ -211,7 +209,7 @@ export default function UserPage() {
               label="Game"
               onChange={onChangeReviewGame}
             >
-              { gamesData.map((game) => (<MenuItem value={game.id}>{game.title}</MenuItem>)) }
+              { gamesData.map((game) => (<MenuItem key={game.id} value={game.id}>{game.title}</MenuItem>)) }
             </Select>
           </FormControl>
           <Typography>How would you describe this player?</Typography>
@@ -244,7 +242,7 @@ export default function UserPage() {
               />
             )) }
           </RadioGroup>
-          <Button>Submit</Button>
+          <Button onClick={ onSubmitReview }>Submit</Button>
         </Paper>
       ) }
     </Stack>

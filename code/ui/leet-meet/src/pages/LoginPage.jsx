@@ -1,4 +1,4 @@
-import { Button, Container, Stack, TextField } from '@mui/material';
+import { Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Action, store } from '../store';
@@ -23,21 +23,24 @@ export default function LoginPage() {
 
   return (
     <Container>
-      <Stack>
-        <TextField
-          label="Username"
-          onChange={({ target }) => setUsername(target.value)}
-          required 
-          value={username} 
-        />
-        <TextField
-          label="Password"
-          onChange={({ target }) => setPassword(target.value)}
-          required
-          value={password} 
-        />
-        <Button onClick={onSignIn} variant="contained">Sign In</Button> 
-      </Stack>
+      <Paper elevation={3} sx={{ padding: 2 }}>
+        <Stack>
+          <TextField
+            label="Username"
+            onChange={({ target }) => setUsername(target.value)}
+            required 
+            value={username} 
+          />
+          <TextField
+            label="Password"
+            onChange={({ target }) => setPassword(target.value)}
+            required
+            value={password} 
+          />
+          <Button onClick={onSignIn} variant="contained">Sign In</Button> 
+          <Typography>Don't have an account? <Link href="/register">Create one here</Link></Typography>
+        </Stack>
+      </Paper>
     </Container>
   )
 }

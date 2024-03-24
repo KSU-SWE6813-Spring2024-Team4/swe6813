@@ -2,16 +2,28 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import {
   AppBar,
   Container, 
-  IconButton, Menu, MenuItem, Stack, Toolbar, Typography 
+  IconButton,
+  Menu,
+  MenuItem,
+  Stack,
+  Toolbar,
+  Typography 
 } from '@mui/material';
-import { useCallback, useContext, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { Action, store } from '../store';
+import { 
+  useCallback,
+  useContext,
+  useState
+} from 'react';
+import {
+  Outlet,
+  useNavigate
+} from 'react-router-dom';
+import { store } from '../store';
 
 export default function AppRoot() {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const { state, dispatch } = useContext(store);
+  const { state } = useContext(store);
 
 
   const handleMenu = useCallback((event) => {
@@ -40,11 +52,17 @@ export default function AppRoot() {
       <AppBar>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Stack direction="row">
-            <MenuItem key="explore" onClick={onExplore}>
+            <MenuItem
+              key="explore" 
+              onClick={onExplore}
+            >
               <Typography textAlign="center">Explore</Typography>
             </MenuItem>
             { state.user && (
-              <MenuItem key="profile" onClick={onProfile}>
+              <MenuItem
+                key="profile" 
+                onClick={onProfile}
+              >
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
             ) }
@@ -81,7 +99,10 @@ export default function AppRoot() {
                 </Menu>
               </>
             ) : (
-              <MenuItem key="sign-in" onClick={ onAuth }>
+              <MenuItem
+                key="sign-in"
+                onClick={ onAuth }
+              >
                 <Typography textAlign="center">Sign In</Typography>
               </MenuItem>
             ) }
