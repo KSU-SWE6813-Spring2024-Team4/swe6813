@@ -13,7 +13,10 @@ import {
   useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Action, store } from '../store';
+import {
+  Action,
+  store
+} from '../store';
 import mocks from '../mocks';
 
 export default function LoginPage() {

@@ -4,18 +4,17 @@ import {
 } from 'react';
 
 const Action = {
-  FollowGame: 'FOLLOW_GAME',
-  FollowUser: 'FOLLOW_USER',
-  LoadFriends: 'LOAD_FRIENDS',
-  LoadGames: 'LOAD_GAMES',
-  LoadGameFollowers: 'LOAD_GAME_FOLLOWERS',
+  FollowGame: 'FOLLOW_GAME', // done
+  FollowUser: 'FOLLOW_USER', // wish
+  LoadGames: 'LOAD_GAMES', // done
+  LoadGameFollowers: 'LOAD_GAME_FOLLOWERS', // done
   LoadRatings: 'LOAD_RATINGS',
-  LoadUsers: 'LOAD_USERS',
-  LoadUserFollowers: 'LOAD_USER_FOLLOWERS',
-  LoginUser: 'LOGIN_USER',
+  LoadUsers: 'LOAD_USERS', // done
+  LoadUserFollowers: 'LOAD_USER_FOLLOWERS', // done
+  LoginUser: 'LOGIN_USER', // done
   SubmitRating: 'SUBMIT_RATING',
-  UnfollowGame: 'UNFOLLOW_GAME',
-  UnfollowUser: 'UNFOLLOW_USER'
+  UnfollowGame: 'UNFOLLOW_GAME', // done
+  UnfollowUser: 'UNFOLLOW_USER' // done
 }
 
 const initialState = {
@@ -65,11 +64,6 @@ const StateProvider = ({ children }) => {
             [followedUserId]: [...current, userId] }
         };
       }
-      case [Action.LoadFriends]:
-        return {
-          ...state,
-          friends: action.payload
-        };
       case Action.LoadGames:
         return {
           ...state,

@@ -1,7 +1,22 @@
-import { Button, Container, Link, Paper, Stack, TextField, Typography } from '@mui/material';
-import { useCallback, useContext, useState } from 'react';
+import {
+  Button,
+  Container,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+ } from '@mui/material';
+import {
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Action, store } from '../store';
+import {
+  Action,
+  store
+} from '../store';
 import mocks from '../mocks';
 
 export default function RegisterPage({}) {
@@ -30,7 +45,8 @@ export default function RegisterPage({}) {
       return;
     }
 
-    dispatch({ type: Action.LoginUser, payload: { id: Object.keys(mocks.users).length + 1, username } });
+    dispatch({
+      type: Action.LoginUser, payload: { id: Object.keys(mocks.users).length + 1, username } });
     navigate('/games');
   }, [username, password, confirmPassword, navigate, dispatch]);
 
@@ -39,8 +55,14 @@ export default function RegisterPage({}) {
       <Paper elevation={3} sx={{ padding: 2 }}>
         <Stack>
           <Typography variant="h3">Register</Typography>
-          <TextField label="Email Address" onChange={ onUsernameChange } required/>
-          <TextField label="Password" onChange={ onPasswordChange } required/>
+          <TextField
+            label="Email Address"
+            onChange={ onUsernameChange } 
+            required
+          />
+          <TextField
+            label="Password"
+            onChange={ onPasswordChange } required/>
           <TextField label="Confirm Password" onChange={ onConfirmPasswordChange } required/>
           <Button onClick={ onRegister }>Register</Button>
           <Typography>Already have an account? <Link href="/login">Sign In</Link></Typography>

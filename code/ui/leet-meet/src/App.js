@@ -61,7 +61,9 @@ function App() {
 
   useEffect(() => {
     // TODO: make real calls
+    // run some "api call" that then dispatches this result
     dispatch({ type: Action.LoadGames, payload: mocks.games });
+
     dispatch({ type: Action.LoadGameFollowers, payload: mocks.gameFollowers });
     dispatch({ type: Action.LoadUsers, payload: mocks.users });
     dispatch({ type: Action.LoadRatings, payload: mocks.ratings });

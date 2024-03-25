@@ -14,10 +14,10 @@ const createRandomUser = (id) => ({
 });
 
 const games = [
-  { id: 1, imageUrl: '', title: 'Loop Hero' }, 
-  { id: 2, imageUrl: '', title: 'Watch Dogs' },
-  { id: 3, imageUrl: '', title: 'Assassin\'s Creed Valhalla' }, 
-  { id: 4, imageUrl: '', title: 'Vampire Survivors' },
+  { id: 1, title: 'Loop Hero' }, 
+  { id: 2, title: 'Watch Dogs' },
+  { id: 3, title: 'Assassin\'s Creed Valhalla' }, 
+  { id: 4, title: 'Vampire Survivors' },
   { id: 5, title: 'Call of Duty' }
 ]
 
