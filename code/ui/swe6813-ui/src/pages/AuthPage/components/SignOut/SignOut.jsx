@@ -1,5 +1,6 @@
+import React from 'react';
 import styled from 'styled-components';
-import Button from '../../../../components/Button/Button';
+import SWEButton from '../../../../components/SWEButton/SWEButton';
 import '../../../../index.css';
 
 const Text = styled.div`
@@ -18,7 +19,7 @@ function SignOut( {registerUser} ) {
         <form>
             <Header data-testid="sign-out-header" className="audiowide-regular">Signed Out</Header>
             <Text>You have successfully logged out!</Text>
-            <Button onClick={registerUser} title="Sign In"/>
+            <SWEButton onClick={registerUser} title="Sign In"/>
         </form>
     );
 }

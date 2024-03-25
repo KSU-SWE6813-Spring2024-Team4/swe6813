@@ -1,10 +1,11 @@
+import * as React from 'react';
 import {
     useCallback,
     useEffect
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { checkToken } from "../../util/Api";
-import Button from '../../components/Button/Button';
+import SWEButton from '../../components/SWEButton/SWEButton';
 
 export default function Root() {
     const navigate = useNavigate()
@@ -39,7 +40,7 @@ export default function Root() {
             <h1>Hi, Team 4 Project</h1>
             <h2>Our CI/CD Workflow works correctly!</h2>
             {/* TODO: just here for testing full auth flow */}
-            <Button
+            <SWEButton
                 title="Sign Out"
                 onClick={ signoutHandler }
             />

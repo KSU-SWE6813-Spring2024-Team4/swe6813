@@ -1,8 +1,10 @@
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import Button from '@mui/material/Button';
 import '../../index.css';
 
-const StyledButton = styled.button`
+const StyledButton = styled(Button)`
   width: 100%;
   background-color: #0B4F6C;
   color: white;
@@ -17,17 +19,17 @@ const StyledButton = styled.button`
   letter-spacing: 1.5px;
 `
 
-function Button ({ title, onClick }) {
+function SWEButton ({ title, onClick }) {
   return (
-    <StyledButton className="electrolize-regular" onClick={onClick}>
+    <StyledButton className="electrolize-regular" onClick={onClick} variant="contained">
       { title }
     </StyledButton>
   )
 }
 
-Button.propTypes = {
+SWEButton.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired
 }
 
-export default Button;
+export default SWEButton;

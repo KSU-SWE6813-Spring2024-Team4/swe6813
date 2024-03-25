@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
@@ -5,7 +6,7 @@ import {
     useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../../../components/Button/Button';
+import SWEButton from '../../../../components/SWEButton/SWEButton';
 import Input from '../../../../components/Input/Input';
 import { register } from '../../../../util/Api';
 
@@ -92,7 +93,7 @@ function SignUpBox({ onLoginClick }) {
                     <li>Password contains one symbol (!.;-=+*#$@%^&())</li>
                 </ul>
             </Rules>
-            <Button
+            <SWEButton
                 onClick={ onRegister }
                 title="Register"
             />

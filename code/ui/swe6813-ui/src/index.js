@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter,  RouterProvider} from "react-router-dom";
 import Root from './pages/Root/Root';
 import AuthPage from './pages/AuthPage/AuthPage';
+import TrendingGames from './pages/TrendingGames/TrendingGames';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <AuthPage/>
   },
+  {
+    path: "/trending-games",
+    element: <TrendingGames/>
+  }
 ]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
