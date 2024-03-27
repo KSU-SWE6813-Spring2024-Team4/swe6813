@@ -8,11 +8,9 @@ import userEvent from '@testing-library/user-event';
 import RegisterPage from './RegisterPage';
 import { StateProvider } from '../../store';
 
-const mockUseNavigate = jest.fn();
-
 jest.mock('react-router-dom', () => ({
    ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockUseNavigate
+  useNavigate: () => jest.fn()
 }));
 
 test('that user is warned of empty fields', async () => {

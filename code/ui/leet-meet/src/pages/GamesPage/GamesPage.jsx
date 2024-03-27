@@ -5,11 +5,10 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import {
   useCallback,
-  useContext,
   useMemo
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { store } from '../store';
+import { useAppContext } from '../../store';
 
 const columns = [
   { 
@@ -24,7 +23,7 @@ const columns = [
 ]
 
 export default function GamesPage() {
-  const { state } = useContext(store);
+  const { state } = useAppContext();
   const navigate = useNavigate();
 
   const games = useMemo(() => state.games.map((game) => ({ 
