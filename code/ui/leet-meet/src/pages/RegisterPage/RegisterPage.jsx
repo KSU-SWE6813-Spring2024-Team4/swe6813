@@ -13,16 +13,19 @@ import {
   useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Alert from '../../components/Alert/Alert';
 import {
   Action,
   store
-} from '../store';
-import mocks from '../mocks';
+} from '../../store';
+import mocks from '../../mocks';
 
 export default function RegisterPage({}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { dispatch } = useContext(store);
   const navigate = useNavigate();
@@ -41,14 +44,20 @@ export default function RegisterPage({}) {
 
   const onRegister = useCallback(() => {
     const hasEmptyFields = username.length === 0 || password.length === 0 || confirmPassword.length === 0
-    if (hasEmptyFields || password !== confirmPassword) {
+    if (hasEmptyFields) {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match!')
+      return;
+    }
+
+    setIsSuccess(true);
     dispatch({
       type: Action.LoginUser, payload: { id: Object.keys(mocks.users).length + 1, username } });
     navigate('/games');
-  }, [username, password, confirmPassword, navigate, dispatch]);
+  }, [username, password, confirmPassword, navigate, dispatch, setIsSuccess, setErrorMessage]);
 
   return (
     <Container>
@@ -56,18 +65,36 @@ export default function RegisterPage({}) {
         <Stack>
           <Typography variant="h3">Register</Typography>
           <TextField
-            label="Email Address"
             onChange={ onUsernameChange } 
+            placeholder="Username"
             required
           />
           <TextField
-            label="Password"
-            onChange={ onPasswordChange } required/>
-          <TextField label="Confirm Password" onChange={ onConfirmPasswordChange } required/>
-          <Button onClick={ onRegister }>Register</Button>
+            onChange={ onPasswordChange } 
+            placeholder="Password"
+            required
+            type="password"
+          />
+          <TextField
+            onChange={ onConfirmPasswordChange }
+            placeholder="Confirm Password"
+            required
+            type="password"
+          />
+          <Button data-testid="registerButton" onClick={ onRegister }>Register</Button>
           <Typography>Already have an account? <Link href="/login">Sign In</Link></Typography>
         </Stack>
       </Paper>
+      {errorMessage && (
+        <Alert elevation={3} severity="error">
+          {errorMessage}
+        </Alert>
+      )}
+      {isSuccess && (
+        <Alert elevation={3} severity="success">
+          Account created!
+        </Alert>
+      )}
     </Container>
   )
 }

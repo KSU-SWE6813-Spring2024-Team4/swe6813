@@ -4,7 +4,7 @@ import {
   Stack, 
   Typography
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
 import { 
   useCallback, 
@@ -143,8 +143,12 @@ export default function GamePage() {
         elevation={3}
         sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
       >
-        <Typography>Total Follows: {game ? state.gameFollowers[game.id].length : 0}</Typography>
-        <Typography>Current Rank: {gameRank}{getOrdinal(gameRank)}</Typography>
+        <Typography>
+          Total Follows: {game ? state.gameFollowers[game.id].length : 0}
+        </Typography>
+        <Typography>
+          Current Rank: {gameRank}{getOrdinal(gameRank)}
+        </Typography>
       </Paper>
       <Stack 
         direction="row" 

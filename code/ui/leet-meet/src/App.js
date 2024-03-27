@@ -10,7 +10,7 @@ import AppRoot from './pages/AppRoot';
 import GamePage from './pages/GamePage';
 import GamesPage from './pages/GamesPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 import UserPage from './pages/UserPage';
 import mocks from './mocks';
 import {

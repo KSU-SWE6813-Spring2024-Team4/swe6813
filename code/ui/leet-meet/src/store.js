@@ -99,21 +99,39 @@ const StateProvider = ({ children }) => {
           } 
         };
       case Action.SubmitRating:
-        const { gameId, toId, fromId, skill, attribute } = action.payload;
+        const {
+          gameId,
+          toId,
+          fromId,
+          skill,
+          attribute 
+        } = action.payload;
 
-        const existingSkillRatingIndex = state.ratings[gameId][toId].skill.findIndex((skillRating) => skillRating.fromId === fromId);
-        const existingAttributeRatingIndex = state.ratings[gameId][toId].attribute.findIndex((skillRating) => skillRating.fromId === fromId);
+        const ratings = state.ratings[gameId][toId];
+        const existingSkillRatingIndex = ratings.skill.findIndex(
+          (skillRating) => skillRating.fromId === fromId
+        );
+        const existingAttributeRatingIndex = ratings.attribute.findIndex(
+          (skillRating) => skillRating.fromId === fromId
+        );
 
-        const updatedSkillRatingsForUser = [...state.ratings[gameId][toId].skill];
-        const newSkillRating = { gameId, fromId, toId, type: skill };
+        const updatedSkillRatingsForUser = [...ratings.skill];
+        const newSkillRating = { 
+          gameId, 
+          fromId,
+          toId,
+          type: skill 
+        };
         if (existingSkillRatingIndex) {
           updatedSkillRatingsForUser.splice(existingSkillRatingIndex, 1, newSkillRating);
         } else {
           updatedSkillRatingsForUser.push(newSkillRating);
         }
 
-        const updatedAttributeRatingsForUser = [...state.ratings[gameId][toId].attribute];
-        const newAttributeRating = { gameId, fromId, toId, type: attribute };
+        const updatedAttributeRatingsForUser = [...ratings.attribute];
+        const newAttributeRating = { 
+          gameId, fromId, toId, type: attribute 
+        };
         if (existingAttributeRatingIndex) {
           updatedAttributeRatingsForUser.splice(existingAttributeRatingIndex, 1, newAttributeRating);
         } else {
