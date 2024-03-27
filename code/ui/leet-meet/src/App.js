@@ -10,7 +10,7 @@ import AppRoot from './pages/AppRoot';
 import GamePage from './pages/GamePage';
 import GamesPage from './pages/GamesPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 import UserPage from './pages/UserPage';
 import mocks from './mocks';
 import {
@@ -61,7 +61,9 @@ function App() {
 
   useEffect(() => {
     // TODO: make real calls
+    // run some "api call" that then dispatches this result
     dispatch({ type: Action.LoadGames, payload: mocks.games });
+
     dispatch({ type: Action.LoadGameFollowers, payload: mocks.gameFollowers });
     dispatch({ type: Action.LoadUsers, payload: mocks.users });
     dispatch({ type: Action.LoadRatings, payload: mocks.ratings });

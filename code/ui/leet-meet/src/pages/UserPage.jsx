@@ -1,7 +1,20 @@
-import { Button, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  FormControlLabel, 
+  InputLabel, 
+  MenuItem, 
+  Paper, 
+  Radio, 
+  RadioGroup, 
+  Select, 
+  Stack, 
+  Typography 
+} from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { DataGrid } from '@mui/x-data-grid';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import {
+  useCallback, useContext, useMemo, useState } from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import FollowButton from '../components/FollowButton';
 import { Action, store } from '../store';
