@@ -1,6 +1,9 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen } from '@testing-library/react';
+import {
+  render,
+  screen
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RegisterPage from './RegisterPage';
 import { StateProvider } from '../../store';
@@ -12,8 +15,26 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate
 }));
 
+test('that user is warned of empty fields', async () => {
+  render(
+    <StateProvider>
+      <RegisterPage />
+    </StateProvider>
+  );
+
+  await act(() => {
+    userEvent.click(screen.getByTestId('registerButton'));
+  });
+
+  expect(await screen.findByText('All fields must be filled!')).toBeVisible();
+});
+
 test('that user is warned of password mismatches', async () => {
-  render(<StateProvider><RegisterPage /></StateProvider>);
+  render(
+    <StateProvider>
+      <RegisterPage />
+    </StateProvider>
+  );
 
   await act(() => {
     userEvent.type(screen.getByPlaceholderText('Username'), 'test');
@@ -26,7 +47,11 @@ test('that user is warned of password mismatches', async () => {
 });
 
 test('that user can register successfully', async () => { 
-  render(<StateProvider><RegisterPage /></StateProvider>);
+  render(
+    <StateProvider>
+      <RegisterPage />
+    </StateProvider>
+  );
 
   await act(() => {
     userEvent.type(screen.getByPlaceholderText('Username'), 'test');

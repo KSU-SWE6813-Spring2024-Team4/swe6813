@@ -45,6 +45,7 @@ export default function RegisterPage({}) {
   const onRegister = useCallback(() => {
     const hasEmptyFields = username.length === 0 || password.length === 0 || confirmPassword.length === 0
     if (hasEmptyFields) {
+      setErrorMessage('All fields must be filled!')
       return;
     }
 
@@ -55,13 +56,21 @@ export default function RegisterPage({}) {
 
     setIsSuccess(true);
     dispatch({
-      type: Action.LoginUser, payload: { id: Object.keys(mocks.users).length + 1, username } });
+      type: Action.LoginUser,
+      payload: { 
+        id: Object.keys(mocks.users).length + 1,
+        username 
+      }
+    });
     navigate('/games');
   }, [username, password, confirmPassword, navigate, dispatch, setIsSuccess, setErrorMessage]);
 
   return (
     <Container>
-      <Paper elevation={3} sx={{ padding: 2 }}>
+      <Paper
+        elevation={3}
+        sx={{ padding: 2 }}
+      >
         <Stack>
           <Typography variant="h3">Register</Typography>
           <TextField
@@ -81,17 +90,31 @@ export default function RegisterPage({}) {
             required
             type="password"
           />
-          <Button data-testid="registerButton" onClick={ onRegister }>Register</Button>
-          <Typography>Already have an account? <Link href="/login">Sign In</Link></Typography>
+          <Button
+            data-testid="registerButton"
+            onClick={ onRegister }
+          >
+            Register
+          </Button>
+          <Typography>
+            Already have an account?&nbsp;
+            <Link href="/login">Sign In</Link>
+          </Typography>
         </Stack>
       </Paper>
       {errorMessage && (
-        <Alert elevation={3} severity="error">
+        <Alert
+          elevation={3} 
+          severity="error"
+        >
           {errorMessage}
         </Alert>
       )}
       {isSuccess && (
-        <Alert elevation={3} severity="success">
+        <Alert
+          elevation={3} 
+          severity="success"
+        >
           Account created!
         </Alert>
       )}
