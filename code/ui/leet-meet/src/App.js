@@ -8,8 +8,8 @@ import {
 } from 'react-router-dom';
 import AppRoot from './pages/AppRoot';
 import GamePage from './pages/GamePage';
-import GamesPage from './pages/GamesPage';
-import LoginPage from './pages/LoginPage';
+import GamesPage from './pages/GamesPage/GamesPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import UserPage from './pages/UserPage';
 import mocks from './mocks';

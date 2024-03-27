@@ -13,15 +13,18 @@ import {
   useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Alert from '../../components/Alert/Alert';
+import mocks from '../../mocks';
 import {
   Action,
   store
-} from '../store';
-import mocks from '../mocks';
+} from '../../store';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const { dispatch } = useContext(store);
   const navigate = useNavigate();
@@ -29,8 +32,11 @@ export default function LoginPage() {
 
   const onSignIn = useCallback(() => {
     if (username.length === 0 || password.length === 0) {
+      setErrorMessage('All fields must be filled!')
       return;
     }
+
+    setIsSuccess(true);
 
     dispatch({ 
       type: Action.LoginUser, 
@@ -41,7 +47,7 @@ export default function LoginPage() {
     })
 
     navigate('/games')
-  }, [dispatch, navigate, password, username])
+  }, [dispatch, navigate, password, username, setIsSuccess])
 
   return (
     <Container>
@@ -51,18 +57,19 @@ export default function LoginPage() {
       >
         <Stack>
           <TextField
-            label="Username"
             onChange={({ target }) => setUsername(target.value)}
+            placeholder="Username"
             required 
             value={username} 
           />
           <TextField
-            label="Password"
             onChange={({ target }) => setPassword(target.value)}
+            placeholder="Password"
             required
             value={password} 
           />
           <Button
+            data-testid="loginButton"
             onClick={onSignIn}
             variant="contained"
           >
@@ -74,6 +81,22 @@ export default function LoginPage() {
           </Typography>
         </Stack>
       </Paper>
+      {errorMessage && (
+        <Alert
+          elevation={3} 
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      )}
+      {isSuccess && (
+        <Alert
+          elevation={3} 
+          severity="success"
+        >
+          Logging in!
+        </Alert>
+      )}
     </Container>
   )
 }

@@ -1,5 +1,6 @@
 import {
   createContext,
+  useContext,
   useReducer 
 } from 'react';
 
@@ -28,6 +29,8 @@ const initialState = {
 
 const store = createContext(initialState);
 const { Provider } = store;
+
+const useAppContext = () => useContext(store);
 
 const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
@@ -192,4 +195,4 @@ const StateProvider = ({ children }) => {
   );
 };
 
-export { store, StateProvider, Action };
+export { store, StateProvider, Action, useAppContext };
