@@ -9,6 +9,7 @@ prefix = '/user/rating'
 bp = Blueprint('user_rating', __name__, url_prefix=prefix)
 
 
+# regular function, not an endpoint
 def create_rating(db_conn, user_id, rate_user_id, game_id, attr_id, skill_id):
     rating = Rating(user_id, rate_user_id, game_id, attr_id, skill_id)
 
@@ -110,7 +111,7 @@ def list_users_followed():
 
     return given_user_ratings.data()
 
-
+# regular function, not an endpoint
 def delete_rating(db_conn, rating_id):
     attr_deleted = db_conn.run(
         """
