@@ -38,6 +38,7 @@ export default function Root() {
         <div>
             <h1>Hi, Team 4 Project</h1>
             <h2>Our CI/CD Workflow works correctly!</h2>
+            <h2>We fixed it!</h2>
             {/* TODO: just here for testing full auth flow */}
             <Button
                 title="Sign Out"
