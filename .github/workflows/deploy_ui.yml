@@ -17,5 +17,5 @@ jobs:
         uses: actions/checkout@v3
       - name: Make the script files executable
         run: chmod +x *.sh
-      - name: Run the auth_service install script
+      - name: Run the ui install script
         run: ./ui_install.sh
