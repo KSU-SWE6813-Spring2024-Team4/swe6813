@@ -11,15 +11,24 @@ import {
   Stack, 
   Typography 
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
 import {
-  useCallback, useContext, useMemo, useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import FollowButton from '../components/FollowButton';
-import { Action, store } from '../store';
-import { ATTRIBUTES, SKILLS } from '../util/Constants';
-import { getRatingCounts, getTopRatingsForUser } from '../util/Calculator';
+  useCallback,
+  useMemo,
+  useState
+} from 'react';
+import {
+  useLoaderData,
+  useNavigate
+} from 'react-router-dom';
+import FollowButton from '../../components/FollowButton';
+import { Action, useAppContext } from '../../store';
+import { 
+  ATTRIBUTES,
+  SKILLS
+} from '../../util/Constants';
+import { getRatingCounts, getTopRatingsForUser } from '../../util/Calculator';
 
 const gameColumns = [
   { field: 'id' },
@@ -35,7 +44,7 @@ const followedUserColumns = [
 
 export default function UserPage() {
   const { user } = useLoaderData();
-  const { dispatch, state } = useContext(store);
+  const { dispatch, state } = useAppContext();
   const navigate = useNavigate();
 
   const [reviewGame, setReviewGame] = useState('');

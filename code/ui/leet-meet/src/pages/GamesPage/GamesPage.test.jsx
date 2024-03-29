@@ -13,11 +13,6 @@ jest.mock('@mui/x-charts', () => ({
   BarChart: jest.fn().mockImplementation(({ children }) => children)
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
- useNavigate: () => jest.fn()
-}));
-
 test('that games are rendered properly', async () => {
   jest.spyOn(Store, 'useAppContext').mockReturnValue({ 
     state: { 

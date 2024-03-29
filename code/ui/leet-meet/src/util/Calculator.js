@@ -1,3 +1,5 @@
+export const getRandomInt = (max) => Math.floor(Math.random() * max);
+
 export function getOrdinal(n) {
   let ord = 'th';
 

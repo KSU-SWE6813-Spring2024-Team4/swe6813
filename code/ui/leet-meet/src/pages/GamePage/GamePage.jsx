@@ -8,7 +8,6 @@ import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
 import { 
   useCallback, 
-  useContext, 
   useMemo 
 } from 'react';
 import { 
@@ -17,18 +16,18 @@ import {
 } from 'react-router-dom';
 import { 
   Action, 
-  store 
-} from '../store';
+  useAppContext
+} from '../../store';
 import { 
   getOrdinal, 
   getRatingCounts, 
   getTopRatingsForUser 
-} from '../util/Calculator';
+} from '../../util/Calculator';
 import { 
   ATTRIBUTES, 
   SKILLS 
-} from '../util/Constants';
-import FollowButton from '../components/FollowButton';
+} from '../../util/Constants';
+import FollowButton from '../../components/FollowButton';
 
 const columns = [
   { field: 'id' },
@@ -52,7 +51,7 @@ export default function GamePage() {
   const { 
     dispatch, 
     state 
-  } = useContext(store);
+  } = useAppContext();
   const navigate = useNavigate();
 
   const topRatingsByUser = useMemo(() => {
@@ -134,6 +133,7 @@ export default function GamePage() {
         <Typography variant="h3">{ game?.title ?? '' }</Typography>
         { state.user && (
           <FollowButton 
+            data-testid="followButton"
             isFollowing={isFollowing} 
             onClick={isFollowing ? onUnfollow : onFollow} 
           />
