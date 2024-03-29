@@ -37,10 +37,10 @@ def show_user(user_id):
 
 @bp.post('/add')
 def add_user():
-    if not 'id' in request.form:
+    if 'id' not in request.form:
         return "Error: Missing form field { id }"
 
-    if not 'name' in request.form:
+    if 'name' not in request.form:
         return "Error: Missing form field { name }"
 
     name = request.form['name']
