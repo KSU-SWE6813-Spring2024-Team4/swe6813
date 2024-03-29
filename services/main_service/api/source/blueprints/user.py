@@ -37,12 +37,15 @@ def show_user(user_id):
 
 @bp.post('/add')
 def add_user():
+    if not 'id' in request.form:
+        return "Error: Missing form field { id }"
+
     if not 'name' in request.form:
         return "Error: Missing form field { name }"
 
     name = request.form['name']
 
-    user = User(name)
+    user = User(id, name)
     # serializing and loading the object gives us a pure JSON dict of the keys and values of the obj.
     loaded = json.loads(user.serialize())
 
@@ -92,9 +95,9 @@ def edit_user():
 
 
 class User:
-    def __init__(self, name):
+    def __init__(self, id, name):
         self.name = name
-        self.id = str(uuid.uuid4())
+        self.id = id
 
     def serialize(self):
         return json.dumps(self.__dict__)

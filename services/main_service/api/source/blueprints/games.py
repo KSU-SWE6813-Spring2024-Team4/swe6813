@@ -1,10 +1,13 @@
 import functools
 import json
 from ..graph_db import GraphDb
+from ..helpers import request_helpers
 from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
 import uuid
+import jwt
+import os
 prefix = "/games"
 bp = Blueprint('games', __name__, url_prefix=prefix)
 
@@ -57,7 +60,7 @@ def add_game():
 
 @bp.get('/ping')
 def ping():
-    return "Ping!"
+    return 'ping!'
 
 
 @bp.delete('/delete')
@@ -91,7 +94,6 @@ def edit_game():
     ).data()
 
     return game_updated
-
 
 
 class Game():
