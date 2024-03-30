@@ -18,7 +18,7 @@ import {
   Outlet,
   useNavigate
 } from 'react-router-dom';
-import { store } from '../store';
+import { store } from '../../store';
 
 export default function AppRoot() {
   const [anchorEl, setAnchorEl] = useState(null);

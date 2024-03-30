@@ -22,7 +22,7 @@ import {
   useLoaderData,
   useNavigate
 } from 'react-router-dom';
-import FollowButton from '../../components/FollowButton';
+import FollowButton from '../../components/FollowButton/FollowButton';
 import { Action, useAppContext } from '../../store';
 import { 
   ATTRIBUTES,
@@ -152,11 +152,19 @@ export default function UserPage() {
   }, [navigate]);
 
   const onFollow = useCallback(() => {
-    dispatch({ type: Action.FollowUser, payload: { followedUserId: user.id, userId: state.user?.id } })
+    dispatch({ 
+      type: Action.FollowUser, 
+      payload: { 
+        followedUserId: user.id,
+        userId: state.user?.id 
+      } 
+    });
   }, [dispatch, user, state.user]);
 
   const onUnfollow = useCallback(() => {
-    dispatch({ type: Action.UnfollowUser, payload: { followedUserId: user.id, userId: state.user?.id } })
+    dispatch({ 
+      type: Action.UnfollowUser, payload: { followedUserId: user.id, userId: state.user?.id } 
+    });
   }, [dispatch, user, state.user]);
 
   const onFollowedUserClick = useCallback(({ row }) => {
@@ -168,14 +176,29 @@ export default function UserPage() {
       return;
     }
 
-    dispatch({ type: Action.SubmitRating, payload: { gameId: reviewGame, fromId: state.user?.id, toId: user.id, skill: reviewSkill, attribute: reviewAttribute } })
+    dispatch({
+      type: Action.SubmitRating, 
+      payload: { 
+        gameId: reviewGame, 
+        fromId: state.user?.id, 
+        toId: user.id, 
+        skill: reviewSkill, 
+        attribute: reviewAttribute 
+      } 
+    })
   }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
 
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h3">{user?.username}</Typography>
-        { state.user && !isSelf && <FollowButton isFollowing={isFollowing} onClick={isFollowing ? onUnfollow : onFollow} /> }
+        { state.user && !isSelf && (
+          <FollowButton 
+            data-testid="followButton" 
+            isFollowing={isFollowing} 
+            onClick={isFollowing ? onUnfollow : onFollow} 
+          />
+        ) }
       </Stack>
       <Paper elevation={3} sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}>
         <Typography>Top Player Skill: {topRatings.skill}</Typography>
@@ -183,6 +206,7 @@ export default function UserPage() {
       </Paper>
       <Paper elevation={3}>
         <DataGrid
+          data-testid="followedGamesTable"
           columnVisibilityModel={{ id: false }}
           columns={ gameColumns }
           onRowClick={ onGameClick }

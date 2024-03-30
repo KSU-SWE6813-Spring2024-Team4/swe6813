@@ -27,7 +27,7 @@ import {
   ATTRIBUTES, 
   SKILLS 
 } from '../../util/Constants';
-import FollowButton from '../../components/FollowButton';
+import FollowButton from '../../components/FollowButton/FollowButton';
 
 const columns = [
   { field: 'id' },

@@ -6,7 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
-import AppRoot from './pages/AppRoot';
+import AppRoot from './components/AppRoot/AppRoot';
 import GamePage from './pages/GamePage/GamePage';
 import GamesPage from './pages/GamesPage/GamesPage';
 import LoginPage from './pages/LoginPage/LoginPage';
