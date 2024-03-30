@@ -2,23 +2,33 @@ package com.swe6813.team4.authservice.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swe6813.team4.authservice.dao.UserRepo;
+import com.swe6813.team4.authservice.model.MainUser;
 import com.swe6813.team4.authservice.model.TokenRequest;
 import com.swe6813.team4.authservice.model.User;
 import com.swe6813.team4.authservice.util.TokenUtil;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.jdbc.JdbcTestUtils;
+import org.springframework.test.web.client.ExpectedCount;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,6 +49,22 @@ public class AuthControllerTests {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  private TokenUtil tokenUtil;
+
+  @Value("${main_service_url}")
+  private String mainServiceUrl;
+
+  @Autowired
+  private RestTemplate restTemplate;
+
+  private MockRestServiceServer mockServer;
+
+  @BeforeEach
+  public void init() {
+    mockServer = MockRestServiceServer.createServer(restTemplate);
+  }
 
   @AfterEach
   void tearDown() {
@@ -103,7 +129,7 @@ public class AuthControllerTests {
     assertThat(authHeader).isNotNull();
 
     String token = authHeader.substring(authHeader.indexOf(" ") + 1);
-    assertThat(TokenUtil.validateToken(token)).isTrue();
+    assertThat(tokenUtil.validateToken(token)).isTrue();
   }
 
   @Test
@@ -141,6 +167,10 @@ public class AuthControllerTests {
     User user = new User("blah", "blah");
     user.setId(1);
 
+    mockServer.expect(ExpectedCount.once(), requestTo(mainServiceUrl + "/user/add"))
+        .andExpect(method(HttpMethod.POST))
+        .andRespond(withSuccess(objectMapper.writeValueAsString(new MainUser(2, user.getUsername())), MediaType.APPLICATION_JSON));
+
     MockHttpServletRequestBuilder req = post("/register")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(user));
@@ -162,6 +192,10 @@ public class AuthControllerTests {
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(user));
 
+    mockServer.expect(ExpectedCount.once(), requestTo(mainServiceUrl + "/user/add"))
+        .andExpect(method(HttpMethod.POST))
+        .andRespond(withSuccess(objectMapper.writeValueAsString(new MainUser(1, user.getUsername())), MediaType.APPLICATION_JSON));
+
     var res = mockMvc.perform(req).andExpect(status().isCreated());
 
     // ensure that the user is saved to the DB
@@ -179,7 +213,7 @@ public class AuthControllerTests {
     assertThat(authHeader).isNotNull();
 
     String token = authHeader.substring(authHeader.indexOf(" ") + 1);
-    assertThat(TokenUtil.validateToken(token)).isTrue();
+    assertThat(tokenUtil.validateToken(token)).isTrue();
   }
 
   @Test
@@ -195,7 +229,7 @@ public class AuthControllerTests {
 
   @Test
   void validateTokenReturnsTrueWhenValid() throws Exception {
-    TokenRequest tokenRequest = new TokenRequest(TokenUtil.generateToken(1));
+    TokenRequest tokenRequest = new TokenRequest(tokenUtil.generateToken(1));
 
     MockHttpServletRequestBuilder req = post("/validate-token")
         .contentType(MediaType.APPLICATION_JSON)
