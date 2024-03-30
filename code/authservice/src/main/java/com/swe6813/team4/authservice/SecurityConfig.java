@@ -1,5 +1,6 @@
 package com.swe6813.team4.authservice;
 
+import com.swe6813.team4.authservice.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,11 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder encoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public TokenUtil tokenUtil() {
+    return new TokenUtil();
   }
 
   @Bean
