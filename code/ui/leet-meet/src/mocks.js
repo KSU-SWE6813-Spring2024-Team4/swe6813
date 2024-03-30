@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { getRandomInt } from './util/Calculator/Calculator';
 import { 
   ATTRIBUTES,
   SKILLS
@@ -6,11 +7,10 @@ import {
 
 const RANDOM_COUNT = 50;
 
-const getRandomInt = (max) => Math.floor(Math.random() * max);
-
-const createRandomUser = (id) => ({
-  id,
-  username: faker.internet.userName()
+export const createUser = (fields) => ({
+  id: 0,
+  username: faker.internet.userName(),
+  ...fields
 });
 
 const games = [
@@ -23,7 +23,7 @@ const games = [
 
 const users = {}
 for (let i = 1; i <= RANDOM_COUNT; i++) {
-  users[i] = createRandomUser(i)
+  users[i] = createUser({ id: i });
 }
 
 const seedFollowers = () => Object.keys(users)
@@ -40,6 +40,14 @@ const userFollowers = Object.keys(users).reduce((acc, userId) => {
   return acc;
 }, {});
 
+export const createRating = (fields) => ({
+  gameId: 0, 
+  fromId: 0, 
+  toId: 0, 
+  type: '',
+  ...fields
+});
+
 const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
   allRatings[gameId] = gameFollowers[gameId].reduce((userRatings, userId) => {
     userRatings[userId] = {
@@ -51,19 +59,19 @@ const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
     for (let i = 0; i <= ticks; i++) {
       const maybeFrom = getRandomInt(RANDOM_COUNT);
       if (maybeFrom !== userId && maybeFrom !== 0) {
-        userRatings[userId].attribute.push({ 
+        userRatings[userId].attribute.push(createRating({ 
           gameId, 
           fromId: maybeFrom, 
           toId: userId, 
           type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)] 
-        });
+        }));
 
-        userRatings[userId].skill.push({ 
+        userRatings[userId].skill.push(createRating({ 
           gameId, 
           fromId: maybeFrom, 
           toId: userId, 
           type: SKILLS[getRandomInt(SKILLS.length)] 
-        });
+        }));
       }
     }
 
@@ -74,6 +82,8 @@ const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
 }, {})
 
 export default {
+  createUser,
+  createRating,
   games,
   gameFollowers,
   ratings,

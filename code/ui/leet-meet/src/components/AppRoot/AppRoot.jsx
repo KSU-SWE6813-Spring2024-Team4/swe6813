@@ -11,19 +11,18 @@ import {
 } from '@mui/material';
 import { 
   useCallback,
-  useContext,
   useState
 } from 'react';
 import {
   Outlet,
   useNavigate
 } from 'react-router-dom';
-import { store } from '../store';
+import { useAppContext } from '../../store';
 
 export default function AppRoot() {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const { state } = useContext(store);
+  const { state } = useAppContext();
 
 
   const handleMenu = useCallback((event) => {

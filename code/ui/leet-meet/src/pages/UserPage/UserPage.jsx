@@ -11,47 +11,80 @@ import {
   Stack, 
   Typography 
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
 import {
-  useCallback, useContext, useMemo, useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import FollowButton from '../components/FollowButton';
-import { Action, store } from '../store';
-import { ATTRIBUTES, SKILLS } from '../util/Constants';
-import { getRatingCounts, getTopRatingsForUser } from '../util/Calculator';
+  useCallback,
+  useMemo,
+  useState
+} from 'react';
+import {
+  useLoaderData,
+  useNavigate
+} from 'react-router-dom';
+import FollowButton from '../../components/FollowButton/FollowButton';
+import {
+  Action,
+  useAppContext 
+} from '../../store';
+import { 
+  ATTRIBUTES,
+  SKILLS
+} from '../../util/Constants';
+import {
+  getRatingCounts,
+  getTopRatingsForUser
+} from '../../util/Calculator/Calculator';
 
 const gameColumns = [
   { field: 'id' },
-  { field: 'title', headerName: 'Title', width: 200 },
-  { field: 'attribute', headerName: 'Attribute' },
-  { field: 'skill', headerName: 'Skill' }
+  { 
+    field: 'title', 
+    headerName: 'Title',
+    width: 200
+  },
+  {
+    field: 'attribute',
+    headerName: 'Attribute'
+  },
+  { 
+    field: 'skill',
+    headerName: 'Skill' 
+  }
 ]
 
 const followedUserColumns = [
   { field: 'id' },
-  { field: 'username', headerName: 'Username', width: 200 }
+  {
+    field: 'username',
+    headerName: 'Username',
+    width: 200
+  }
 ]
 
 export default function UserPage() {
   const { user } = useLoaderData();
-  const { dispatch, state } = useContext(store);
+  const {
+    dispatch,
+    state 
+  } = useAppContext();
   const navigate = useNavigate();
 
   const [reviewGame, setReviewGame] = useState('');
   const [reviewAttribute, setReviewAttribute] = useState('');
   const [reviewSkill, setReviewSkill] = useState('');
 
-  const ratings = useMemo(() => {
-    return Object.values(state.ratings).reduce((acc, userRatings) => {
+  const ratings = useMemo(
+    () => Object.values(state.ratings).reduce((acc, userRatings) => {
       if (userRatings[user?.id]) {
         acc['attribute'] = [...acc['attribute'], ...userRatings[user?.id].attribute]
         acc['skill'] = [...acc['skill'], ...userRatings[user?.id].skill]
       }
 
       return acc;
-    }, { attribute: [], skill: [] });
-  }, [state.ratings]);
+    }, { attribute: [], skill: [] }), 
+    [state.ratings, user]
+  );
 
   const topRatingsByGame = useMemo(() => {
     const ratingsByGame = Object.keys(state.ratings).reduce((acc, gameId) => {
@@ -86,13 +119,16 @@ export default function UserPage() {
     const games = Object.keys(state.gameFollowers).reduce((acc, gameId) => {
       const isFollowing = state.gameFollowers[gameId].find((followerId) => `${followerId}` === `${user?.id}`);
       if (isFollowing) {
-        acc.push({ ...state.games.find((game) => `${game.id}` === gameId), ...topRatingsByGame[gameId] })
+        acc.push({ 
+          ...state.games.find((game) => `${game.id}` === gameId), 
+          ...topRatingsByGame[gameId] 
+        });
       }
       return acc;
     }, [])
 
     return games
-  }, [state.games, state.gameFollowers, user])
+  }, [state.games, state.gameFollowers, user, topRatingsByGame])
 
   const followedUsersData = useMemo(() => {
     const followedUsers = Object.keys(state.userFollowers).reduce((acc, userId) => {
@@ -112,7 +148,7 @@ export default function UserPage() {
     }
 
     return getTopRatingsForUser(ratings);
-  }, [ratings, user])
+  }, [ratings])
 
   const isSelf = useMemo(() => {
     return user?.id === state.user?.id
@@ -143,11 +179,23 @@ export default function UserPage() {
   }, [navigate]);
 
   const onFollow = useCallback(() => {
-    dispatch({ type: Action.FollowUser, payload: { followedUserId: user.id, userId: state.user?.id } })
+    dispatch({ 
+      type: Action.FollowUser, 
+      payload: { 
+        followedUserId: user.id,
+        userId: state.user?.id 
+      } 
+    });
   }, [dispatch, user, state.user]);
 
   const onUnfollow = useCallback(() => {
-    dispatch({ type: Action.UnfollowUser, payload: { followedUserId: user.id, userId: state.user?.id } })
+    dispatch({ 
+      type: Action.UnfollowUser, 
+      payload: {
+        followedUserId: user.id,
+        userId: state.user?.id 
+      } 
+    });
   }, [dispatch, user, state.user]);
 
   const onFollowedUserClick = useCallback(({ row }) => {
@@ -159,21 +207,43 @@ export default function UserPage() {
       return;
     }
 
-    dispatch({ type: Action.SubmitRating, payload: { gameId: reviewGame, fromId: state.user?.id, toId: user.id, skill: reviewSkill, attribute: reviewAttribute } })
+    dispatch({
+      type: Action.SubmitRating, 
+      payload: { 
+        gameId: reviewGame, 
+        fromId: state.user?.id, 
+        toId: user.id, 
+        skill: reviewSkill, 
+        attribute: reviewAttribute 
+      } 
+    })
   }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
 
   return (
     <Stack>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+      >
         <Typography variant="h3">{user?.username}</Typography>
-        { state.user && !isSelf && <FollowButton isFollowing={isFollowing} onClick={isFollowing ? onUnfollow : onFollow} /> }
+        { state.user && !isSelf && (
+          <FollowButton 
+            data-testid="followButton" 
+            isFollowing={isFollowing} 
+            onClick={isFollowing ? onUnfollow : onFollow} 
+          />
+        ) }
       </Stack>
-      <Paper elevation={3} sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}>
+      <Paper
+        elevation={3}
+        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
+      >
         <Typography>Top Player Skill: {topRatings.skill}</Typography>
         <Typography>Top Player Attribute: {topRatings.attribute}</Typography>
       </Paper>
       <Paper elevation={3}>
         <DataGrid
+          data-testid="followedGamesTable"
           columnVisibilityModel={{ id: false }}
           columns={ gameColumns }
           onRowClick={ onGameClick }
@@ -181,8 +251,14 @@ export default function UserPage() {
           slots={{ toolbar: () => <Typography>Games</Typography> }}
         />
       </Paper>
-      <Stack direction="row" sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}>
-        <Paper elevation={3} sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}>
+      <Stack
+        direction="row"
+        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
+      >
+        <Paper
+          elevation={3}
+          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+        >
           <Typography>Skill Ratings</Typography>
           <BarChart
             series={ratingData.skill}
@@ -190,7 +266,10 @@ export default function UserPage() {
             xAxis={[{ data: SKILLS, scaleType: 'band' }]}
           />
         </Paper>
-        <Paper elevation={3} sx={{ flexGrow: 1, padding: 3 }}>
+        <Paper
+          elevation={3} 
+          sx={{ flexGrow: 1, padding: 3 }}
+        >
           <Typography>Attribute Ratings</Typography>
           <BarChart
             layout="horizontal"
@@ -213,8 +292,16 @@ export default function UserPage() {
         </Paper>
       )}
       { state.user && !isSelf && isFollowing && (
-        <Paper elevation={3} sx={{ padding: 2 }}>
-          <Typography sx={{ marginBottom: 2 }} variant="h4">Review Player</Typography>
+        <Paper
+          elevation={3}
+          sx={{ padding: 2 }}
+        >
+          <Typography
+            sx={{ marginBottom: 2 }} 
+            variant="h4"
+          >
+            Review Player
+          </Typography>
           <FormControl sx={{ minWidth: 300 }}>
             <InputLabel>Game</InputLabel>
             <Select
@@ -222,7 +309,14 @@ export default function UserPage() {
               label="Game"
               onChange={onChangeReviewGame}
             >
-              { gamesData.map((game) => (<MenuItem key={game.id} value={game.id}>{game.title}</MenuItem>)) }
+              { gamesData.map((game) => (
+                <MenuItem 
+                  key={game.id} 
+                  value={game.id}
+                >
+                  {game.title}
+                </MenuItem>
+              ) ) }
             </Select>
           </FormControl>
           <Typography>How would you describe this player?</Typography>

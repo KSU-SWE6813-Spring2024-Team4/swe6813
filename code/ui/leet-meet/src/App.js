@@ -6,12 +6,12 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom';
-import AppRoot from './pages/AppRoot';
-import GamePage from './pages/GamePage';
+import AppRoot from './components/AppRoot/AppRoot';
+import GamePage from './pages/GamePage/GamePage';
 import GamesPage from './pages/GamesPage/GamesPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
-import UserPage from './pages/UserPage';
+import UserPage from './pages/UserPage/UserPage';
 import mocks from './mocks';
 import {
   Action,
