@@ -64,7 +64,8 @@ const StateProvider = ({ children }) => {
           ...state,
           userFollowers: {
             ...state.userFollowers,
-            [followedUserId]: [...current, userId] }
+            [followedUserId]: [...current, userId] 
+          }
         };
       }
       case Action.LoadGames:
@@ -133,7 +134,10 @@ const StateProvider = ({ children }) => {
 
         const updatedAttributeRatingsForUser = [...ratings.attribute];
         const newAttributeRating = { 
-          gameId, fromId, toId, type: attribute 
+          gameId,
+          fromId,
+          toId,
+          type: attribute 
         };
         if (existingAttributeRatingIndex) {
           updatedAttributeRatingsForUser.splice(existingAttributeRatingIndex, 1, newAttributeRating);
@@ -162,7 +166,9 @@ const StateProvider = ({ children }) => {
         return {
           ...state,
           gameFollowers: {
-            ...state.gameFollowers, [action.payload.gameId]: newFollowers }
+            ...state.gameFollowers,
+            [action.payload.gameId]: newFollowers 
+          }
         };
       }
       case Action.UnfollowUser:

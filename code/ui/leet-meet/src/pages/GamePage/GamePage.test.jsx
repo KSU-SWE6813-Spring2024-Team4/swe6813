@@ -14,7 +14,7 @@ import {
   createUser
 } from '../../mocks';
 import * as Store from '../../store';
-import { getRandomInt } from '../../util/Calculator';
+import { getRandomInt } from '../../util/Calculator/Calculator';
 import { 
   ATTRIBUTES,
   SKILLS
@@ -70,7 +70,13 @@ test('that a user can follow a game', async () => {
   });
 
   expect(dispatch.mock.calls).toHaveLength(1);
-  expect(dispatch.mock.calls[0][0]).toStrictEqual({ type: Store.Action.FollowGame, payload: { gameId: game.id, userId: user.id } });
+  expect(dispatch.mock.calls[0][0]).toStrictEqual({
+    type: Store.Action.FollowGame,
+    payload: {
+      gameId: game.id,
+      userId: user.id
+    }
+  });
 });
 
 test('that a user can unfollow a game', async () => {
@@ -111,7 +117,13 @@ test('that a user can unfollow a game', async () => {
   });
 
   expect(dispatch.mock.calls).toHaveLength(1);
-  expect(dispatch.mock.calls[0][0]).toStrictEqual({ type: Store.Action.UnfollowGame, payload: { gameId: game.id, userId: user.id } });
+  expect(dispatch.mock.calls[0][0]).toStrictEqual({
+    type: Store.Action.UnfollowGame,
+    payload: {
+      gameId: game.id,
+      userId: user.id 
+    }
+  });
 });
 
 test('that it renders followers', async () => {
@@ -152,7 +164,8 @@ test('that it renders followers', async () => {
           <GamePage/>
         </Store.StateProvider>
       ),
-      loader: () => ({ game }) }],
+      loader: () => ({ game })
+    }],
     { initialEntries: ["/games/1"] },
   );
 

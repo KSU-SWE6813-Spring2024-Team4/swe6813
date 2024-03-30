@@ -22,7 +22,7 @@ import {
   getOrdinal, 
   getRatingCounts, 
   getTopRatingsForUser 
-} from '../../util/Calculator';
+} from '../../util/Calculator/Calculator';
 import { 
   ATTRIBUTES, 
   SKILLS 
@@ -77,13 +77,13 @@ export default function GamePage() {
     }, {});
   }, [game, state.ratings]);
 
-  const followers = useMemo(() => {
-    if (!game) {
-      return [];
-    }
-
-    return state.gameFollowers[game.id].map((userId) => ({ ...state.users[userId], ...topRatingsByUser[userId] }));
-  }, [game, state.gameFollowers, state.users]);
+  const followers = useMemo(
+    () => game ? state.gameFollowers[game.id].map((userId) => ({ 
+      ...state.users[userId], 
+      ...topRatingsByUser[userId] 
+    })) : [],
+    [game, state.gameFollowers, state.users, topRatingsByUser]
+  );
 
   const ratingsData = useMemo(() => {
     if (!game) {
@@ -116,11 +116,23 @@ export default function GamePage() {
   );
 
   const onFollow = useCallback(() => {
-    dispatch({ type: Action.FollowGame, payload: { gameId: game.id, userId: state.user?.id } })
+    dispatch({ 
+      type: Action.FollowGame, 
+      payload: {
+        gameId: game.id,
+        userId: state.user?.id
+      } 
+    });
   }, [dispatch, game, state.user]);
 
   const onUnfollow = useCallback(() => {
-    dispatch({ type: Action.UnfollowGame, payload: { gameId: game.id, userId: state.user?.id } })
+    dispatch({
+      type: Action.UnfollowGame,
+      payload: {
+        gameId: game.id,
+        userId: state.user?.id 
+      } 
+    });
   }, [dispatch, game, state.user]);
 
   const onClick = useCallback(({ row }) => {

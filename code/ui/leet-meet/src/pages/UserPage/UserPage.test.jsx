@@ -4,7 +4,6 @@ import {
   createMemoryRouter
 } from 'react-router-dom';
 import {
-  fireEvent,
   render,
   screen,
   within
@@ -16,7 +15,7 @@ import {
   createUser
 } from '../../mocks';
 import * as Store from '../../store';
-import { getRandomInt } from '../../util/Calculator';
+import { getRandomInt } from '../../util/Calculator/Calculator';
 import { 
   ATTRIBUTES,
   SKILLS

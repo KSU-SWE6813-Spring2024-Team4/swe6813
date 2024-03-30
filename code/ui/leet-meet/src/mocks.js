@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { getRandomInt } from './util/Calculator';
+import { getRandomInt } from './util/Calculator/Calculator';
 import { 
   ATTRIBUTES,
   SKILLS

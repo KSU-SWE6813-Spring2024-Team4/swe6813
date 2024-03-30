@@ -22,7 +22,14 @@ test('that games are rendered properly', async () => {
   });
 
   const router = createMemoryRouter(
-    [{ path: "/games", element: <Store.StateProvider><GamesPage/></Store.StateProvider> }],
+    [{ 
+      path: "/games", 
+      element: (
+        <Store.StateProvider>
+          <GamesPage/>
+        </Store.StateProvider>
+      )
+    }],
     { initialEntries: ["/games"] },
   );
 
