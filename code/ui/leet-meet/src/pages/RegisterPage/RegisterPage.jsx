@@ -67,7 +67,6 @@ export default function RegisterPage({}) {
       setIsSuccess(true);
       navigate('/games');
     } catch (err) {
-      console.log({ err })
       setErrorMessage(err.message);
     }
   }, [username, password, confirmPassword, navigate, dispatch, setIsSuccess, setErrorMessage]);

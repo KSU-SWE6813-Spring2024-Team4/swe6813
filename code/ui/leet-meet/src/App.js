@@ -95,12 +95,13 @@ function App() {
         return acc;
       }, {});
 
-      console.log({ followedGamesByGame })
       dispatch({ type: Action.LoadGameFollowers, payload: followedGamesByGame });
     } catch (err) {
       console.error(err);
     }
   };
+
+  console.log(state.gameFollowers)
 
   useEffect(() => {
     loadGames();

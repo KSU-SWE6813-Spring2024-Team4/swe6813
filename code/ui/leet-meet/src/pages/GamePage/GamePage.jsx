@@ -8,12 +8,14 @@ import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
 import { 
   useCallback, 
-  useMemo 
+  useMemo,
+  useState
 } from 'react';
 import { 
   useLoaderData, 
   useNavigate 
 } from 'react-router-dom';
+import Alert from '../../components/Alert/Alert';
 import FollowButton from '../../components/FollowButton/FollowButton';
 import { 
   Action, 
@@ -28,7 +30,7 @@ import {
   ATTRIBUTES, 
   SKILLS 
 } from '../../util/Constants';
-import { followGame } from '../../util/Api/MainApi';
+import { followGame, unfollowGame } from '../../util/Api/MainApi';
 
 const columns = [
   { field: 'id' },
@@ -48,12 +50,14 @@ const columns = [
 ]
 
 export default function GamePage() {
+  const [errorMessage, setErrorMessage] = useState(null);
   const { game } = useLoaderData();
   const { 
     dispatch, 
     state 
   } = useAppContext();
   const navigate = useNavigate();
+  
 
   const topRatingsByUser = useMemo(() => {
     if (!game || !state.ratings[game.id]) {
@@ -82,7 +86,6 @@ export default function GamePage() {
     if (!game) {
       return [];
     }
-    console.log(state.users)
 
     return state.gameFollowers[game.id].map((userId) => ({ 
       ...state.users[userId], 
@@ -110,7 +113,7 @@ export default function GamePage() {
   }, [game, state.ratings]);
 
   const isFollowing = useMemo(() => {
-    return followers.find((follower) => follower.id === state.user?.id)
+    return followers.find((follower) => follower.id === `${state.user?.id}`)
   }, [followers, state.user])
 
   const gameRank = useMemo(
@@ -122,29 +125,34 @@ export default function GamePage() {
 
   const onFollow = useCallback(async () => {
     try {
-      const data = await followGame(game.id);
-      console.log({ data })
+      await followGame(game.id);
+      dispatch({ 
+        type: Action.FollowGame, 
+        payload: {
+          gameId: game.id,
+          userId: state.user?.id
+        } 
+      });
     } catch (err) {
-      console.log({ err });
+      setErrorMessage(err);
     }
-    // dispatch({ 
-    //   type: Action.FollowGame, 
-    //   payload: {
-    //     gameId: game.id,
-    //     userId: state.user?.id
-    //   } 
-    // });
   }, [dispatch, followGame, game, state.user]);
 
-  const onUnfollow = useCallback(() => {
-    dispatch({
-      type: Action.UnfollowGame,
-      payload: {
-        gameId: game.id,
-        userId: state.user?.id 
-      } 
-    });
-  }, [dispatch, game, state.user]);
+  const onUnfollow = useCallback(async () => {
+    try {
+      await unfollowGame(game.id);
+
+      dispatch({
+        type: Action.UnfollowGame,
+        payload: {
+          gameId: game.id,
+          userId: state.user?.id 
+        } 
+      });
+    } catch (err) {
+      setErrorMessage(err);
+    }
+  }, [dispatch, game, state.user, unfollowGame]);
 
   const onClick = useCallback(({ row }) => {
     navigate(`/users/${row.id}`)
@@ -209,6 +217,14 @@ export default function GamePage() {
         rows={ followers }
         slots={{ toolbar: () => <Typography>Followers</Typography> }}
       />
+      {errorMessage && (
+        <Alert
+          elevation={3} 
+          severity="error"
+        >
+          {errorMessage}
+        </Alert>
+      )}
     </Stack>
   )
 }

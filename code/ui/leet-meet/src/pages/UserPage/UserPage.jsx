@@ -56,8 +56,8 @@ const gameColumns = [
 const followedUserColumns = [
   { field: 'id' },
   {
-    field: 'username',
-    headerName: 'Username',
+    field: 'name',
+    headerName: 'Name',
     width: 200
   }
 ]
@@ -225,7 +225,7 @@ export default function UserPage() {
         direction="row"
         justifyContent="space-between"
       >
-        <Typography variant="h3">{user?.username}</Typography>
+        <Typography variant="h3">{user?.name}</Typography>
         { state.user && !isSelf && (
           <FollowButton 
             data-testid="followButton" 

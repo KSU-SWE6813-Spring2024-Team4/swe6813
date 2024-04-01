@@ -85,7 +85,7 @@ export async function unfollowGame(gid) {
     
     const body = { gid, uid };
 
-    const res = await fetch(getUrl('/user/game/add'), getOptions({
+    const res = await fetch(getUrl('/user/game/delete'), getOptions({
       headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encodeFormBody(body), 
       method: 'DELETE'

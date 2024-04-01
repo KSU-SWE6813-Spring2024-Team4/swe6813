@@ -80,7 +80,7 @@ const StateProvider = ({ children }) => {
       case Action.LoadGameFollowers:
         return {
           ...state,
-          gameFollowers: action.payload
+          gameFollowers: { ...state.gameFollowers, ...action.payload }
         };
       case Action.LoadRatings:
         return {
