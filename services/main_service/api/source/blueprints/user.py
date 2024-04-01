@@ -1,10 +1,9 @@
-import functools
 import json
 from ..graph_db import GraphDb
 from flask import (
-    Blueprint, flash, g, redirect, request, session, url_for
+    Blueprint, flash, g, redirect, request
 )
-import uuid
+
 prefix = '/user'
 bp = Blueprint('user', __name__, url_prefix=prefix)
 
@@ -42,7 +41,8 @@ def add_user():
 
     if not 'name' in request.form:
         return "Error: Missing form field { name }"
-
+    
+    id = request.form['id']
     name = request.form['name']
 
     user = User(id, name)

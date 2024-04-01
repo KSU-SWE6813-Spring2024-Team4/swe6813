@@ -1,13 +1,12 @@
-import functools
 import json
 from ..graph_db import GraphDb
 from ..helpers import request_helpers
 from flask import (
-    Blueprint, flash, g, redirect, request, session, url_for
+    Blueprint, flash, g, jsonify, redirect, request, session
 )
 import uuid
-import jwt
 import os
+
 prefix = "/games"
 bp = Blueprint('games', __name__, url_prefix=prefix)
 

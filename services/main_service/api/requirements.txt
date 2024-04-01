@@ -3,6 +3,7 @@ click==8.1.7
 exceptiongroup==1.2.0
 Faker==24.0.0
 flask==3.0.2
+flask-cors==4.0.0
 importlib-metadata==7.0.1
 iniconfig==2.0.0
 itsdangerous==2.1.2

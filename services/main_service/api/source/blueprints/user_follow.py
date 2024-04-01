@@ -9,7 +9,7 @@ prefix = '/user/follow'
 bp = Blueprint('user_follow', __name__, url_prefix=prefix)
 
 
-@bp.get('/add')
+@bp.post('/add')
 def follow_user():
 
     if 'follow_user_id' not in request.form:
