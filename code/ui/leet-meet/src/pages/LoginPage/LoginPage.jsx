@@ -19,6 +19,7 @@ import {
   Action,
   store
 } from '../../store';
+import { login } from '../../util/Api/AuthApi';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -28,25 +29,26 @@ export default function LoginPage() {
 
   const { dispatch } = useContext(store);
   const navigate = useNavigate();
-  
 
-  const onSignIn = useCallback(() => {
+  const onSignIn = useCallback(async () => {
     if (username.length === 0 || password.length === 0) {
       setErrorMessage('All fields must be filled!')
       return;
     }
 
-    setIsSuccess(true);
+    try {
+      const user = await login({ username, password });
+    
+      dispatch({ 
+        type: Action.LoginUser, 
+        payload: user
+      })
 
-    dispatch({ 
-      type: Action.LoginUser, 
-      payload: { 
-        id: Object.keys(mocks.users).length + 1, 
-        username 
-      }
-    })
-
-    navigate('/games')
+      setIsSuccess(true);
+      navigate('/games')
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
   }, [dispatch, navigate, password, username, setIsSuccess])
 
   return (

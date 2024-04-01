@@ -71,7 +71,11 @@ const StateProvider = ({ children }) => {
       case Action.LoadGames:
         return {
           ...state,
-          games: action.payload
+          games: action.payload,
+          gameFollowers: action.payload.reduce((acc, game) => {
+            acc[game.id] = [];
+            return acc;
+          }, {})
         };
       case Action.LoadGameFollowers:
         return {
@@ -96,11 +100,7 @@ const StateProvider = ({ children }) => {
       case Action.LoginUser:
         return { 
           ...state, 
-          user: action.payload, 
-          users: { 
-            ...state.users,
-            [action.payload.id]: action.payload 
-          } 
+          user: action.payload,
         };
       case Action.SubmitRating:
         const {

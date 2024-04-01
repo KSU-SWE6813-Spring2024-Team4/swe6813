@@ -14,6 +14,7 @@ import {
   useLoaderData, 
   useNavigate 
 } from 'react-router-dom';
+import FollowButton from '../../components/FollowButton/FollowButton';
 import { 
   Action, 
   useAppContext
@@ -27,13 +28,13 @@ import {
   ATTRIBUTES, 
   SKILLS 
 } from '../../util/Constants';
-import FollowButton from '../../components/FollowButton/FollowButton';
+import { followGame } from '../../util/Api/MainApi';
 
 const columns = [
   { field: 'id' },
   { 
-    field: 'username', 
-    headerName: 'Username', 
+    field: 'name', 
+    headerName: 'Name', 
     width: 250 
   },
   { 
@@ -55,7 +56,7 @@ export default function GamePage() {
   const navigate = useNavigate();
 
   const topRatingsByUser = useMemo(() => {
-    if (!game) {
+    if (!game || !state.ratings[game.id]) {
       return {};
     }
 
@@ -77,16 +78,20 @@ export default function GamePage() {
     }, {});
   }, [game, state.ratings]);
 
-  const followers = useMemo(
-    () => game ? state.gameFollowers[game.id].map((userId) => ({ 
+  const followers = useMemo(() => {
+    if (!game) {
+      return [];
+    }
+    console.log(state.users)
+
+    return state.gameFollowers[game.id].map((userId) => ({ 
       ...state.users[userId], 
       ...topRatingsByUser[userId] 
-    })) : [],
-    [game, state.gameFollowers, state.users, topRatingsByUser]
-  );
+    }));
+  }, [game, state.gameFollowers, state.users, topRatingsByUser]);
 
   const ratingsData = useMemo(() => {
-    if (!game) {
+    if (!game || !state.ratings[game?.id]) {
       return { skill: [], attribute: [] };
     }
 
@@ -115,15 +120,21 @@ export default function GamePage() {
     [state.gameFollowers, game]
   );
 
-  const onFollow = useCallback(() => {
-    dispatch({ 
-      type: Action.FollowGame, 
-      payload: {
-        gameId: game.id,
-        userId: state.user?.id
-      } 
-    });
-  }, [dispatch, game, state.user]);
+  const onFollow = useCallback(async () => {
+    try {
+      const data = await followGame(game.id);
+      console.log({ data })
+    } catch (err) {
+      console.log({ err });
+    }
+    // dispatch({ 
+    //   type: Action.FollowGame, 
+    //   payload: {
+    //     gameId: game.id,
+    //     userId: state.user?.id
+    //   } 
+    // });
+  }, [dispatch, followGame, game, state.user]);
 
   const onUnfollow = useCallback(() => {
     dispatch({
@@ -142,7 +153,7 @@ export default function GamePage() {
   return (
     <Stack>
       <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Typography variant="h3">{ game?.title ?? '' }</Typography>
+        <Typography variant="h3">{ game?.name ?? '' }</Typography>
         { state.user && (
           <FollowButton 
             data-testid="followButton"

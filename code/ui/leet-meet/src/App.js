@@ -1,7 +1,4 @@
-import {
-  useContext,
-  useEffect
-} from 'react';
+import { useEffect } from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -15,14 +12,15 @@ import UserPage from './pages/UserPage/UserPage';
 import mocks from './mocks';
 import {
   Action,
-  store
+  useAppContext
 } from './store';
+import { getFollowedGames, getGames, getUsers } from './util/Api/MainApi';
 
 function App() {
   const {
     dispatch,
     state
-  } = useContext(store);
+  } = useAppContext();
 
   const router = createBrowserRouter([
     {
@@ -59,15 +57,61 @@ function App() {
     }
   ]);
 
-  useEffect(() => {
-    // TODO: make real calls
-    // run some "api call" that then dispatches this result
-    dispatch({ type: Action.LoadGames, payload: mocks.games });
+  const loadGames = async () => {
+    try {
+      const games = await getGames();
+      dispatch({
+        type: Action.LoadGames,
+        payload: games.flatMap(({ game }) => game) 
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    dispatch({ type: Action.LoadGameFollowers, payload: mocks.gameFollowers });
-    dispatch({ type: Action.LoadUsers, payload: mocks.users });
+  const loadUsers = async () => {
+    try {
+      const users = await getUsers();
+      dispatch({ type: Action.LoadUsers, 
+        payload: users.flatMap(({ user }) => user).reduce((acc, curr) => {
+          acc[curr.id] = curr;
+          return acc;
+        }, {}) 
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadFollowedGames = async (users) => {
+    try {
+      const followedGamesByUser = await Promise.all(users.map((user) => getFollowedGames(user.id)));
+      const followedGamesByGame = followedGamesByUser.reduce((acc, curr) => {
+        const { games, userId } = curr;
+        games.forEach((game) => {
+          acc[game.id] = acc[game.id] ? [...acc[game.id], userId] : [userId];
+        });
+
+        return acc;
+      }, {});
+
+      console.log({ followedGamesByGame })
+      dispatch({ type: Action.LoadGameFollowers, payload: followedGamesByGame });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    loadGames();
+    loadUsers();
+
     dispatch({ type: Action.LoadRatings, payload: mocks.ratings });
   }, [dispatch])
+
+  useEffect(() => {
+    loadFollowedGames(Object.values(state.users));
+  }, [state.users]);
 
   return (
     <RouterProvider router={router} />

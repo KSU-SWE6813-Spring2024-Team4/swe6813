@@ -19,6 +19,7 @@ import {
   store
 } from '../../store';
 import mocks from '../../mocks';
+import { register } from '../../util/Api/AuthApi';
 
 export default function RegisterPage({}) {
   const [username, setUsername] = useState('');
@@ -42,7 +43,7 @@ export default function RegisterPage({}) {
     setConfirmPassword(target.value);
   }, [setConfirmPassword]);
 
-  const onRegister = useCallback(() => {
+  const onRegister = useCallback(async () => {
     const hasEmptyFields = username.length === 0 || password.length === 0 || confirmPassword.length === 0
     if (hasEmptyFields) {
       setErrorMessage('All fields must be filled!')
@@ -54,15 +55,21 @@ export default function RegisterPage({}) {
       return;
     }
 
-    setIsSuccess(true);
-    dispatch({
-      type: Action.LoginUser,
-      payload: { 
-        id: Object.keys(mocks.users).length + 1,
-        username 
-      }
-    });
-    navigate('/games');
+
+    try {
+      const user = await register({ username, password });
+
+      dispatch({ 
+        type: Action.LoginUser, 
+        payload: user
+      });
+
+      setIsSuccess(true);
+      navigate('/games');
+    } catch (err) {
+      console.log({ err })
+      setErrorMessage(err.message);
+    }
   }, [username, password, confirmPassword, navigate, dispatch, setIsSuccess, setErrorMessage]);
 
   return (
