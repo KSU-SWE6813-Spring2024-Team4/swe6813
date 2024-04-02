@@ -78,7 +78,7 @@ export default function AppRoot() {
                   color="inherit"
                 >
                   <AccountCircle />
-                  <Typography marginLeft={1}>{state.user?.username ?? '' }</Typography>
+                  <Typography marginLeft={1}>{state.user?.name ?? '' }</Typography>
                 </IconButton>
                 <Menu
                   anchorEl={anchorEl}

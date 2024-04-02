@@ -9,26 +9,23 @@ import {
  } from '@mui/material';
 import {
   useCallback,
-  useContext,
   useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from '../../components/Alert/Alert';
 import {
   Action,
-  store
+  useAppContext
 } from '../../store';
-import mocks from '../../mocks';
 import { register } from '../../util/Api/AuthApi';
 
-export default function RegisterPage({}) {
+export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isSuccess, setIsSuccess] = useState(false);
 
-  const { dispatch } = useContext(store);
+  const { dispatch } = useAppContext();
   const navigate = useNavigate();
 
   const onUsernameChange = useCallback(({ target }) => {
@@ -64,12 +61,11 @@ export default function RegisterPage({}) {
         payload: user
       });
 
-      setIsSuccess(true);
       navigate('/games');
     } catch (err) {
       setErrorMessage(err.message);
     }
-  }, [username, password, confirmPassword, navigate, dispatch, setIsSuccess, setErrorMessage]);
+  }, [username, password, confirmPassword, navigate, dispatch, setErrorMessage]);
 
   return (
     <Container>
@@ -114,14 +110,6 @@ export default function RegisterPage({}) {
           severity="error"
         >
           {errorMessage}
-        </Alert>
-      )}
-      {isSuccess && (
-        <Alert
-          elevation={3} 
-          severity="success"
-        >
-          Account created!
         </Alert>
       )}
     </Container>

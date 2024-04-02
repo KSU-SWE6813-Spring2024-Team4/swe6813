@@ -152,7 +152,7 @@ export default function UserPage() {
     return getTopRatingsForUser(ratings);
   }, [ratings])
 
-  const isSelf = useMemo(() => user?.id === `${state.user?.id}`, [user, state.user]);
+  const isSelf = useMemo(() => `${user?.id}` === `${state.user?.id}`, [user, state.user]);
 
   const isFollowing = useMemo(() => {
     if (!state.followedUsers) {

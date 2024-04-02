@@ -5,7 +5,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginPage from './LoginPage';
-import { StateProvider } from '../../store';
+import * as Store from '../../store';
+import * as AuthApi from '../../util/Api/AuthApi';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -14,9 +15,9 @@ jest.mock('react-router-dom', () => ({
 
 test('that user is warned of empty fields', async () => {
   render(
-    <StateProvider>
+    <Store.StateProvider>
       <LoginPage/>
-    </StateProvider>
+    </Store.StateProvider>
   );
 
   await act(() => {
@@ -27,17 +28,29 @@ test('that user is warned of empty fields', async () => {
 });
 
 test('that user can login successfully', async () => {
+  const dispatch = jest.fn();
+  jest.spyOn(AuthApi, 'login').mockReturnValue(Promise.resolve({ id: 1, name: 'test' }));
+
+  jest.spyOn(Store, 'useAppContext').mockReturnValue({ dispatch });
+
   render(
-    <StateProvider>
+    <Store.StateProvider>
       <LoginPage/>
-    </StateProvider>
+    </Store.StateProvider>
   );
 
-  await act(() => {
+  await act(async () => {
     userEvent.type(screen.getByPlaceholderText('Username'), 'test');
     userEvent.type(screen.getByPlaceholderText('Password'), 'test');
-    userEvent.click(screen.getByTestId('loginButton'));
+    await userEvent.click(screen.getByTestId('loginButton'));
   });
 
-  expect(await screen.findByText('Logging in!')).toBeVisible();
+  expect(dispatch.mock.calls).toHaveLength(1);
+  expect(dispatch.mock.calls[0][0]).toStrictEqual({
+    type: Store.Action.LoginUser,
+    payload: {
+      id: 1,
+      name: 'test'
+    }
+  });
 });

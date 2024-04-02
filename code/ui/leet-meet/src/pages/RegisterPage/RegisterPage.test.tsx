@@ -6,7 +6,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RegisterPage from './RegisterPage';
-import { StateProvider } from '../../store';
+import * as Store from '../../store';
+import * as AuthApi from '../../util/Api/AuthApi';
 
 jest.mock('react-router-dom', () => ({
    ...jest.requireActual('react-router-dom'),
@@ -15,9 +16,9 @@ jest.mock('react-router-dom', () => ({
 
 test('that user is warned of empty fields', async () => {
   render(
-    <StateProvider>
+    <Store.StateProvider>
       <RegisterPage />
-    </StateProvider>
+    </Store.StateProvider>
   );
 
   await act(() => {
@@ -29,9 +30,9 @@ test('that user is warned of empty fields', async () => {
 
 test('that user is warned of password mismatches', async () => {
   render(
-    <StateProvider>
+    <Store.StateProvider>
       <RegisterPage />
-    </StateProvider>
+    </Store.StateProvider>
   );
 
   await act(() => {
@@ -45,10 +46,15 @@ test('that user is warned of password mismatches', async () => {
 });
 
 test('that user can register successfully', async () => { 
+  const dispatch = jest.fn();
+  jest.spyOn(AuthApi, 'register').mockReturnValue(Promise.resolve({ id: 1, name: 'test' }));
+
+  jest.spyOn(Store, 'useAppContext').mockReturnValue({ dispatch });
+
   render(
-    <StateProvider>
+    <Store.StateProvider>
       <RegisterPage />
-    </StateProvider>
+    </Store.StateProvider>
   );
 
   await act(() => {
@@ -58,5 +64,12 @@ test('that user can register successfully', async () => {
     userEvent.click(screen.getByTestId('registerButton'));
   });
 
-  expect(await screen.findByText('Account created!')).toBeVisible();
+  expect(dispatch.mock.calls).toHaveLength(1);
+  expect(dispatch.mock.calls[0][0]).toStrictEqual({
+    type: Store.Action.LoginUser,
+    payload: {
+      id: 1,
+      name: 'test'
+    }
+  });
 });

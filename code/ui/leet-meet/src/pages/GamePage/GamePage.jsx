@@ -113,7 +113,7 @@ export default function GamePage() {
   }, [game, state.ratings]);
 
   const isFollowing = useMemo(() => {
-    return followers.find((follower) => follower.id === `${state.user?.id}`)
+    return followers.find((follower) => `${follower.id}` === `${state.user?.id}`)
   }, [followers, state.user])
 
   const gameRank = useMemo(
@@ -136,7 +136,7 @@ export default function GamePage() {
     } catch (err) {
       setErrorMessage(err);
     }
-  }, [dispatch, followGame, game, state.user]);
+  }, [dispatch, game, state.user]);
 
   const onUnfollow = useCallback(async () => {
     try {
@@ -152,7 +152,7 @@ export default function GamePage() {
     } catch (err) {
       setErrorMessage(err);
     }
-  }, [dispatch, game, state.user, unfollowGame]);
+  }, [dispatch, game, state.user]);
 
   const onClick = useCallback(({ row }) => {
     navigate(`/users/${row.id}`)

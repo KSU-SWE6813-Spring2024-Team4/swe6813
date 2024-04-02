@@ -87,7 +87,6 @@ const StateProvider = ({ children }) => {
           users: action.payload
         };
       case Action.LoadFollowedUsers:
-        console.log(action.payload)
         return {
           ...state,
           followedUsers: action.payload
