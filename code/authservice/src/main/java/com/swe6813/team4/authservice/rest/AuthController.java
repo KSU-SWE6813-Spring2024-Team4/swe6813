@@ -5,6 +5,7 @@ import com.swe6813.team4.authservice.model.TokenRequest;
 import com.swe6813.team4.authservice.model.User;
 import com.swe6813.team4.authservice.model.MainUser;
 import com.swe6813.team4.authservice.rest.exception.BadInputException;
+import com.swe6813.team4.authservice.rest.exception.FailedDependencyException;
 import com.swe6813.team4.authservice.rest.exception.UserNotFoundException;
 import com.swe6813.team4.authservice.rest.exception.UsernameTakenException;
 import com.swe6813.team4.authservice.util.TokenUtil;
@@ -63,7 +64,10 @@ public class AuthController {
     String token = tokenUtil.generateToken(user.getId());
 
     // create user in the main service
-    createMainUser(token, savedUser.getUsername());
+    MainUser mainUser = createMainUser(token, savedUser.getId() + "", savedUser.getUsername());
+    if (mainUser == null) {
+      throw new FailedDependencyException("Failed to create user record in main service");
+    }
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -104,13 +108,14 @@ public class AuthController {
     return ResponseEntity.ok(response);
   }
 
-  private MainUser createMainUser(String token, String name) {
+  private MainUser createMainUser(String token, String id, String name) {
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "Bearer " + token);
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
     MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.add("name", name);
+    map.add("id", id);
 
     HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 

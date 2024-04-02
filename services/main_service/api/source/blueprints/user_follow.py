@@ -32,15 +32,18 @@ def follow_user():
         AND NOT EXISTS {
             (user)-[:FOLLOWS_USER]->(target)
         } 
-        CREATE (user)-[follows_user: FOLLOWS_USER]->(target)
+        CREATE (user)-[follows_user :FOLLOWS_USER]->(target)
         RETURN user, follows_user, target
-        """, {'uid': user_id, 'gid': follow_id}
+        """, {'uid': user_id, 'follow_id': follow_id}
     ).single()
 
-    return follow_user_added
+    if follow_user_added is None:
+        return "ERROR: User cannot be followed at this time.\n"
+    else:
+        return follow_user_added.data()
 
 
-@bp.get('/show/')
+@bp.get('/show')
 def show_users_following():
     graph = GraphDb()
     db_conn = graph.get_database_driver()
@@ -59,7 +62,7 @@ def show_users_following():
     return following_users_query.data()
 
 
-@bp.get('/list/')
+@bp.get('/list')
 def list_users_followed():
     graph = GraphDb()
     db_conn = graph.get_database_driver()
@@ -71,7 +74,7 @@ def list_users_followed():
 
     users_followed_query = db_conn.run(
         """
-        MATCH(user: User {user_id: $user_id})-[:FOLLOWS_USER]->(target: User)
+        MATCH(user: User {id: $user_id})-[:FOLLOWS_USER]->(target: User)
         RETURN target
         """, {'user_id': user_id}).data()
 

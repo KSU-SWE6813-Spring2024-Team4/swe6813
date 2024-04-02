@@ -5,17 +5,17 @@ import {
 } from 'react';
 
 const Action = {
-  FollowGame: 'FOLLOW_GAME', // done
-  FollowUser: 'FOLLOW_USER', // wish
-  LoadGames: 'LOAD_GAMES', // done
-  LoadGameFollowers: 'LOAD_GAME_FOLLOWERS', // done
+  FollowGame: 'FOLLOW_GAME', 
+  FollowUser: 'FOLLOW_USER', 
+  LoadGames: 'LOAD_GAMES',
+  LoadGameFollowers: 'LOAD_GAME_FOLLOWERS', 
   LoadRatings: 'LOAD_RATINGS',
-  LoadUsers: 'LOAD_USERS', // done
-  LoadUserFollowers: 'LOAD_USER_FOLLOWERS', // done
-  LoginUser: 'LOGIN_USER', // done
+  LoadUsers: 'LOAD_USERS', 
+  LoadFollowedUsers: 'LOAD_FOLLOWED_USERS', 
+  LoginUser: 'LOGIN_USER', 
   SubmitRating: 'SUBMIT_RATING',
-  UnfollowGame: 'UNFOLLOW_GAME', // done
-  UnfollowUser: 'UNFOLLOW_USER' // done
+  UnfollowGame: 'UNFOLLOW_GAME', 
+  UnfollowUser: 'UNFOLLOW_USER' 
 }
 
 const initialState = {
@@ -24,7 +24,7 @@ const initialState = {
   ratings: {},
   user: null,
   users: {},
-  userFollowers: {}
+  followedUsers: null
 };
 
 const store = createContext(initialState);
@@ -55,17 +55,11 @@ const StateProvider = ({ children }) => {
       case Action.FollowUser: {
         const {
           followedUserId,
-          userId
         } = action.payload;
-
-        const current = state.userFollowers[followedUserId] ?? [];
 
         return {
           ...state,
-          userFollowers: {
-            ...state.userFollowers,
-            [followedUserId]: [...current, userId] 
-          }
+          followedUsers: [...state.followedUsers, followedUserId]
         };
       }
       case Action.LoadGames:
@@ -92,10 +86,11 @@ const StateProvider = ({ children }) => {
           ...state,
           users: action.payload
         };
-      case Action.LoadUserFollowers:
+      case Action.LoadFollowedUsers:
+        console.log(action.payload)
         return {
           ...state,
-          userFollowers: action.payload
+          followedUsers: action.payload
         };
       case Action.LoginUser:
         return { 
@@ -172,22 +167,15 @@ const StateProvider = ({ children }) => {
         };
       }
       case Action.UnfollowUser:
-        const {
-          followedUserId,
-          userId 
-        } = action.payload;
+        const { followedUserId } = action.payload;
         
-        const followers = state.userFollowers[followedUserId]
-        const index = followers.indexOf(userId);
-        const newFollowers = [...followers];
-        newFollowers.splice(index, 1);
+        const index = state.followedUsers.indexOf(followedUserId);
+        const newFollowedUsers = [...state.followedUsers];
+        newFollowedUsers.splice(index, 1);
 
         return {
           ...state,
-          userFollowers: {
-            ...state.userFollowers,
-            [followedUserId]: newFollowers
-          }
+          followedUsers: newFollowedUsers
         };
       default:
         throw new Error("unrecognized action: " + action.type);

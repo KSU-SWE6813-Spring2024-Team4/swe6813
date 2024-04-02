@@ -1,4 +1,9 @@
-import { encodeFormBody, getBearerToken, getOptions, parseJwt } from './ApiUtils';
+import {
+  encodeFormBody,
+  getBearerToken,
+  getOptions,
+  parseJwt 
+} from './ApiUtils';
 
 function getUrl(path) {
   let baseUrl = ""
@@ -8,6 +13,9 @@ function getUrl(path) {
       break
     case 'production':
       baseUrl = 'http://10.128.0.5'
+      break
+    default:
+      throw new Error("unknown environment")
   }
 
   return `${baseUrl}${path}`
@@ -47,7 +55,10 @@ export async function getFollowedGames(uid) {
     const res = await fetch(getUrl(`/user/game/show/${uid}`), getOptions({ method: 'GET' }));
 
     const json = await res.json()
-    return res.status === 200 ? Promise.resolve({ games: json.flatMap(({ game }) => game), userId: uid }) : Promise.reject(json);
+    return res.status === 200 ? Promise.resolve({ 
+      games: json.flatMap(({ game }) => game), 
+      userId: uid 
+    }) : Promise.reject(json);
   } catch (err) {
     throw err
   }
@@ -107,38 +118,48 @@ export async function getFollowedUsers() {
     }));
 
     const json = await res.json()
-    if (res.status !== 200) {
-      return Promise.reject(json)
-    }
-
-    return Promise.resolve(json)
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
   } catch (err) {
     throw err
   }
 }
 
-export async function followUser({ followedUserId: follow_user_id }) {
+export async function followUser(follow_user_id) {
   try {
     const Authorization = getBearerToken();
     const res = await fetch(getUrl('/user/follow/add'), getOptions({
-      headers: { Authorization },
-      body: JSON.stringify({ follow_user_id }), 
+      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encodeFormBody({ follow_user_id }), 
       method: 'POST'
     }))
 
-    const json = await res.json()
-    if (res.status !== 200) {
-      return Promise.reject(json)
+    const text = await res.text()
+    if (text.toLowerCase().includes('error')) {
+      throw new Error(text);
     }
 
-    return Promise.resolve(json)
+    return Promise.resolve(JSON.parse(text));
   } catch (err) {
-    throw err
+    throw err;
   }
 }
 
-export async function unfollowUser({ followedUserId: follow_user_id }) {
+export async function unfollowUser(follow_user_id) {
   try {
-  } catch {
+    const Authorization = getBearerToken();
+    const res = await fetch(getUrl('/user/follow/delete'), getOptions({
+      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encodeFormBody({ follow_user_id }), 
+      method: 'DELETE'
+    }));
+
+    const text = await res.text()
+    if (text.toLowerCase().includes('error')) {
+      throw new Error(text);
+    }
+
+    return Promise.resolve(JSON.parse(text));
+  } catch (err) {
+    throw err;
   }
 }
