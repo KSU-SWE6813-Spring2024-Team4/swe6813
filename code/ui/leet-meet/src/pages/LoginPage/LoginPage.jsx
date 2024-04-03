@@ -9,45 +9,43 @@ import {
 } from '@mui/material';
 import {
   useCallback,
-  useContext,
   useState
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Alert from '../../components/Alert/Alert';
-import mocks from '../../mocks';
 import {
   Action,
-  store
+  useAppContext
 } from '../../store';
+import { login } from '../../util/Api/AuthApi';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const { dispatch } = useContext(store);
+  const { dispatch } = useAppContext();
   const navigate = useNavigate();
-  
 
-  const onSignIn = useCallback(() => {
+  const onSignIn = useCallback(async () => {
     if (username.length === 0 || password.length === 0) {
       setErrorMessage('All fields must be filled!')
       return;
     }
 
-    setIsSuccess(true);
+    try {
+      const user = await login({ username, password });
+    
+      dispatch({ 
+        type: Action.LoginUser, 
+        payload: user
+      })
 
-    dispatch({ 
-      type: Action.LoginUser, 
-      payload: { 
-        id: Object.keys(mocks.users).length + 1, 
-        username 
-      }
-    })
-
-    navigate('/games')
-  }, [dispatch, navigate, password, username, setIsSuccess])
+      navigate('/games')
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+  }, [dispatch, navigate, password, username])
 
   return (
     <Container>
@@ -87,14 +85,6 @@ export default function LoginPage() {
           severity="error"
         >
           {errorMessage}
-        </Alert>
-      )}
-      {isSuccess && (
-        <Alert
-          elevation={3} 
-          severity="success"
-        >
-          Logging in!
         </Alert>
       )}
     </Container>

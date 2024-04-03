@@ -11,9 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../store';
 
 const columns = [
+  { field: 'id' },
   { 
-    field: 'title',
-    headerName: 'Title',
+    field: 'name',
+    headerName: 'Name',
     width: 200
   },
   {
@@ -26,10 +27,12 @@ export default function GamesPage() {
   const { state } = useAppContext();
   const navigate = useNavigate();
 
-  const games = useMemo(() => state.games.map((game) => ({ 
-    ...game, 
-    followerCount: state.gameFollowers[game.id].length 
-  })), [state.games, state.gameFollowers]);
+  const games = useMemo(() => state.games.map((game) => {
+    return {
+      ...game,
+      followerCount: state.gameFollowers[game.id]?.length 
+    }
+  }), [state.games, state.gameFollowers]);
 
   const onClick = useCallback(({ row }) => {
     navigate(`/games/${row.id}`)
@@ -41,6 +44,7 @@ export default function GamesPage() {
       sx={{ padding: 2 }}
     >
       <DataGrid
+        columnVisibilityModel={{ id: false }}
         columns={ columns }
         onRowClick={ onClick }
         rows={ games }

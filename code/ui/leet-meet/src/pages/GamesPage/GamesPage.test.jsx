@@ -16,7 +16,7 @@ jest.mock('@mui/x-charts', () => ({
 test('that games are rendered properly', async () => {
   jest.spyOn(Store, 'useAppContext').mockReturnValue({ 
     state: { 
-      games: [{ id: 1, title: 'Assassin\'s Creed Valhalla' }],
+      games: [{ id: 1, name: 'Assassin\'s Creed Valhalla' }],
       gameFollowers: { 1: [] } 
     } 
   });

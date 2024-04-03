@@ -22,6 +22,7 @@ import {
   useLoaderData,
   useNavigate
 } from 'react-router-dom';
+import Alert from '../../components/Alert/Alert';
 import FollowButton from '../../components/FollowButton/FollowButton';
 import {
   Action,
@@ -35,12 +36,16 @@ import {
   getRatingCounts,
   getTopRatingsForUser
 } from '../../util/Calculator/Calculator';
+import {
+  followUser,
+  unfollowUser 
+} from '../../util/Api/MainApi';
 
 const gameColumns = [
   { field: 'id' },
   { 
-    field: 'title', 
-    headerName: 'Title',
+    field: 'name', 
+    headerName: 'Name',
     width: 200
   },
   {
@@ -56,8 +61,8 @@ const gameColumns = [
 const followedUserColumns = [
   { field: 'id' },
   {
-    field: 'username',
-    headerName: 'Username',
+    field: 'name',
+    headerName: 'Name',
     width: 200
   }
 ]
@@ -70,6 +75,7 @@ export default function UserPage() {
   } = useAppContext();
   const navigate = useNavigate();
 
+  const [errorMessage, setErrorMessage] = useState(null);
   const [reviewGame, setReviewGame] = useState('');
   const [reviewAttribute, setReviewAttribute] = useState('');
   const [reviewSkill, setReviewSkill] = useState('');
@@ -131,16 +137,12 @@ export default function UserPage() {
   }, [state.games, state.gameFollowers, user, topRatingsByGame])
 
   const followedUsersData = useMemo(() => {
-    const followedUsers = Object.keys(state.userFollowers).reduce((acc, userId) => {
-      const isFollowing = state.userFollowers[userId].find((followerId) => followerId === user?.id);
-      if (isFollowing) {
-        acc.push(state.users[userId]);
-      }
-      return acc;
-    }, []);
+    if (!state.followedUsers) {
+      return [];
+    }
 
-    return followedUsers;
-  }, [state.userFollowers, state.users, user]);
+    return state.followedUsers.map((userId) => state.users[userId]);
+  }, [state.followedUsers, state.users]);
 
   const topRatings = useMemo(() => {
     if (!ratings) {
@@ -150,17 +152,15 @@ export default function UserPage() {
     return getTopRatingsForUser(ratings);
   }, [ratings])
 
-  const isSelf = useMemo(() => {
-    return user?.id === state.user?.id
-  }, [user, state.user])
+  const isSelf = useMemo(() => `${user?.id}` === `${state.user?.id}`, [user, state.user]);
 
   const isFollowing = useMemo(() => {
-    if (!state.userFollowers[user?.id]) {
+    if (!state.followedUsers) {
       return false;
     }
 
-    return !!state.userFollowers[user.id].find((followerId) => followerId === state.user?.id)
-  }, [state.userFollowers, state.user, user])
+    return !!state.followedUsers.find((userId) => userId === user.id);
+  }, [state.followedUsers, user])
 
   const onChangeReviewGame = useCallback(({ target }) => {
     setReviewGame(target.value)
@@ -178,25 +178,34 @@ export default function UserPage() {
     navigate(`/games/${game.id}`);
   }, [navigate]);
 
-  const onFollow = useCallback(() => {
-    dispatch({ 
-      type: Action.FollowUser, 
-      payload: { 
-        followedUserId: user.id,
-        userId: state.user?.id 
-      } 
-    });
-  }, [dispatch, user, state.user]);
+  const onFollow = useCallback(async () => {
+    try {
+      await followUser(user.id);
 
-  const onUnfollow = useCallback(() => {
-    dispatch({ 
-      type: Action.UnfollowUser, 
-      payload: {
-        followedUserId: user.id,
-        userId: state.user?.id 
-      } 
-    });
-  }, [dispatch, user, state.user]);
+      dispatch({ 
+        type: Action.FollowUser, 
+        payload: { 
+          followedUserId: user.id,
+        } 
+      });
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+  }, [dispatch, user]);
+
+  const onUnfollow = useCallback(async() => {
+    try {
+      await unfollowUser(user.id);
+      dispatch({ 
+        type: Action.UnfollowUser, 
+        payload: {
+          followedUserId: user.id,
+        } 
+      });
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+  }, [dispatch, user]);
 
   const onFollowedUserClick = useCallback(({ row }) => {
     navigate(`/users/${row.id}`)
@@ -225,7 +234,7 @@ export default function UserPage() {
         direction="row"
         justifyContent="space-between"
       >
-        <Typography variant="h3">{user?.username}</Typography>
+        <Typography variant="h3">{user?.name}</Typography>
         { state.user && !isSelf && (
           <FollowButton 
             data-testid="followButton" 
@@ -314,7 +323,7 @@ export default function UserPage() {
                   key={game.id} 
                   value={game.id}
                 >
-                  {game.title}
+                  {game.name}
                 </MenuItem>
               ) ) }
             </Select>
@@ -352,6 +361,15 @@ export default function UserPage() {
           <Button onClick={ onSubmitReview }>Submit</Button>
         </Paper>
       ) }
+      {errorMessage && (
+        <Alert
+          elevation={3} 
+          severity="error"
+          onClose={() => setErrorMessage(null)}
+        >
+          {errorMessage}
+        </Alert>
+      )}
     </Stack>
   );
 }
