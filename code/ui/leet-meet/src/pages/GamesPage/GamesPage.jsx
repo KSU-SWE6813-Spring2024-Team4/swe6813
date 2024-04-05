@@ -39,17 +39,31 @@ export default function GamesPage() {
   }, [navigate])
 
   return (
-    <Paper
-      elevation={3}
-      sx={{ padding: 2 }}
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, #009688, #FFFFFF)',
+        minHeight: '100vh', // Ensure the background covers the entire viewport height
+        padding: '16px', // Adjust padding as needed
+      }}
     >
-      <DataGrid
-        columnVisibilityModel={{ id: false }}
-        columns={ columns }
-        onRowClick={ onClick }
-        rows={ games }
-        slots={{ toolbar: () => <Typography sx={{ margin: 1 }} variant="h3">Games</Typography> }}
-      />
-    </Paper>
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 2,
+          width: '97%',
+        }}
+      >
+        <Typography sx={{ marginBottom: 2 }} variant="h4">Games</Typography>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            columnVisibilityModel={{ id: false }}
+            columns={ columns }
+            onRowClick={ onClick }
+            rows={ games }
+            pageSize={5}
+          />
+        </div>
+      </Paper>
+    </div>
   )
 }

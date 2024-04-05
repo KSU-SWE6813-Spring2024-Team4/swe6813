@@ -49,7 +49,7 @@ export default function AppRoot() {
   return (
     <Stack>
       <AppBar>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', backgroundColor: ' #009688', }}>
           <Stack direction="row">
             <MenuItem
               key="explore" 

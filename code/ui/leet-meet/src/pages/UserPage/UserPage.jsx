@@ -1,15 +1,15 @@
 import {
   Button,
   FormControl,
-  FormControlLabel, 
-  InputLabel, 
-  MenuItem, 
-  Paper, 
-  Radio, 
-  RadioGroup, 
-  Select, 
-  Stack, 
-  Typography 
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+  Typography
 } from '@mui/material';
 import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
@@ -26,9 +26,9 @@ import Alert from '../../components/Alert/Alert';
 import FollowButton from '../../components/FollowButton/FollowButton';
 import {
   Action,
-  useAppContext 
+  useAppContext
 } from '../../store';
-import { 
+import {
   ATTRIBUTES,
   SKILLS
 } from '../../util/Constants';
@@ -38,13 +38,13 @@ import {
 } from '../../util/Calculator/Calculator';
 import {
   followUser,
-  unfollowUser 
+  unfollowUser
 } from '../../util/Api/MainApi';
 
 const gameColumns = [
   { field: 'id' },
-  { 
-    field: 'name', 
+  {
+    field: 'name',
     headerName: 'Name',
     width: 200
   },
@@ -52,11 +52,11 @@ const gameColumns = [
     field: 'attribute',
     headerName: 'Attribute'
   },
-  { 
+  {
     field: 'skill',
-    headerName: 'Skill' 
+    headerName: 'Skill'
   }
-]
+];
 
 const followedUserColumns = [
   { field: 'id' },
@@ -65,13 +65,13 @@ const followedUserColumns = [
     headerName: 'Name',
     width: 200
   }
-]
+];
 
 export default function UserPage() {
   const { user } = useLoaderData();
   const {
     dispatch,
-    state 
+    state
   } = useAppContext();
   const navigate = useNavigate();
 
@@ -83,12 +83,12 @@ export default function UserPage() {
   const ratings = useMemo(
     () => Object.values(state.ratings).reduce((acc, userRatings) => {
       if (userRatings[user?.id]) {
-        acc['attribute'] = [...acc['attribute'], ...userRatings[user?.id].attribute]
-        acc['skill'] = [...acc['skill'], ...userRatings[user?.id].skill]
+        acc['attribute'] = [...acc['attribute'], ...userRatings[user?.id].attribute];
+        acc['skill'] = [...acc['skill'], ...userRatings[user?.id].skill];
       }
 
       return acc;
-    }, { attribute: [], skill: [] }), 
+    }, { attribute: [], skill: [] }),
     [state.ratings, user]
   );
 
@@ -98,9 +98,9 @@ export default function UserPage() {
         if (!acc[gameId]) {
           acc[gameId] = { attribute: [], skill: [] };
         }
-        
-        acc[gameId]['attribute'] = [...acc[gameId]['attribute'], ...state.ratings[gameId][user?.id].attribute]
-        acc[gameId]['skill'] = [...acc[gameId]['skill'], ...state.ratings[gameId][user?.id].skill]
+
+        acc[gameId]['attribute'] = [...acc[gameId]['attribute'], ...state.ratings[gameId][user?.id].attribute];
+        acc[gameId]['skill'] = [...acc[gameId]['skill'], ...state.ratings[gameId][user?.id].skill];
       }
 
       return acc;
@@ -108,7 +108,7 @@ export default function UserPage() {
 
     return Object.keys(ratingsByGame).reduce((acc, gameId) => {
       acc[gameId] = getTopRatingsForUser(ratingsByGame[gameId]);
-      return acc
+      return acc;
     }, {});
   }, [state.ratings, user]);
 
@@ -118,23 +118,23 @@ export default function UserPage() {
     return {
       skill: [{ data: SKILLS.map((SKILL) => skill[SKILL]) }],
       attribute: [{ data: ATTRIBUTES.map((ATTRIBUTE) => attribute[ATTRIBUTE]) }]
-    }
-  }, [ratings])
+    };
+  }, [ratings]);
 
   const gamesData = useMemo(() => {
     const games = Object.keys(state.gameFollowers).reduce((acc, gameId) => {
       const isFollowing = state.gameFollowers[gameId].find((followerId) => `${followerId}` === `${user?.id}`);
       if (isFollowing) {
-        acc.push({ 
-          ...state.games.find((game) => `${game.id}` === gameId), 
-          ...topRatingsByGame[gameId] 
+        acc.push({
+          ...state.games.find((game) => `${game.id}` === gameId),
+          ...topRatingsByGame[gameId]
         });
       }
       return acc;
-    }, [])
+    }, []);
 
-    return games
-  }, [state.games, state.gameFollowers, user, topRatingsByGame])
+    return games;
+  }, [state.games, state.gameFollowers, user, topRatingsByGame]);
 
   const followedUsersData = useMemo(() => {
     if (!state.followedUsers) {
@@ -146,11 +146,11 @@ export default function UserPage() {
 
   const topRatings = useMemo(() => {
     if (!ratings) {
-      return {}
+      return {};
     }
 
     return getTopRatingsForUser(ratings);
-  }, [ratings])
+  }, [ratings]);
 
   const isSelf = useMemo(() => `${user?.id}` === `${state.user?.id}`, [user, state.user]);
 
@@ -160,10 +160,10 @@ export default function UserPage() {
     }
 
     return !!state.followedUsers.find((userId) => userId === user.id);
-  }, [state.followedUsers, user])
+  }, [state.followedUsers, user]);
 
   const onChangeReviewGame = useCallback(({ target }) => {
-    setReviewGame(target.value)
+    setReviewGame(target.value);
   }, [setReviewGame]);
 
   const onChangeReviewAttribute = useCallback(({ target }) => {
@@ -171,7 +171,7 @@ export default function UserPage() {
   }, [setReviewAttribute]);
 
   const onChangeReviewSkill = useCallback(({ target }) => {
-    setReviewSkill(target.value)
+    setReviewSkill(target.value);
   }, [setReviewSkill]);
 
   const onGameClick = useCallback((game) => {
@@ -182,25 +182,25 @@ export default function UserPage() {
     try {
       await followUser(user.id);
 
-      dispatch({ 
-        type: Action.FollowUser, 
-        payload: { 
+      dispatch({
+        type: Action.FollowUser,
+        payload: {
           followedUserId: user.id,
-        } 
+        }
       });
     } catch (err) {
       setErrorMessage(err.message);
     }
   }, [dispatch, user]);
 
-  const onUnfollow = useCallback(async() => {
+  const onUnfollow = useCallback(async () => {
     try {
       await unfollowUser(user.id);
-      dispatch({ 
-        type: Action.UnfollowUser, 
+      dispatch({
+        type: Action.UnfollowUser,
         payload: {
           followedUserId: user.id,
-        } 
+        }
       });
     } catch (err) {
       setErrorMessage(err.message);
@@ -208,8 +208,8 @@ export default function UserPage() {
   }, [dispatch, user]);
 
   const onFollowedUserClick = useCallback(({ row }) => {
-    navigate(`/users/${row.id}`)
-  }, [navigate])
+    navigate(`/users/${row.id}`);
+  }, [navigate]);
 
   const onSubmitReview = useCallback(() => {
     if (!reviewGame || !reviewAttribute || !reviewSkill) {
@@ -217,159 +217,161 @@ export default function UserPage() {
     }
 
     dispatch({
-      type: Action.SubmitRating, 
-      payload: { 
-        gameId: reviewGame, 
-        fromId: state.user?.id, 
-        toId: user.id, 
-        skill: reviewSkill, 
-        attribute: reviewAttribute 
-      } 
-    })
+      type: Action.SubmitRating,
+      payload: {
+        gameId: reviewGame,
+        fromId: state.user?.id,
+        toId: user.id,
+        skill: reviewSkill,
+        attribute: reviewAttribute
+      }
+    });
   }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
 
   return (
-    <Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-      >
-        <Typography variant="h3">{user?.name}</Typography>
-        { state.user && !isSelf && (
-          <FollowButton 
-            data-testid="followButton" 
-            isFollowing={isFollowing} 
-            onClick={isFollowing ? onUnfollow : onFollow} 
-          />
-        ) }
-      </Stack>
-      <Paper
-        elevation={3}
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
-      >
-        <Typography>Top Player Skill: {topRatings.skill}</Typography>
-        <Typography>Top Player Attribute: {topRatings.attribute}</Typography>
-      </Paper>
-      <Paper elevation={3}>
-        <DataGrid
-          data-testid="followedGamesTable"
-          columnVisibilityModel={{ id: false }}
-          columns={ gameColumns }
-          onRowClick={ onGameClick }
-          rows={ gamesData }
-          slots={{ toolbar: () => <Typography>Games</Typography> }}
-        />
-      </Paper>
-      <Stack
-        direction="row"
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
-      >
+    <Stack sx={{ background: 'linear-gradient(to bottom right, #009688, #FFFFFF)', minHeight: '100vh', padding: '20px' }}>
+      <Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+        >
+          <Typography variant="h3">{user?.name}</Typography>
+          {state.user && !isSelf && (
+            <FollowButton
+              data-testid="followButton"
+              isFollowing={isFollowing}
+              onClick={isFollowing ? onUnfollow : onFollow}
+            />
+          )}
+        </Stack>
         <Paper
           elevation={3}
-          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+          sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
         >
-          <Typography>Skill Ratings</Typography>
-          <BarChart
-            series={ratingData.skill}
-            height={290}
-            xAxis={[{ data: SKILLS, scaleType: 'band' }]}
-          />
+          <Typography>Top Player Skill: {topRatings.skill}</Typography>
+          <Typography>Top Player Attribute: {topRatings.attribute}</Typography>
         </Paper>
-        <Paper
-          elevation={3} 
-          sx={{ flexGrow: 1, padding: 3 }}
-        >
-          <Typography>Attribute Ratings</Typography>
-          <BarChart
-            layout="horizontal"
-            series={ratingData.attribute}
-            height={290}
-            yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
-            margin={{ left: 100 }}
-          />
-        </Paper>
-      </Stack>
-      { isSelf && (
         <Paper elevation={3}>
+          <Typography sx={{ marginBottom: 2, padding: 3}}>Games</Typography>
           <DataGrid
+            data-testid="followedGamesTable"
             columnVisibilityModel={{ id: false }}
-            columns={ followedUserColumns }
-            rows={ followedUsersData }
-            onRowClick={ onFollowedUserClick }
-            slots={{ toolbar: () => <Typography>Followed Users</Typography> }}
+            columns={gameColumns}
+            onRowClick={onGameClick}
+            rows={gamesData}
           />
         </Paper>
-      )}
-      { state.user && !isSelf && isFollowing && (
-        <Paper
-          elevation={3}
-          sx={{ padding: 2 }}
+        <Stack
+          direction="row"
+          sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
         >
-          <Typography
-            sx={{ marginBottom: 2 }} 
-            variant="h4"
+          <Paper
+            elevation={3}
+            sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
           >
-            Review Player
-          </Typography>
-          <FormControl sx={{ minWidth: 300 }}>
-            <InputLabel>Game</InputLabel>
-            <Select
-              value={reviewGame}
-              label="Game"
-              onChange={onChangeReviewGame}
+            <Typography>Skill Ratings</Typography>
+            <BarChart
+              series={ratingData.skill}
+              height={290}
+              xAxis={[{ data: SKILLS, scaleType: 'band' }]}
+            />
+          </Paper>
+          <Paper
+            elevation={3}
+            sx={{ flexGrow: 1, padding: 3 }}
+          >
+            <Typography>Attribute Ratings</Typography>
+            <BarChart
+              layout="horizontal"
+              series={ratingData.attribute}
+              height={290}
+              yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
+              margin={{ left: 100 }}
+            />
+          </Paper>
+        </Stack>
+        {isSelf && (
+          <Paper elevation={3}>
+            <Typography sx={{ marginBottom: 2, padding: 3 }}>Followed Users</Typography>
+            <DataGrid
+              columnVisibilityModel={{ id: false }}
+              columns={followedUserColumns}
+              rows={followedUsersData}
+              onRowClick={onFollowedUserClick}
+            />
+          </Paper>
+        )}
+        {state.user && !isSelf && isFollowing && (
+          <Paper
+            elevation={3}
+            sx={{ padding: 2 }}
+          >
+            <Typography
+              sx={{ marginBottom: 2 }}
+              variant="h4"
             >
-              { gamesData.map((game) => (
-                <MenuItem 
-                  key={game.id} 
-                  value={game.id}
-                >
-                  {game.name}
-                </MenuItem>
-              ) ) }
-            </Select>
-          </FormControl>
-          <Typography>How would you describe this player?</Typography>
-          <RadioGroup
-            row
-            value={reviewAttribute}
-            onChange={onChangeReviewAttribute}
+              Review Player
+            </Typography>
+            <FormControl sx={{ minWidth: 300 }}>
+              <InputLabel>Game</InputLabel>
+              <Select
+                value={reviewGame}
+                label="Game"
+                onChange={onChangeReviewGame}
+              >
+                {gamesData.map((game) => (
+                  <MenuItem
+                    key={game.id}
+                    value={game.id}
+                  >
+                    {game.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Typography>How would you describe this player?</Typography>
+            <RadioGroup
+              row
+              value={reviewAttribute}
+              onChange={onChangeReviewAttribute}
+            >
+              {ATTRIBUTES.map((attribute) => (
+                <FormControlLabel
+                  key={attribute}
+                  value={attribute}
+                  control={<Radio />}
+                  label={attribute}
+                />
+              ))}
+            </RadioGroup>
+            <Typography>How would you rate this player's skill?</Typography>
+            <RadioGroup
+              row
+              value={reviewSkill}
+              onChange={onChangeReviewSkill}
+            >
+              {SKILLS.map((skill) => (
+                <FormControlLabel
+                  key={skill}
+                  value={skill}
+                  control={<Radio />}
+                  label={skill}
+                />
+              ))}
+            </RadioGroup>
+            <Button onClick={onSubmitReview}>Submit</Button>
+          </Paper>
+        )}
+        {errorMessage && (
+          <Alert
+            elevation={3}
+            severity="error"
+            onClose={() => setErrorMessage(null)}
           >
-            { ATTRIBUTES.map((attribute) => (
-              <FormControlLabel 
-                key={attribute} 
-                value={attribute} 
-                control={<Radio />} 
-                label={attribute} 
-              />
-            )) }
-          </RadioGroup>
-          <Typography>How would you rate this player's skill?</Typography>
-          <RadioGroup
-            row
-            value={reviewSkill}
-            onChange={onChangeReviewSkill}
-          >
-            { SKILLS.map((skill) => (
-              <FormControlLabel
-                key={skill}
-                value={skill}
-                control={<Radio />}
-                label={skill} 
-              />
-            )) }
-          </RadioGroup>
-          <Button onClick={ onSubmitReview }>Submit</Button>
-        </Paper>
-      ) }
-      {errorMessage && (
-        <Alert
-          elevation={3} 
-          severity="error"
-          onClose={() => setErrorMessage(null)}
-        >
-          {errorMessage}
-        </Alert>
-      )}
+            {errorMessage}
+          </Alert>
+        )}
+      </Stack>
     </Stack>
   );
 }

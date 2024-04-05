@@ -2,7 +2,8 @@ import {
   Container, 
   Paper, 
   Stack, 
-  Typography
+  Typography,
+  Box // Add Box component
 } from '@mui/material';
 import { BarChart } from '@mui/x-charts';
 import { DataGrid } from '@mui/x-data-grid';
@@ -58,7 +59,6 @@ export default function GamePage() {
   } = useAppContext();
   const navigate = useNavigate();
   
-
   const topRatingsByUser = useMemo(() => {
     if (!game || !state.ratings[game.id]) {
       return {};
@@ -159,72 +159,86 @@ export default function GamePage() {
   }, [navigate])
 
   return (
-    <Stack>
-      <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Typography variant="h3">{ game?.name ?? '' }</Typography>
-        { state.user && (
-          <FollowButton 
-            data-testid="followButton"
-            isFollowing={isFollowing} 
-            onClick={isFollowing ? onUnfollow : onFollow} 
-          />
-        ) }
-      </Container>
-      <Paper
-        elevation={3}
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
-      >
-        <Typography>
-          Total Follows: {game ? state.gameFollowers[game.id].length : 0}
-        </Typography>
-        <Typography>
-          Current Rank: {gameRank}{getOrdinal(gameRank)}
-        </Typography>
-      </Paper>
-      <Stack 
-        direction="row" 
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
-      >
+    <Box sx={{ backgroundImage: 'linear-gradient(to bottom right, #009688, #FFFFFF)', minHeight: '100vh', padding: '20px' }}>
+      <Stack spacing={2}>
+        <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h3">{ game?.name ?? '' }</Typography>
+          { state.user && (
+            <FollowButton 
+              data-testid="followButton"
+              isFollowing={isFollowing} 
+              onClick={isFollowing ? onUnfollow : onFollow} 
+            />
+          ) }
+        </Container>
         <Paper
-          elevation={3} 
-          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+          elevation={3}
+          sx={{ padding: '20px', marginTop: '20px', marginBottom: '20px', display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}
         >
-          <Typography>Skill Ratings</Typography>
-          <BarChart
-            series={ratingsData.skill}
-            height={290}
-            xAxis={[{ data: SKILLS, scaleType: 'band' }]}
-          />
+          <Typography>
+            Total Follows: {game ? state.gameFollowers[game.id].length : 0}
+          </Typography>
+          <Typography>
+            Current Rank: {gameRank}{getOrdinal(gameRank)}
+          </Typography>
         </Paper>
-        <Paper
-          elevation={3} 
-          sx={{ flexGrow: 1, padding: 3 }}
+        <Stack 
+          direction="row" 
+          sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
         >
-          <Typography>Attribute Ratings</Typography>
-          <BarChart
-            layout="horizontal"
-            series={ratingsData.attribute}
-            height={290}
-            yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
-            margin={{ left: 100 }}
-          />
-        </Paper>
+          <Paper
+            elevation={3} 
+            sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+          >
+            <Typography>Skill Ratings</Typography>
+            <BarChart
+              series={ratingsData.skill}
+              height={290}
+              xAxis={[{ data: SKILLS, scaleType: 'band' }]}
+            />
+          </Paper>
+          <Paper
+            elevation={3} 
+            sx={{ flexGrow: 1, padding: 3 }}
+          >
+            <Typography>Attribute Ratings</Typography>
+            <BarChart
+              layout="horizontal"
+              series={ratingsData.attribute}
+              height={290}
+              yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
+              margin={{ left: 100 }}
+            />
+          </Paper>
+        </Stack>
+        <DataGrid
+  columnVisibilityModel={{ id: false }}
+  columns={columns}
+  onRowClick={onClick}
+  rows={followers}
+  sx={{
+    backgroundColor: 'white', // Set the background color to white
+    marginTop: 2, // Adjust margin top for spacing
+    marginBottom: 2, // Adjust margin bottom for spacing
+  }}
+  slots={{
+    toolbar: () => (
+      <Typography sx={{ padding: 3 }}>
+        Followers
+      </Typography>
+    ),
+  }}
+/>
+
+        {errorMessage && (
+          <Alert
+            elevation={3} 
+            severity="error"
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </Stack>
-      <DataGrid
-        columnVisibilityModel={{ id: false }}
-        columns={ columns }
-        onRowClick={ onClick }
-        rows={ followers }
-        slots={{ toolbar: () => <Typography>Followers</Typography> }}
-      />
-      {errorMessage && (
-        <Alert
-          elevation={3} 
-          severity="error"
-        >
-          {errorMessage}
-        </Alert>
-      )}
-    </Stack>
+    </Box>
   )
 }
