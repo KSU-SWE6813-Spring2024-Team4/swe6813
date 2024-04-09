@@ -25,11 +25,8 @@ export async function getUsers() {
   try {
     const res = await fetch(getUrl('/user/list'), getOptions({ method: 'GET' }));
     const json = await res.json()
-    if (res.status !== 200) {
-      return Promise.reject(json)
-    }
 
-    return Promise.resolve(json)
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
   } catch (err) {
     throw err
   }
@@ -40,11 +37,7 @@ export async function getGames() {
     const res = await fetch(getUrl('/games/list'), getOptions({ method: 'GET' }));
 
     const json = await res.json()
-    if (res.status !== 200) {
-      return Promise.reject(json)
-    }
-
-    return Promise.resolve(json)
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
   } catch (err) {
     throw err
   }
@@ -72,7 +65,10 @@ export async function followGame(gid) {
     const body = { gid, uid };
 
     const res = await fetch(getUrl('/user/game/add'), getOptions({
-      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 
+        Authorization, 
+        'Content-Type': 'application/x-www-form-urlencoded' 
+      },
       body: encodeFormBody(body), 
       method: 'POST'
     }));
@@ -97,7 +93,10 @@ export async function unfollowGame(gid) {
     const body = { gid, uid };
 
     const res = await fetch(getUrl('/user/game/delete'), getOptions({
-      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 
+        Authorization, 
+        'Content-Type': 'application/x-www-form-urlencoded' 
+      },
       body: encodeFormBody(body), 
       method: 'DELETE'
     }));
@@ -128,10 +127,11 @@ export async function followUser(follow_user_id) {
   try {
     const Authorization = getBearerToken();
     const res = await fetch(getUrl('/user/follow/add'), getOptions({
-      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { 
+        Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encodeFormBody({ follow_user_id }), 
       method: 'POST'
-    }))
+    }));
 
     const text = await res.text()
     if (text.toLowerCase().includes('error')) {
@@ -148,7 +148,10 @@ export async function unfollowUser(follow_user_id) {
   try {
     const Authorization = getBearerToken();
     const res = await fetch(getUrl('/user/follow/delete'), getOptions({
-      headers: { Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        Authorization, 
+        'Content-Type': 'application/x-www-form-urlencoded' 
+      },
       body: encodeFormBody({ follow_user_id }), 
       method: 'DELETE'
     }));
@@ -162,4 +165,69 @@ export async function unfollowUser(follow_user_id) {
   } catch (err) {
     throw err;
   }
+}
+
+export async function getAttributes() {
+  try {
+    const res = await fetch(getUrl('/attributes/list'), getOptions({ method: 'GET' }));
+    const json = await res.json()
+
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getSkills() {
+  try {
+    const res = await fetch(getUrl('/skills/list'), getOptions({ method: 'GET' }));
+    const json = await res.json()
+
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getRatings() {
+  try {
+    const res = await fetch(getUrl('/user/rating/list'), getOptions({ method: 'GET' }));
+    const json = await res.json()
+
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function reviewUser({ rate_user_id, attribute_id, skill_id, game_id }) {
+  try {
+    const Authorization = getBearerToken();
+    const res = await fetch(getUrl('/user/rating/add'), getOptions({
+      headers: { 
+        Authorization,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: encodeFormBody({ 
+        rate_user_id,
+        attribute_id,
+        skill_id,
+        game_id
+      }), 
+      method: 'POST'
+    }));
+
+    const text = await res.text()
+    if (text.toLowerCase().includes('error')) {
+      throw new Error(text);
+    }
+
+    const json = JSON.parse(text);
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function updateReview({ rate_user_id, attribute_id, skill_id, game_id }) {
 }

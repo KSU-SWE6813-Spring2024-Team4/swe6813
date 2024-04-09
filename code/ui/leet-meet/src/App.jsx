@@ -14,9 +14,12 @@ import {
   useAppContext
 } from './store';
 import { 
+  getAttributes,
   getFollowedGames,
   getFollowedUsers,
   getGames,
+  getRatings,
+  getSkills,
   getUsers
 } from './util/Api/MainApi';
 
@@ -77,7 +80,8 @@ function App() {
     const loadUsers = async () => {
       try {
         const users = await getUsers();
-        dispatch({ type: Action.LoadUsers, 
+        dispatch({
+          type: Action.LoadUsers, 
           payload: users.flatMap(({ user }) => user).reduce((acc, curr) => {
             acc[curr.id] = curr;
             return acc;
@@ -88,10 +92,100 @@ function App() {
       }
     };
 
-    loadGames();
-    loadUsers();
+    const loadAttributes = async () => {
+      try {
+        const attributes = await getAttributes();
+        dispatch({
+          type: Action.LoadAttributes, 
+          payload: attributes.flatMap(({ attr }) => ({
+            id: attr.id,
+            name: attr.name 
+          })) 
+        });
+      } catch (err) {
+        console.log(err)
+      }
+    };
 
-    // dispatch({ type: Action.LoadRatings, payload: mocks.ratings });
+    const loadSkills = async () => {
+      try {
+        const skills = await getSkills();
+        dispatch({
+          type: Action.LoadSkills, 
+          payload: skills.flatMap(({ skill }) => ({
+            id: skill.id, 
+            name: skill.name 
+          })) 
+        });
+      } catch (err) {
+        console.log(err)
+      }
+    };
+
+    const loadRatings = async () => {
+      try {
+        const ratings = await getRatings();
+        dispatch({
+          type: Action.LoadRatings, 
+          payload: ratings
+            .flatMap(({ r }) => r)
+            .reduce((acc, curr) => {
+              if (!acc[curr.game_id]) {
+                acc[curr.game_id] = {};
+              }
+
+              if (!acc[curr.game_id][curr.to_user_id]) {
+                acc[curr.game_id][curr.to_user_id] = [];
+              }
+
+              acc[curr.game_id][curr.to_user_id].push(curr);
+
+              return acc;
+            }, {})
+        });
+      } catch (err) {
+        console.log(err)
+      }
+    };
+
+    // const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
+//   allRatings[gameId] = gameFollowers[gameId].reduce((userRatings, userId) => {
+//     userRatings[userId] = {
+//       skill: [],
+//       attribute: []
+//     };
+
+//     const ticks = getRandomInt(RANDOM_COUNT);
+//     for (let i = 0; i <= ticks; i++) {
+//       const maybeFrom = getRandomInt(RANDOM_COUNT);
+//       if (maybeFrom !== userId && maybeFrom !== 0) {
+//         userRatings[userId].attribute.push(createRating({ 
+//           gameId, 
+//           fromId: maybeFrom, 
+//           toId: userId, 
+//           type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)] 
+//         }));
+
+//         userRatings[userId].skill.push(createRating({ 
+//           gameId, 
+//           fromId: maybeFrom, 
+//           toId: userId, 
+//           type: SKILLS[getRandomInt(SKILLS.length)] 
+//         }));
+//       }
+//     }
+
+//     return userRatings;
+//   }, {});
+
+//   return allRatings;
+// }, {})
+
+    loadAttributes();
+    loadGames();
+    loadRatings();
+    loadSkills();
+    loadUsers();
   }, [dispatch])
 
   useEffect(() => {

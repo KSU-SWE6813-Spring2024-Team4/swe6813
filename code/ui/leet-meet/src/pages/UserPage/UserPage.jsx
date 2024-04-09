@@ -1,13 +1,5 @@
 import {
-  Button,
-  FormControl,
-  FormControlLabel, 
-  InputLabel, 
-  MenuItem, 
   Paper, 
-  Radio, 
-  RadioGroup, 
-  Select, 
   Stack, 
   Typography 
 } from '@mui/material';
@@ -24,6 +16,7 @@ import {
 } from 'react-router-dom';
 import Alert from '../../components/Alert/Alert';
 import FollowButton from '../../components/FollowButton/FollowButton';
+import ReviewForm from '../../components/ReviewForm/ReviewForm';
 import {
   Action,
   useAppContext 
@@ -76,16 +69,13 @@ export default function UserPage() {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [reviewGame, setReviewGame] = useState('');
-  const [reviewAttribute, setReviewAttribute] = useState('');
-  const [reviewSkill, setReviewSkill] = useState('');
 
   const ratings = useMemo(
     () => Object.values(state.ratings).reduce((acc, userRatings) => {
-      if (userRatings[user?.id]) {
-        acc['attribute'] = [...acc['attribute'], ...userRatings[user?.id].attribute]
-        acc['skill'] = [...acc['skill'], ...userRatings[user?.id].skill]
-      }
+      userRatings[user?.id]?.forEach((rating) => {
+        acc.attribute.push(rating.attribute_id);
+        acc.skill.push(rating.skill_id);
+      });
 
       return acc;
     }, { attribute: [], skill: [] }), 
@@ -99,8 +89,10 @@ export default function UserPage() {
           acc[gameId] = { attribute: [], skill: [] };
         }
         
-        acc[gameId]['attribute'] = [...acc[gameId]['attribute'], ...state.ratings[gameId][user?.id].attribute]
-        acc[gameId]['skill'] = [...acc[gameId]['skill'], ...state.ratings[gameId][user?.id].skill]
+        state.ratings[gameId][user.id].forEach((rating) => {
+          acc[gameId].attribute.push(rating.attribute_id);
+          acc[gameId].skill.push(rating.skill_id);
+        });
       }
 
       return acc;
@@ -113,11 +105,11 @@ export default function UserPage() {
   }, [state.ratings, user]);
 
   const ratingData = useMemo(() => {
-    const { skill, attribute } = getRatingCounts(ratings);
+    const { skill: skillCount, attribute: attributeCount } = getRatingCounts(ratings);
 
     return {
-      skill: [{ data: SKILLS.map((SKILL) => skill[SKILL]) }],
-      attribute: [{ data: ATTRIBUTES.map((ATTRIBUTE) => attribute[ATTRIBUTE]) }]
+      skill: [{ data: Object.values(state.skills).map((skill) => skillCount[skill.id])  }],
+      attribute: [{ data: Object.values(state.attributes).map((attribute) => attributeCount[attribute.id])  }]
     }
   }, [ratings])
 
@@ -127,14 +119,16 @@ export default function UserPage() {
       if (isFollowing) {
         acc.push({ 
           ...state.games.find((game) => `${game.id}` === gameId), 
-          ...topRatingsByGame[gameId] 
+          attribute: state.attributes[topRatingsByGame[gameId]?.attribute]?.name,
+          skill: state.skills[topRatingsByGame[gameId]?.skill]?.name
         });
       }
+
       return acc;
     }, [])
 
     return games
-  }, [state.games, state.gameFollowers, user, topRatingsByGame])
+  }, [state.games, state.gameFollowers, user, topRatingsByGame, state.skills, state.attributes])
 
   const followedUsersData = useMemo(() => {
     if (!state.followedUsers) {
@@ -145,12 +139,15 @@ export default function UserPage() {
   }, [state.followedUsers, state.users]);
 
   const topRatings = useMemo(() => {
-    if (!ratings) {
-      return {}
+    if (!ratings || !state.skills || !state.attributes) {
+      return {};
     }
 
-    return getTopRatingsForUser(ratings);
-  }, [ratings])
+    const { skill: topSkillId, attribute: topAttributeId } =  getTopRatingsForUser(ratings)
+    
+    
+    return { skill: state.skills[topSkillId]?.name, attribute: state.attributes[topAttributeId]?.name };
+  }, [ratings, state.skills, state.attributes])
 
   const isSelf = useMemo(() => `${user?.id}` === `${state.user?.id}`, [user, state.user]);
 
@@ -161,18 +158,6 @@ export default function UserPage() {
 
     return !!state.followedUsers.find((userId) => userId === user.id);
   }, [state.followedUsers, user])
-
-  const onChangeReviewGame = useCallback(({ target }) => {
-    setReviewGame(target.value)
-  }, [setReviewGame]);
-
-  const onChangeReviewAttribute = useCallback(({ target }) => {
-    setReviewAttribute(target.value);
-  }, [setReviewAttribute]);
-
-  const onChangeReviewSkill = useCallback(({ target }) => {
-    setReviewSkill(target.value)
-  }, [setReviewSkill]);
 
   const onGameClick = useCallback((game) => {
     navigate(`/games/${game.id}`);
@@ -208,25 +193,12 @@ export default function UserPage() {
   }, [dispatch, user]);
 
   const onFollowedUserClick = useCallback(({ row }) => {
-    navigate(`/users/${row.id}`)
+    navigate(`/users/${row.id}`);
   }, [navigate])
 
-  const onSubmitReview = useCallback(() => {
-    if (!reviewGame || !reviewAttribute || !reviewSkill) {
-      return;
-    }
-
-    dispatch({
-      type: Action.SubmitRating, 
-      payload: { 
-        gameId: reviewGame, 
-        fromId: state.user?.id, 
-        toId: user.id, 
-        skill: reviewSkill, 
-        attribute: reviewAttribute 
-      } 
-    })
-  }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, user]);
+  const onReviewError = (err) => {
+    setErrorMessage(err.message);
+  };
 
   return (
     <Stack>
@@ -272,7 +244,7 @@ export default function UserPage() {
           <BarChart
             series={ratingData.skill}
             height={290}
-            xAxis={[{ data: SKILLS, scaleType: 'band' }]}
+            xAxis={[{ data: Object.values(state.skills).map(({ name }) => name), scaleType: 'band' }]}
           />
         </Paper>
         <Paper
@@ -284,7 +256,7 @@ export default function UserPage() {
             layout="horizontal"
             series={ratingData.attribute}
             height={290}
-            yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
+            yAxis={[{ data: Object.values(state.attributes).map(({ name }) => name), scaleType: 'band' }]}
             margin={{ left: 100 }}
           />
         </Paper>
@@ -301,65 +273,11 @@ export default function UserPage() {
         </Paper>
       )}
       { state.user && !isSelf && isFollowing && (
-        <Paper
-          elevation={3}
-          sx={{ padding: 2 }}
-        >
-          <Typography
-            sx={{ marginBottom: 2 }} 
-            variant="h4"
-          >
-            Review Player
-          </Typography>
-          <FormControl sx={{ minWidth: 300 }}>
-            <InputLabel>Game</InputLabel>
-            <Select
-              value={reviewGame}
-              label="Game"
-              onChange={onChangeReviewGame}
-            >
-              { gamesData.map((game) => (
-                <MenuItem 
-                  key={game.id} 
-                  value={game.id}
-                >
-                  {game.name}
-                </MenuItem>
-              ) ) }
-            </Select>
-          </FormControl>
-          <Typography>How would you describe this player?</Typography>
-          <RadioGroup
-            row
-            value={reviewAttribute}
-            onChange={onChangeReviewAttribute}
-          >
-            { ATTRIBUTES.map((attribute) => (
-              <FormControlLabel 
-                key={attribute} 
-                value={attribute} 
-                control={<Radio />} 
-                label={attribute} 
-              />
-            )) }
-          </RadioGroup>
-          <Typography>How would you rate this player's skill?</Typography>
-          <RadioGroup
-            row
-            value={reviewSkill}
-            onChange={onChangeReviewSkill}
-          >
-            { SKILLS.map((skill) => (
-              <FormControlLabel
-                key={skill}
-                value={skill}
-                control={<Radio />}
-                label={skill} 
-              />
-            )) }
-          </RadioGroup>
-          <Button onClick={ onSubmitReview }>Submit</Button>
-        </Paper>
+        <ReviewForm 
+          followedGames={ gamesData } 
+          onError={ onReviewError } 
+          reviewedUser={ user } 
+        />
       ) }
       {errorMessage && (
         <Alert

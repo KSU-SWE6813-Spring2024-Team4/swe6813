@@ -27,10 +27,9 @@ import {
   getTopRatingsForUser 
 } from '../../util/Calculator/Calculator';
 import { 
-  ATTRIBUTES, 
-  SKILLS 
-} from '../../util/Constants';
-import { followGame, unfollowGame } from '../../util/Api/MainApi';
+  followGame, 
+  unfollowGame 
+} from '../../util/Api/MainApi';
 
 const columns = [
   { field: 'id' },
@@ -66,13 +65,17 @@ export default function GamePage() {
 
     const ratingsByUser = Object.keys(state.ratings[game.id]).reduce((acc, userId) => {
       if (!acc[userId]) {
-        acc[userId] = { attribute: [], skill: [] };
+        acc[userId] = { 
+          attribute: [], 
+          skill: [] 
+        };
       }
 
-      const { attribute, skill } = state.ratings[game.id][userId];
-        
-      acc[userId]['attribute'] = [...acc[userId]['attribute'], ...attribute];
-      acc[userId]['skill'] = [...acc[userId]['skill'], ...skill];
+      state.ratings[game.id][userId].forEach((rating) => {
+        acc[userId].attribute.push(rating.attribute_id);
+        acc[userId].skill.push(rating.skill_id);
+      })
+
       return acc;
     }, {})
 
@@ -87,28 +90,43 @@ export default function GamePage() {
       return [];
     }
 
-    return state.gameFollowers[game.id].map((userId) => ({ 
-      ...state.users[userId], 
-      ...topRatingsByUser[userId] 
-    }));
+    return state.gameFollowers[game.id].map((userId) => { 
+      return {
+        ...state.users[userId], 
+        skill: state.skills[topRatingsByUser[userId]?.skill]?.name,
+        attribute: state.attributes[topRatingsByUser[userId]?.attribute]?.name
+      };
+    });
   }, [game, state.gameFollowers, state.users, topRatingsByUser]);
 
   const ratingsData = useMemo(() => {
     if (!game || !state.ratings[game?.id]) {
-      return { skill: [], attribute: [] };
+      return { 
+        skill: [], 
+        attribute: [] 
+      };
     }
 
-    const ratings = Object.values(state.ratings[game?.id]).reduce((acc, userRating) => {
-      acc['attribute'] = [...acc['attribute'], ...userRating.attribute]
-      acc['skill'] = [...acc['skill'], ...userRating.skill]
+    const ratings = Object.values(state.ratings[game?.id]).reduce((acc, userRatings) => {
+      userRatings.forEach((rating) => {
+        acc.attribute.push(rating.attribute_id);
+        acc.skill.push(rating.skill_id);
+      });
       return acc;
     }, { attribute: [], skill: [] });
 
-    const { skill, attribute } = getRatingCounts(ratings);
+    const { 
+      skill: skillCount, 
+      attribute: attributeCount 
+    } = getRatingCounts(ratings);
 
     return {
-      skill: [{ data: SKILLS.map((SKILL) => skill[SKILL]) }],
-      attribute: [{ data: ATTRIBUTES.map((ATTRIBUTE) => attribute[ATTRIBUTE]) }]
+      skill: [{ 
+        data: Object.values(state.skills).map((skill) => skillCount[skill.id]) 
+      }],
+      attribute: [{ 
+        data: Object.values(state.attributes).map((attribute) => attributeCount[attribute.id]) 
+      }]
     }
   }, [game, state.ratings]);
 
@@ -161,7 +179,9 @@ export default function GamePage() {
   return (
     <Stack>
       <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Typography variant="h3">{ game?.name ?? '' }</Typography>
+        <Typography variant="h3">
+          { game?.name ?? '' }
+        </Typography>
         { state.user && (
           <FollowButton 
             data-testid="followButton"
@@ -193,7 +213,7 @@ export default function GamePage() {
           <BarChart
             series={ratingsData.skill}
             height={290}
-            xAxis={[{ data: SKILLS, scaleType: 'band' }]}
+            xAxis={[{ data: Object.values(state.skills).map(({ name }) => name), scaleType: 'band' }]}
           />
         </Paper>
         <Paper
@@ -205,7 +225,7 @@ export default function GamePage() {
             layout="horizontal"
             series={ratingsData.attribute}
             height={290}
-            yAxis={[{ data: ATTRIBUTES, scaleType: 'band' }]}
+            yAxis={[{ data: Object.values(state.attributes).map(({ name }) => name), scaleType: 'band' }]}
             margin={{ left: 100 }}
           />
         </Paper>

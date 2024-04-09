@@ -7,9 +7,11 @@ import {
 const Action = {
   FollowGame: 'FOLLOW_GAME', 
   FollowUser: 'FOLLOW_USER', 
+  LoadAttributes: 'LOAD_ATTRIBUTES',
   LoadGames: 'LOAD_GAMES',
   LoadGameFollowers: 'LOAD_GAME_FOLLOWERS', 
   LoadRatings: 'LOAD_RATINGS',
+  LoadSkills: 'LOAD_SKILLS',
   LoadUsers: 'LOAD_USERS', 
   LoadFollowedUsers: 'LOAD_FOLLOWED_USERS', 
   LoginUser: 'LOGIN_USER', 
@@ -19,12 +21,14 @@ const Action = {
 }
 
 const initialState = {
+  attributes: {},
+  followedUsers: null,
   games: [],
   gameFollowers: {},
   ratings: {},
+  skills: {},
   user: null,
   users: {},
-  followedUsers: null
 };
 
 const store = createContext(initialState);
@@ -62,6 +66,19 @@ const StateProvider = ({ children }) => {
           followedUsers: [...state.followedUsers, followedUserId]
         };
       }
+      case Action.LoadAttributes:
+        return { 
+          ...state, 
+          attributes: action.payload.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}) 
+        };
+      case Action.LoadFollowedUsers:
+        return {
+          ...state,
+          followedUsers: action.payload
+        };
       case Action.LoadGames:
         return {
           ...state,
@@ -74,9 +91,13 @@ const StateProvider = ({ children }) => {
       case Action.LoadGameFollowers:
         return {
           ...state,
-          gameFollowers: { ...state.gameFollowers, ...action.payload }
+          gameFollowers: { 
+            ...state.gameFollowers, 
+            ...action.payload 
+          }
         };
       case Action.LoadRatings:
+        console.log(action.payload)
         return {
           ...state,
           ratings: action.payload
@@ -86,10 +107,13 @@ const StateProvider = ({ children }) => {
           ...state,
           users: action.payload
         };
-      case Action.LoadFollowedUsers:
+      case Action.LoadSkills:
         return {
           ...state,
-          followedUsers: action.payload
+          skills: action.payload.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}) 
         };
       case Action.LoginUser:
         return { 
