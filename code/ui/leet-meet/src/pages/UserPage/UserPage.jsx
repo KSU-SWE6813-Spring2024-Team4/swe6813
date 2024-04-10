@@ -21,10 +21,6 @@ import {
   Action,
   useAppContext 
 } from '../../store';
-import { 
-  ATTRIBUTES,
-  SKILLS
-} from '../../util/Constants';
 import {
   getRatingCounts,
   getTopRatingsForUser
@@ -86,7 +82,10 @@ export default function UserPage() {
     const ratingsByGame = Object.keys(state.ratings).reduce((acc, gameId) => {
       if (state.ratings[gameId][user?.id]) {
         if (!acc[gameId]) {
-          acc[gameId] = { attribute: [], skill: [] };
+          acc[gameId] = { 
+            attribute: [], 
+            skill: [] 
+          };
         }
         
         state.ratings[gameId][user.id].forEach((rating) => {
@@ -105,17 +104,27 @@ export default function UserPage() {
   }, [state.ratings, user]);
 
   const ratingData = useMemo(() => {
-    const { skill: skillCount, attribute: attributeCount } = getRatingCounts(ratings);
+    const { 
+      skill: skillCount, 
+      attribute: attributeCount 
+    } = getRatingCounts(ratings);
 
     return {
-      skill: [{ data: Object.values(state.skills).map((skill) => skillCount[skill.id])  }],
-      attribute: [{ data: Object.values(state.attributes).map((attribute) => attributeCount[attribute.id])  }]
+      skill: [{ 
+        data: Object.values(state.skills).map((skill) => skillCount[skill.id] ?? 0)
+      }],
+      attribute: [{
+        data: Object.values(state.attributes).map((attribute) => attributeCount[attribute.id] ?? 0)
+      }]
     }
-  }, [ratings])
+  }, [ratings, state.skills, state.attributes])
 
   const gamesData = useMemo(() => {
     const games = Object.keys(state.gameFollowers).reduce((acc, gameId) => {
-      const isFollowing = state.gameFollowers[gameId].find((followerId) => `${followerId}` === `${user?.id}`);
+      const isFollowing = state.gameFollowers[gameId].find(
+        (followerId) => `${followerId}` === `${user?.id}`
+      );
+
       if (isFollowing) {
         acc.push({ 
           ...state.games.find((game) => `${game.id}` === gameId), 
@@ -143,10 +152,15 @@ export default function UserPage() {
       return {};
     }
 
-    const { skill: topSkillId, attribute: topAttributeId } =  getTopRatingsForUser(ratings)
+    const { 
+      skill: topSkillId, 
+      attribute: topAttributeId 
+    } =  getTopRatingsForUser(ratings)
     
-    
-    return { skill: state.skills[topSkillId]?.name, attribute: state.attributes[topAttributeId]?.name };
+    return { 
+      skill: state.skills[topSkillId]?.name, 
+      attribute: state.attributes[topAttributeId]?.name 
+    };
   }, [ratings, state.skills, state.attributes])
 
   const isSelf = useMemo(() => `${user?.id}` === `${state.user?.id}`, [user, state.user]);
@@ -157,7 +171,7 @@ export default function UserPage() {
     }
 
     return !!state.followedUsers.find((userId) => userId === user.id);
-  }, [state.followedUsers, user])
+  }, [state.followedUsers, user]);
 
   const onGameClick = useCallback((game) => {
     navigate(`/games/${game.id}`);
@@ -201,7 +215,7 @@ export default function UserPage() {
   };
 
   return (
-    <Stack>
+    <Stack sx={{ background: 'linear-gradient(to bottom right, #009688, #FFFFFF)', minHeight: '100vh', padding: '20px' }}>
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -217,49 +231,70 @@ export default function UserPage() {
       </Stack>
       <Paper
         elevation={3}
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
+        sx={{ 
+          display: 'flex', 
+          marginTop: 4, 
+          marginBottom: 4, 
+          padding: 2, 
+          justifyContent: 'space-evenly' 
+        }}
       >
-        <Typography>Top Player Skill: {topRatings.skill}</Typography>
-        <Typography>Top Player Attribute: {topRatings.attribute}</Typography>
+        <Typography>
+          Top Player Skill: {topRatings.skill}
+        </Typography>
+        <Typography>
+          Top Player Attribute: {topRatings.attribute}
+        </Typography>
       </Paper>
       <Paper elevation={3}>
+      <Typography sx={{ marginBottom: 2, padding: 3}}>Games</Typography>
         <DataGrid
           data-testid="followedGamesTable"
           columnVisibilityModel={{ id: false }}
           columns={ gameColumns }
           onRowClick={ onGameClick }
           rows={ gamesData }
-          slots={{ toolbar: () => <Typography>Games</Typography> }}
         />
       </Paper>
       <Stack
         direction="row"
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
+        sx={{ 
+          display: 'flex', 
+          marginTop: 4, 
+          marginBottom: 4 
+        }}
       >
-        <Paper
-          elevation={3}
-          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
-        >
-          <Typography>Skill Ratings</Typography>
-          <BarChart
-            series={ratingData.skill}
-            height={290}
-            xAxis={[{ data: Object.values(state.skills).map(({ name }) => name), scaleType: 'band' }]}
-          />
-        </Paper>
-        <Paper
-          elevation={3} 
-          sx={{ flexGrow: 1, padding: 3 }}
-        >
-          <Typography>Attribute Ratings</Typography>
-          <BarChart
-            layout="horizontal"
-            series={ratingData.attribute}
-            height={290}
-            yAxis={[{ data: Object.values(state.attributes).map(({ name }) => name), scaleType: 'band' }]}
-            margin={{ left: 100 }}
-          />
-        </Paper>
+        { ratingData.skill[0].data.length > 0 && (
+          <Paper
+            elevation={3}
+            sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+          >
+            <Typography>Skill Ratings</Typography>
+            <BarChart
+              series={ratingData.skill}
+              height={290}
+              xAxis={[{ data: Object.values(state.skills).map(({ name }) => name), scaleType: 'band' }]}
+            />
+          </Paper>
+        ) }
+        { ratingData.attribute[0].data.length > 0 && (
+          <Paper
+            elevation={3} 
+            sx={{ flexGrow: 1, padding: 3 }}
+          >
+            <Typography>Attribute Ratings</Typography>
+            <BarChart
+              layout="horizontal"
+              series={ratingData.attribute}
+              height={290}
+              yAxis={[{ 
+                data: Object.values(state.attributes).map(({ name }) => name), 
+                scaleType: 'band' 
+              }]}
+              margin={{ left: 100 }}
+            />
+          </Paper>
+        ) }
       </Stack>
       { isSelf && (
         <Paper elevation={3}>

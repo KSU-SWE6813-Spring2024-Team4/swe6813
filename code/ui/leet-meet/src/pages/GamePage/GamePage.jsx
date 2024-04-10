@@ -1,4 +1,5 @@
 import { 
+  Box,
   Container, 
   Paper, 
   Stack, 
@@ -97,7 +98,7 @@ export default function GamePage() {
         attribute: state.attributes[topRatingsByUser[userId]?.attribute]?.name
       };
     });
-  }, [game, state.gameFollowers, state.users, topRatingsByUser]);
+  }, [game, state.gameFollowers, state.users, topRatingsByUser, state.attributes, state.skills]);
 
   const ratingsData = useMemo(() => {
     if (!game || !state.ratings[game?.id]) {
@@ -128,7 +129,7 @@ export default function GamePage() {
         data: Object.values(state.attributes).map((attribute) => attributeCount[attribute.id]) 
       }]
     }
-  }, [game, state.ratings]);
+  }, [game, state.ratings, state.attributes, state.skills]);
 
   const isFollowing = useMemo(() => {
     return followers.find((follower) => `${follower.id}` === `${state.user?.id}`)
@@ -177,74 +178,116 @@ export default function GamePage() {
   }, [navigate])
 
   return (
-    <Stack>
-      <Container sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Typography variant="h3">
-          { game?.name ?? '' }
-        </Typography>
-        { state.user && (
-          <FollowButton 
-            data-testid="followButton"
-            isFollowing={isFollowing} 
-            onClick={isFollowing ? onUnfollow : onFollow} 
-          />
-        ) }
-      </Container>
-      <Paper
-        elevation={3}
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4, padding: 2, justifyContent: 'space-evenly' }}
-      >
-        <Typography>
-          Total Follows: {game ? state.gameFollowers[game.id].length : 0}
-        </Typography>
-        <Typography>
-          Current Rank: {gameRank}{getOrdinal(gameRank)}
-        </Typography>
-      </Paper>
-      <Stack 
-        direction="row" 
-        sx={{ display: 'flex', marginTop: 4, marginBottom: 4 }}
-      >
-        <Paper
-          elevation={3} 
-          sx={{ flexGrow: 2, marginRight: 4, padding: 3 }}
+    <Box
+      sx={{ 
+        backgroundImage: 'linear-gradient(to bottom right, #009688, #FFFFFF)', 
+        minHeight: '100vh', 
+        padding: '20px' 
+      }}
+    >
+      <Stack spacing={2}>
+        <Container 
+          sx={{
+            display: 'flex', 
+            flexDirection: 'row', 
+            justifyContent: 'space-between' 
+          }}
         >
-          <Typography>Skill Ratings</Typography>
-          <BarChart
-            series={ratingsData.skill}
-            height={290}
-            xAxis={[{ data: Object.values(state.skills).map(({ name }) => name), scaleType: 'band' }]}
-          />
-        </Paper>
+          <Typography variant="h3">
+            { game?.name ?? '' }
+          </Typography>
+          { state.user && (
+            <FollowButton 
+              data-testid="followButton"
+              isFollowing={isFollowing} 
+              onClick={isFollowing ? onUnfollow : onFollow} 
+            />
+          ) }
+        </Container>
         <Paper
-          elevation={3} 
-          sx={{ flexGrow: 1, padding: 3 }}
+          elevation={3}
+          sx={{
+            display: 'flex', 
+            marginBottom: '20px', 
+            marginTop: '20px',
+            padding: '20px',
+            justifyContent: 'space-evenly' 
+          }}
         >
-          <Typography>Attribute Ratings</Typography>
-          <BarChart
-            layout="horizontal"
-            series={ratingsData.attribute}
-            height={290}
-            yAxis={[{ data: Object.values(state.attributes).map(({ name }) => name), scaleType: 'band' }]}
-            margin={{ left: 100 }}
-          />
+          <Typography>
+            Total Follows: {game ? state.gameFollowers[game.id].length : 0}
+          </Typography>
+          <Typography>
+            Current Rank: {gameRank}{getOrdinal(gameRank)}
+          </Typography>
         </Paper>
+        <Stack 
+          direction="row" 
+          sx={{
+            display: 'flex',
+            marginTop: 4,
+            marginBottom: 4
+          }}
+        >
+          <Paper
+            elevation={3} 
+            sx={{
+              flexGrow: 2, 
+              marginRight: 4, 
+              padding: 3
+            }}
+          >
+            <Typography>Skill Ratings</Typography>
+            <BarChart
+              series={ratingsData.skill}
+              height={290}
+              xAxis={[{ 
+                data: Object.values(state.skills).map(({ name }) => name),
+                scaleType: 'band'
+              }]}
+            />
+          </Paper>
+          <Paper
+            elevation={3} 
+            sx={{ 
+              flexGrow: 1, 
+              padding: 3 
+            }}
+          >
+            <Typography>Attribute Ratings</Typography>
+            <BarChart
+              layout="horizontal"
+              series={ratingsData.attribute}
+              height={290}
+              yAxis={[{ 
+                data: Object.values(state.attributes).map(({ name }) => name), 
+                scaleType: 'band' 
+              }]}
+              margin={{ left: 100 }}
+            />
+          </Paper>
+        </Stack>
+        <DataGrid
+          columnVisibilityModel={{ id: false }}
+          columns={ columns }
+          onRowClick={ onClick }
+          rows={ followers }
+          slots={{ toolbar: () => <Typography sx={{ padding: 3 }}>Followers</Typography> }}
+          sx={{
+            backgroundColor: 'white',
+            marginTop: 2,
+            marginBottom: 2
+          }}
+        />
+        {errorMessage && (
+          <Alert
+            elevation={3} 
+            severity="error"
+          >
+            {errorMessage}
+          </Alert>
+        )}
       </Stack>
-      <DataGrid
-        columnVisibilityModel={{ id: false }}
-        columns={ columns }
-        onRowClick={ onClick }
-        rows={ followers }
-        slots={{ toolbar: () => <Typography>Followers</Typography> }}
-      />
-      {errorMessage && (
-        <Alert
-          elevation={3} 
-          severity="error"
-        >
-          {errorMessage}
-        </Alert>
-      )}
-    </Stack>
+    </Box>
   )
 }

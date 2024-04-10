@@ -5,7 +5,6 @@ from flask import (
     Blueprint, flash, g, jsonify, redirect, request, session
 )
 import uuid
-import os
 
 prefix = "/games"
 bp = Blueprint('games', __name__, url_prefix=prefix)

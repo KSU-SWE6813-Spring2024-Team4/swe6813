@@ -128,7 +128,9 @@ export async function followUser(follow_user_id) {
     const Authorization = getBearerToken();
     const res = await fetch(getUrl('/user/follow/add'), getOptions({
       headers: { 
-        Authorization, 'Content-Type': 'application/x-www-form-urlencoded' },
+        Authorization, 
+        'Content-Type': 'application/x-www-form-urlencoded' 
+      },
       body: encodeFormBody({ follow_user_id }), 
       method: 'POST'
     }));
@@ -229,5 +231,32 @@ export async function reviewUser({ rate_user_id, attribute_id, skill_id, game_id
   }
 }
 
-export async function updateReview({ rate_user_id, attribute_id, skill_id, game_id }) {
+export async function updateReview({ rate_user_id, rating_id, attribute_id, skill_id, game_id }) {
+  try {
+    const Authorization = getBearerToken();
+    const res = await fetch(getUrl('/user/rating/edit'), getOptions({
+      headers: { 
+        Authorization,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: encodeFormBody({ 
+        rate_user_id,
+        rating_id,
+        attribute_id,
+        skill_id,
+        game_id
+      }), 
+      method: 'PUT'
+    }));
+
+    const text = await res.text()
+    if (text.toLowerCase().includes('error')) {
+      throw new Error(text);
+    }
+
+    const json = JSON.parse(text);
+    return res.status === 200 ? Promise.resolve(json) : Promise.reject(json);
+  } catch (err) {
+    throw err;
+  }
 }

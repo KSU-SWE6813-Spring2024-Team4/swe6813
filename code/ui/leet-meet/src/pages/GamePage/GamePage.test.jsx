@@ -9,15 +9,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GamePage from './GamePage';
-import { 
-  createRating,
-  createUser
-} from '../../mocks';
+import { createUser } from '../../mocks';
 import * as Store from '../../store';
-import { 
-  ATTRIBUTES,
-  SKILLS
-} from '../../util/Constants';
 import * as MainApi from '../../util/Api/MainApi';
 
 jest.mock('@mui/x-charts', () => ({ 
@@ -45,6 +38,8 @@ test('that a user can follow a game', async () => {
       },
       user,
       users: { [user.id]: user },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -94,6 +89,8 @@ test('that a user can unfollow a game', async () => {
       },
       user,
       users: { [user.id]: user },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -130,32 +127,19 @@ test('that a user can unfollow a game', async () => {
   });
 });
 
-test('that it renders followers', async () => {
-  // const attributeRating = createRating({ 
-  //   gameId: game.id,
-  //   toId: user.id,
-  //   type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)]
-  // });
-
-  // const skillRating = createRating({
-  //   gameId: game.id,
-  //   toId: user.id,
-  //   type: SKILLS[getRandomInt(SKILLS.length)]
-  // });
-  
+test('that it renders followers', async () => {  
   jest.spyOn(Store, 'useAppContext').mockReturnValue({ 
     state: { 
       games: [game],
       gameFollowers: { [game.id]: [user.id] },
       ratings: {
-        // [game.id]: { 
-        //   [user.id]: { 
-        //     attribute: [attributeRating], 
-        //     skill: [skillRating] 
-        //   }
-        // }
+        [game.id]: { 
+          [user.id]: []
+        }
       },
-      users: { [user.id]: user }
+      users: { [user.id]: user },
+      skills: {},
+      attributes: {}
     }
   });
 
@@ -175,6 +159,4 @@ test('that it renders followers', async () => {
   render(<RouterProvider router={router} />);
 
   expect(await screen.findByText(user.name)).toBeVisible();
-  // expect(await screen.findByText(attributeRating.type)).toBeVisible();
-  // expect(await screen.findByText(skillRating.type)).toBeVisible();
 }); 

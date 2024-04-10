@@ -21,6 +21,6 @@ test('that it render properly based on the logged in user', async () => {
     </Store.StateProvider>
   );
 
-  expect(await screen.findByText(user.name)).toBeVisible();
+  expect(await screen.findByText(user.username)).toBeVisible();
   expect(await screen.findByText(/Profile/)).toBeVisible();
 });

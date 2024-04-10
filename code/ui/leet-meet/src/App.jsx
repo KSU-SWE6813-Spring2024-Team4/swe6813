@@ -148,39 +148,6 @@ function App() {
       }
     };
 
-    // const ratings = Object.keys(gameFollowers).reduce((allRatings, gameId) => {
-//   allRatings[gameId] = gameFollowers[gameId].reduce((userRatings, userId) => {
-//     userRatings[userId] = {
-//       skill: [],
-//       attribute: []
-//     };
-
-//     const ticks = getRandomInt(RANDOM_COUNT);
-//     for (let i = 0; i <= ticks; i++) {
-//       const maybeFrom = getRandomInt(RANDOM_COUNT);
-//       if (maybeFrom !== userId && maybeFrom !== 0) {
-//         userRatings[userId].attribute.push(createRating({ 
-//           gameId, 
-//           fromId: maybeFrom, 
-//           toId: userId, 
-//           type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)] 
-//         }));
-
-//         userRatings[userId].skill.push(createRating({ 
-//           gameId, 
-//           fromId: maybeFrom, 
-//           toId: userId, 
-//           type: SKILLS[getRandomInt(SKILLS.length)] 
-//         }));
-//       }
-//     }
-
-//     return userRatings;
-//   }, {});
-
-//   return allRatings;
-// }, {})
-
     loadAttributes();
     loadGames();
     loadRatings();
@@ -193,7 +160,11 @@ function App() {
       try {
         const followedGamesByUser = await Promise.all(users.map((user) => getFollowedGames(user.id)));
         const followedGamesByGame = followedGamesByUser.reduce((acc, curr) => {
-          const { games, userId } = curr;
+          const { 
+            games, 
+            userId 
+          } = curr;
+
           games.forEach((game) => {
             acc[game.id] = acc[game.id] ? [...acc[game.id], userId] : [userId];
           });
@@ -201,7 +172,10 @@ function App() {
           return acc;
         }, {});
   
-        dispatch({ type: Action.LoadGameFollowers, payload: followedGamesByGame });
+        dispatch({ 
+          type: Action.LoadGameFollowers,
+          payload: followedGamesByGame
+        });
       } catch (err) {
         console.error(err);
       }

@@ -10,16 +10,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UserPage from './UserPage';
-import { 
-  createRating,
-  createUser
-} from '../../mocks';
+import { createUser } from '../../mocks';
 import * as Store from '../../store';
-import { getRandomInt } from '../../util/Calculator/Calculator';
-import { 
-  ATTRIBUTES,
-  SKILLS
-} from '../../util/Constants';
 import * as MainApi from '../../util/Api/MainApi';
 
 jest.mock('@mui/x-charts', () => ({ 
@@ -46,6 +38,8 @@ test('that a user cannot follow themselves', async () => {
       user,
       followedUsers: [],
       users: { [user.id]: user },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -88,6 +82,8 @@ test('that a user can follow another user', async () => {
         [user.id]: user, 
         [followedUser.id]: followedUser 
       },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -134,6 +130,8 @@ test('that a user can unfollow another user', async () => {
       user,
       followedUsers: [followedUser.id],
       users: { [user.id]: user, [followedUser.id]: followedUser },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -166,32 +164,19 @@ test('that a user can unfollow another user', async () => {
 });
 
 test('that it renders followed games', async () => {
-  const attributeRating = createRating({ 
-    gameId: game.id,
-    toId: user.id,
-    type: ATTRIBUTES[getRandomInt(ATTRIBUTES.length)]
-  });
-
-  const skillRating = createRating({
-    gameId: game.id,
-    toId: user.id,
-    type: SKILLS[getRandomInt(SKILLS.length)]
-  });
-
   jest.spyOn(Store, 'useAppContext').mockReturnValue({ 
     state: { 
       games: [game],
       gameFollowers: { [game.id]: [user.id] },
       ratings: {
         [game.id]: { 
-          [user.id]: { 
-            attribute: [attributeRating],
-            skill: [skillRating]
-          }
+          [user.id]: []
         }
       },
       followedUsers: [],
-      users: { [user.id]: user }
+      users: { [user.id]: user },
+      skills: {},
+      attributes: {}
     }
   });
 
@@ -213,8 +198,6 @@ test('that it renders followed games', async () => {
   const followedGamesTable = await screen.findByTestId('followedGamesTable');
 
   expect(await within(followedGamesTable).findByText(game.name)).toBeVisible();
-  // expect(await within(followedGamesTable).findByText(attributeRating.type)).toBeVisible();
-  // expect(await within(followedGamesTable).findByText(skillRating.type)).toBeVisible();
 });
 
 test('that it shows your followed users', async () => {
@@ -230,6 +213,8 @@ test('that it shows your followed users', async () => {
       users: { 
         [user.id]: user, [followedUser.id]: followedUser 
       },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -265,6 +250,8 @@ test('that it shows review form for followed users', async () => {
       users: { 
         [user.id]: user, [followedUser.id]: followedUser 
       },
+      skills: {},
+      attributes: {}
     },
   });
 
@@ -299,6 +286,8 @@ test('that it does not show review form for unfollowed users',  async () => {
       users: { 
         [user.id]: user, [followedUser.id]: followedUser 
       },
+      skills: {},
+      attributes: {}
     },
   });
 

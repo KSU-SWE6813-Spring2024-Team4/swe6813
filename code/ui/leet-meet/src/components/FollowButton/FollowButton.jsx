@@ -1,6 +1,10 @@
 import { Button } from '@mui/material';
 
-export default function FollowButton({ isFollowing, onClick, ...props }) {
+export default function FollowButton({ 
+  isFollowing, 
+  onClick, 
+  ...props 
+}) {
   return (
     <Button
       color={ isFollowing ? 'error' : 'primary' }

@@ -97,7 +97,6 @@ const StateProvider = ({ children }) => {
           }
         };
       case Action.LoadRatings:
-        console.log(action.payload)
         return {
           ...state,
           ratings: action.payload
@@ -121,58 +120,33 @@ const StateProvider = ({ children }) => {
           user: action.payload,
         };
       case Action.SubmitRating:
+        console.log(action.payload)
         const {
-          gameId,
-          toId,
-          fromId,
-          skill,
-          attribute 
+          game_id,
+          to_user_id,
+          from_user_id,
         } = action.payload;
 
-        const ratings = state.ratings[gameId][toId];
-        const existingSkillRatingIndex = ratings.skill.findIndex(
-          (skillRating) => skillRating.fromId === fromId
-        );
-        const existingAttributeRatingIndex = ratings.attribute.findIndex(
-          (skillRating) => skillRating.fromId === fromId
-        );
+        const ratings = state.ratings[game_id][to_user_id];
+        const existingRatingIndex = ratings.findIndex((rating) => {
+          return `${rating.from_user_id}` === `${from_user_id}` && rating.to_user_id === to_user_id && rating.game_id === game_id;
+        });
 
-        const updatedSkillRatingsForUser = [...ratings.skill];
-        const newSkillRating = { 
-          gameId, 
-          fromId,
-          toId,
-          type: skill 
-        };
-        if (existingSkillRatingIndex) {
-          updatedSkillRatingsForUser.splice(existingSkillRatingIndex, 1, newSkillRating);
+        const updatedRatingsForUser = [...ratings];
+        console.log({ existingRatingIndex })
+        if (existingRatingIndex !== -1) {
+          updatedRatingsForUser.splice(existingRatingIndex, 1, action.payload)
         } else {
-          updatedSkillRatingsForUser.push(newSkillRating);
-        }
-
-        const updatedAttributeRatingsForUser = [...ratings.attribute];
-        const newAttributeRating = { 
-          gameId,
-          fromId,
-          toId,
-          type: attribute 
-        };
-        if (existingAttributeRatingIndex) {
-          updatedAttributeRatingsForUser.splice(existingAttributeRatingIndex, 1, newAttributeRating);
-        } else {
-          updatedAttributeRatingsForUser.push(newAttributeRating);
+          updatedRatingsForUser.push(action.payload)
         }
 
         return { 
           ...state,
           ratings: { 
             ...state.ratings,
-            [gameId]: { 
-              ...state.ratings[gameId], 
-              [toId]: { 
-                skill: updatedSkillRatingsForUser,
-                attribute: updatedAttributeRatingsForUser,
-              } 
+            [game_id]: { 
+              ...state.ratings[game_id], 
+              [to_user_id]: updatedRatingsForUser
             } 
           } 
         };

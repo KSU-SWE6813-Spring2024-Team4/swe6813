@@ -48,22 +48,32 @@ export default function LoginPage() {
   }, [dispatch, navigate, password, username])
 
   return (
-    <Container>
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom right, #009688, #FFFFFF)',
+      }}
+    >
       <Paper
         elevation={3}
-        sx={{ padding: 2 }}
+        sx={{ padding: 2, width: { xs: '90%', sm: '70%', md: '50%' } }}
       >
-        <Stack>
+        <Stack spacing={2}>
+          <Typography variant="h4" align="center">Sign In</Typography>
           <TextField
             onChange={({ target }) => setUsername(target.value)}
             placeholder="Username"
             required 
-            value={username} 
+            value={username}
           />
           <TextField
             onChange={({ target }) => setPassword(target.value)}
             placeholder="Password"
             required
+            type="password"
             value={password} 
           />
           <Button
@@ -73,7 +83,7 @@ export default function LoginPage() {
           >
             Sign In
           </Button> 
-          <Typography>
+          <Typography align="center">
             Don't have an account?&nbsp;
             <Link href="/register">Create one here</Link>
           </Typography>

@@ -15,7 +15,11 @@ import {
   useState
 } from 'react';
 import { Action, useAppContext } from '../../store';
-import { reviewUser } from '../../util/Api/MainApi';
+import { 
+  getRatings,
+  reviewUser, 
+  updateReview 
+} from '../../util/Api/MainApi';
 
 export default function ReviewForm({ followedGames, onError, reviewedUser }) {
   const {
@@ -45,26 +49,45 @@ export default function ReviewForm({ followedGames, onError, reviewedUser }) {
     }
 
     try {
-      await reviewUser({
-        game_id: reviewGame,
-        attribute_id: reviewAttribute,
-        skill_id: reviewSkill, 
-        rate_user_id: reviewedUser.id 
+      const existingRating = state.ratings[reviewGame][reviewedUser.id].find((rating) => {
+        return `${rating.from_user_id}` === `${state.user.id}` && rating.to_user_id === reviewedUser.id && rating.game_id === reviewGame;
       });
-    } catch (err) {
 
+      if (!existingRating) {
+        await reviewUser({
+          game_id: reviewGame,
+          attribute_id: reviewAttribute,
+          skill_id: reviewSkill, 
+          rate_user_id: reviewedUser.id 
+        });
+      } else {
+        await updateReview({
+          rating_id: existingRating.id,
+          game_id: reviewGame,
+          attribute_id: reviewAttribute,
+          skill_id: reviewSkill, 
+          rate_user_id: reviewedUser.id
+        });
+      }
+    } catch (err) {
+      console.log({ err })
     }
 
-    // dispatch({
-    //   type: Action.SubmitRating, 
-    //   payload: { 
-    //     gameId: reviewGame, 
-    //     fromId: state.user?.id, 
-    //     toId: reviewedUser.id, 
-    //     skill: reviewSkill, 
-    //     attribute: reviewAttribute 
-    //   } 
-    // })
+    const ratings = await getRatings();
+    let rating = ratings
+      .flatMap(({ r }) => r)
+      .find((rating) => {
+        return `${rating.from_user_id}` === `${state.user.id}` && rating.to_user_id === reviewedUser.id && rating.game_id === reviewGame;
+      });
+  
+    if (rating) {
+      dispatch({
+        type: Action.SubmitRating, 
+        payload: rating
+      })
+    } else {
+      console.log('rating not found')
+    }
   }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, reviewedUser]);
 
   return (
@@ -125,7 +148,9 @@ export default function ReviewForm({ followedGames, onError, reviewedUser }) {
           />
         )) }
       </RadioGroup>
-      <Button onClick={ onSubmitReview }>Submit</Button>
+      <Button onClick={ onSubmitReview }>
+        Submit
+      </Button>
     </Paper>
   )
 }
