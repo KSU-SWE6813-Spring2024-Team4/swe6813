@@ -1,5 +1,5 @@
 from ..graph_db import GraphDb
-from  ..helpers import db_helpers
+from  ..helpers import db_helpers, request_helpers
 from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
@@ -13,13 +13,13 @@ bp = Blueprint('friend_requests', __name__, url_prefix=prefix)
 
 @bp.post('/add')
 def add_friend_request():
-    if 'from_user' not in request.form:
-        return "Error: Missing form field { from_user }"
+    from_user_id = request_helpers.get_user_id(request.headers)
+    if from_user_id is None:
+        return 'Error: User ID not found'
 
     if 'to_user' not in request.form:
         return "Error: Missing form field { to_user }"
 
-    from_user_id = request.form['from_user']
     to_user_id = request.form['to_user']
 
     graph = GraphDb()
@@ -50,9 +50,11 @@ def add_friend_request():
         return friend_request_created.data()
 
 
-@bp.get('/list/<user_id>')
-def get_friend_requests(user_id):
-
+@bp.get('/list/')
+def get_friend_requests():
+    user_id = request_helpers.get_user_id(request.headers)
+    if user_id is None:
+        return 'Error: User ID not found'
     graph = GraphDb()
     db_conn = graph.get_database_driver()
     friend_request_query_res = db_conn.run("""
@@ -110,7 +112,6 @@ def approve_friend_request():
     """, {'fr_id': request.form['fr_id']}).data()
 
     return create_friend_relationship_query
-
 
 
 class FriendRequest:

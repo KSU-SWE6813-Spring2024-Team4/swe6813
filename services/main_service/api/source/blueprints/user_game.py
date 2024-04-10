@@ -1,5 +1,5 @@
 from ..graph_db import GraphDb
-from  ..helpers import db_helpers
+from  ..helpers import db_helpers, request_helpers
 from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
@@ -10,13 +10,21 @@ bp = Blueprint('user_game', __name__, url_prefix=prefix)
 
 @bp.get('/list')
 def list_user_games():
+    user_id = request_helpers.get_user_id(request.headers)
+    if user_id is None:
+        return 'Error: User ID not found'
+
     graph = GraphDb()
     db_conn = graph.get_database_driver()
+
+    if not db_helpers.user_id_exists(db_conn, user_id):
+        return "Error: A user with that id does not exist"
+
     user_game_list = db_conn.run(
         """
         MATCH (user: User{id: $id}) return user;
         """
-    ).data()
+    , {'id': user_id}).data()
 
     return user_game_list
 
@@ -42,19 +50,19 @@ def show_user_game(user_id):
 
 @bp.post('/add')
 def add_user_game():
-    if 'uid' not in request.form:
-        return "Error: Missing form field { uid }"
+    user_id = request_helpers.get_user_id(request.headers)
+    if user_id is None:
+        return 'Error: User ID not found'
 
     if 'gid' not in request.form:
         return "Error: Missing form field { gid }"
 
-    uid = request.form['uid']
     gid = request.form['gid']
 
     graph = GraphDb()
     db_conn = graph.get_database_driver()
 
-    uid_exists = db_helpers.user_id_exists(db_conn, uid)
+    uid_exists = db_helpers.user_id_exists(db_conn, user_id)
 
     if not uid_exists:
         return "Error: A user with that id does not exist"
@@ -74,7 +82,7 @@ def add_user_game():
         } 
         CREATE (user)-[owns_game :OWNS_GAME]->(game)
         RETURN user, owns_game, game
-        """, {'uid': uid, 'gid': gid}
+        """, {'uid': user_id, 'gid': gid}
     ).single()
 
     if user_game_inserted is None:
@@ -85,19 +93,19 @@ def add_user_game():
 
 @bp.delete('/delete')
 def delete_user_game():
-    if 'uid' not in request.form:
-        return "Error: Missing form field { uid }"
+    user_id = request_helpers.get_user_id(request.headers)
+    if user_id is None:
+        return 'Error: User ID not found'
 
     if 'gid' not in request.form:
         return "Error: Missing form field { gid }"
 
-    uid = request.form['uid']
     gid = request.form['gid']
 
     graph = GraphDb()
     db_conn = graph.get_database_driver()
 
-    uid_exists = db_helpers.user_id_exists(db_conn, uid)
+    uid_exists = db_helpers.user_id_exists(db_conn, user_id)
 
     if not uid_exists:
         return "Error: A user with that id does not exist"
@@ -112,7 +120,7 @@ def delete_user_game():
         MATCH(user: User {id: $uid})-[owns_game:OWNS_GAME]->(game: Game {id: $gid}) 
         DELETE owns_game
         RETURN user, owns_game, game
-        """, {'uid': uid, 'gid': gid}
+        """, {'uid': user_id, 'gid': gid}
     ).single()
 
     return user_game_deleted.data()

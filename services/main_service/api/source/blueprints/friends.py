@@ -1,5 +1,5 @@
 from ..graph_db import GraphDb
-from ..helpers import db_helpers
+from ..helpers import db_helpers, request_helpers
 from flask import (
     Blueprint, flash, g, redirect, request, session, url_for
 )
@@ -28,8 +28,9 @@ def list_friends(user_id):
 
 @bp.delete("/delete")
 def delete_friend():
-    if 'user_id' not in request.form:
-        return 'Error: Missing form field { user_id }'
+    user_id = request_helpers.get_user_id(request.headers)
+    if user_id is None:
+        return 'Error: User ID not found'
 
     if 'friend_user_id' not in request.form:
         return 'Error: Missing form field { friend_user_id }'
@@ -37,7 +38,6 @@ def delete_friend():
     graph = GraphDb()
     db_conn = graph.get_database_driver()
 
-    user_id = request.form['user_id']
     friend_id = request.form['friend_user_id']
 
     if not db_helpers.user_id_exists(db_conn, user_id):
