@@ -68,13 +68,21 @@ export default function RegisterPage() {
   }, [username, password, confirmPassword, navigate, dispatch, setErrorMessage]);
 
   return (
-    <Container>
+    <Container
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom right, #009688, #FFFFFF)',
+      }}
+    >
       <Paper
         elevation={3}
-        sx={{ padding: 2 }}
+        sx={{ padding: 2, width: { xs: '90%', sm: '70%', md: '50%' } }}
       >
-        <Stack>
-          <Typography variant="h3">Register</Typography>
+        <Stack spacing={2}>
+          <Typography variant="h4">Register</Typography>
           <TextField
             onChange={ onUsernameChange } 
             placeholder="Username"
@@ -98,7 +106,7 @@ export default function RegisterPage() {
           >
             Register
           </Button>
-          <Typography>
+          <Typography align="center">
             Already have an account?&nbsp;
             <Link href="/login">Sign In</Link>
           </Typography>

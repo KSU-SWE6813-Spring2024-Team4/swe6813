@@ -49,20 +49,30 @@ export default function AppRoot() {
   return (
     <Stack>
       <AppBar>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Toolbar 
+          sx={{ 
+            backgroundColor: '#009688',
+            display: 'flex', 
+            justifyContent: 'space-between' 
+          }}
+        >
           <Stack direction="row">
             <MenuItem
               key="explore" 
               onClick={onExplore}
             >
-              <Typography textAlign="center">Explore</Typography>
+              <Typography textAlign="center">
+                Explore
+              </Typography>
             </MenuItem>
             { state.user && (
               <MenuItem
                 key="profile" 
                 onClick={onProfile}
               >
-                <Typography textAlign="center">Profile</Typography>
+                <Typography textAlign="center">
+                  Profile
+                </Typography>
               </MenuItem>
             ) }
           </Stack>
@@ -78,7 +88,9 @@ export default function AppRoot() {
                   color="inherit"
                 >
                   <AccountCircle />
-                  <Typography marginLeft={1}>{state.user?.name ?? '' }</Typography>
+                  <Typography marginLeft={1}>
+                    {state.user?.username ?? '' }
+                  </Typography>
                 </IconButton>
                 <Menu
                   anchorEl={anchorEl}
@@ -94,7 +106,9 @@ export default function AppRoot() {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={onAuth}>Sign Out</MenuItem>
+                  <MenuItem onClick={onAuth}>
+                    Sign Out
+                  </MenuItem>
                 </Menu>
               </>
             ) : (
@@ -108,7 +122,12 @@ export default function AppRoot() {
           </div>
         </Toolbar>
       </AppBar>
-      <Container sx={{ marginTop: 12, marginBottom: 12 }}>
+      <Container 
+        sx={{ 
+          marginTop: 12, 
+          marginBottom: 12 
+        }}
+      >
         <Outlet />
       </Container>
     </Stack>

@@ -8,6 +8,9 @@ function getUrl(path) {
       break
     case 'production':
       baseUrl = 'TODO'
+      break
+    default:
+      throw new Error("unknown environment")
   }
 
   return `${baseUrl}${path}`

@@ -7,9 +7,11 @@ import {
 const Action = {
   FollowGame: 'FOLLOW_GAME', 
   FollowUser: 'FOLLOW_USER', 
+  LoadAttributes: 'LOAD_ATTRIBUTES',
   LoadGames: 'LOAD_GAMES',
   LoadGameFollowers: 'LOAD_GAME_FOLLOWERS', 
   LoadRatings: 'LOAD_RATINGS',
+  LoadSkills: 'LOAD_SKILLS',
   LoadUsers: 'LOAD_USERS', 
   LoadFollowedUsers: 'LOAD_FOLLOWED_USERS', 
   LoginUser: 'LOGIN_USER', 
@@ -19,12 +21,14 @@ const Action = {
 }
 
 const initialState = {
+  attributes: {},
+  followedUsers: null,
   games: [],
   gameFollowers: {},
   ratings: {},
+  skills: {},
   user: null,
   users: {},
-  followedUsers: null
 };
 
 const store = createContext(initialState);
@@ -62,6 +66,19 @@ const StateProvider = ({ children }) => {
           followedUsers: [...state.followedUsers, followedUserId]
         };
       }
+      case Action.LoadAttributes:
+        return { 
+          ...state, 
+          attributes: action.payload.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}) 
+        };
+      case Action.LoadFollowedUsers:
+        return {
+          ...state,
+          followedUsers: action.payload
+        };
       case Action.LoadGames:
         return {
           ...state,
@@ -74,7 +91,10 @@ const StateProvider = ({ children }) => {
       case Action.LoadGameFollowers:
         return {
           ...state,
-          gameFollowers: { ...state.gameFollowers, ...action.payload }
+          gameFollowers: { 
+            ...state.gameFollowers, 
+            ...action.payload 
+          }
         };
       case Action.LoadRatings:
         return {
@@ -86,10 +106,13 @@ const StateProvider = ({ children }) => {
           ...state,
           users: action.payload
         };
-      case Action.LoadFollowedUsers:
+      case Action.LoadSkills:
         return {
           ...state,
-          followedUsers: action.payload
+          skills: action.payload.reduce((acc, curr) => {
+            acc[curr.id] = curr;
+            return acc;
+          }, {}) 
         };
       case Action.LoginUser:
         return { 
@@ -97,58 +120,33 @@ const StateProvider = ({ children }) => {
           user: action.payload,
         };
       case Action.SubmitRating:
+        console.log(action.payload)
         const {
-          gameId,
-          toId,
-          fromId,
-          skill,
-          attribute 
+          game_id,
+          to_user_id,
+          from_user_id,
         } = action.payload;
 
-        const ratings = state.ratings[gameId][toId];
-        const existingSkillRatingIndex = ratings.skill.findIndex(
-          (skillRating) => skillRating.fromId === fromId
-        );
-        const existingAttributeRatingIndex = ratings.attribute.findIndex(
-          (skillRating) => skillRating.fromId === fromId
-        );
+        const ratings = state.ratings[game_id][to_user_id];
+        const existingRatingIndex = ratings.findIndex((rating) => {
+          return `${rating.from_user_id}` === `${from_user_id}` && rating.to_user_id === to_user_id && rating.game_id === game_id;
+        });
 
-        const updatedSkillRatingsForUser = [...ratings.skill];
-        const newSkillRating = { 
-          gameId, 
-          fromId,
-          toId,
-          type: skill 
-        };
-        if (existingSkillRatingIndex) {
-          updatedSkillRatingsForUser.splice(existingSkillRatingIndex, 1, newSkillRating);
+        const updatedRatingsForUser = [...ratings];
+        console.log({ existingRatingIndex })
+        if (existingRatingIndex !== -1) {
+          updatedRatingsForUser.splice(existingRatingIndex, 1, action.payload)
         } else {
-          updatedSkillRatingsForUser.push(newSkillRating);
-        }
-
-        const updatedAttributeRatingsForUser = [...ratings.attribute];
-        const newAttributeRating = { 
-          gameId,
-          fromId,
-          toId,
-          type: attribute 
-        };
-        if (existingAttributeRatingIndex) {
-          updatedAttributeRatingsForUser.splice(existingAttributeRatingIndex, 1, newAttributeRating);
-        } else {
-          updatedAttributeRatingsForUser.push(newAttributeRating);
+          updatedRatingsForUser.push(action.payload)
         }
 
         return { 
           ...state,
           ratings: { 
             ...state.ratings,
-            [gameId]: { 
-              ...state.ratings[gameId], 
-              [toId]: { 
-                skill: updatedSkillRatingsForUser,
-                attribute: updatedAttributeRatingsForUser,
-              } 
+            [game_id]: { 
+              ...state.ratings[game_id], 
+              [to_user_id]: updatedRatingsForUser
             } 
           } 
         };
