@@ -1,7 +1,7 @@
 name: UI deployment
 on:
   push:
-    branches: ["main", "eallmann/*"]
+    branches: ["main", "eallmann/*", "aabia/*"]
     paths:
       - '/code/ui/leet-meet/**'
   pull_request:
