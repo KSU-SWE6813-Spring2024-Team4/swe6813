@@ -120,7 +120,6 @@ const StateProvider = ({ children }) => {
           user: action.payload,
         };
       case Action.SubmitRating:
-        console.log(action.payload)
         const {
           game_id,
           to_user_id,
@@ -133,7 +132,6 @@ const StateProvider = ({ children }) => {
         });
 
         const updatedRatingsForUser = [...ratings];
-        console.log({ existingRatingIndex })
         if (existingRatingIndex !== -1) {
           updatedRatingsForUser.splice(existingRatingIndex, 1, action.payload)
         } else {

@@ -234,7 +234,7 @@ test('that it shows your followed users', async () => {
   render(<RouterProvider router={router} />);
 
   expect(await screen.findByText('Followed Users')).toBeVisible();
-  expect(await screen.findByText(followedUser.name)).toBeVisible();
+  expect(await screen.findByText(followedUser.username)).toBeVisible();
 });
 
 test('that it shows review form for followed users', async () => {  

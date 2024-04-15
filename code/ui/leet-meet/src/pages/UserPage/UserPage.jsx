@@ -50,7 +50,7 @@ const gameColumns = [
 const followedUserColumns = [
   { field: 'id' },
   {
-    field: 'name',
+    field: 'username',
     headerName: 'Name',
     width: 200
   }
