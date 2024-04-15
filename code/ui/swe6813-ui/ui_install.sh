@@ -7,7 +7,7 @@ echo "Building deployment"
 npm run build
 
 echo "Copying deployment artifacts to the install directory"
-sudo mv build /var/www/swe6813
+mv -f build /var/www/swe6813
 
 echo "Restarting nginx"
-sudo systemctl restart nginx
+systemctl restart nginx
