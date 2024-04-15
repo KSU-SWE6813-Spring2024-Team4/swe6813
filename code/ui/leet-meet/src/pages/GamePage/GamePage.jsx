@@ -35,7 +35,7 @@ import {
 const columns = [
   { field: 'id' },
   { 
-    field: 'name', 
+    field: 'username', 
     headerName: 'Name', 
     width: 250 
   },

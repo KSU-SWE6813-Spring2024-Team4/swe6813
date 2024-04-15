@@ -158,5 +158,5 @@ test('that it renders followers', async () => {
 
   render(<RouterProvider router={router} />);
 
-  expect(await screen.findByText(user.name)).toBeVisible();
+  expect(await screen.findByText(user.username)).toBeVisible();
 }); 
