@@ -7,7 +7,10 @@ echo "Building deployment"
 npm run build
 
 echo "Copying deployment artifacts to the install directory"
-mv -f build /var/www/swe6813
+rsync -a build /var/www/swe6813/build
+
+echo "Cleaning up source directory"
+rm -rf build
 
 echo "Restarting nginx"
 systemctl restart nginx
