@@ -7,7 +7,7 @@ function getUrl(path) {
       baseUrl = 'http://localhost:8080'
       break
     case 'production':
-      baseUrl = 'TODO'
+      baseUrl = 'http://10.128.0.4'
       break
     default:
       throw new Error("unknown environment")
