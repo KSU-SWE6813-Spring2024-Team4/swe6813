@@ -108,7 +108,12 @@ export default function RegisterPage() {
           </Button>
           <Typography align="center">
             Already have an account?&nbsp;
-            <Link href="/login">Sign In</Link>
+            <Link
+              component="button"
+              onClick={() => navigate('/login')}
+            >
+              Sign In
+            </Link>
           </Typography>
         </Stack>
       </Paper>
