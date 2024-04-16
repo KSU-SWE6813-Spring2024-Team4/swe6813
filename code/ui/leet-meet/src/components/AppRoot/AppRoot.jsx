@@ -116,7 +116,7 @@ export default function AppRoot() {
                 key="sign-in"
                 onClick={ onAuth }
               >
-                <Typography textAlign="center">Sign In</Typography>
+                <Typography textAlign="center">Log In</Typography>
               </MenuItem>
             ) }
           </div>

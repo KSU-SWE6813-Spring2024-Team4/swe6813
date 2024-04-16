@@ -12,8 +12,8 @@ rsync -a build /var/www/swe6813/
 echo "Updating perms"
 chown -R elliott_allmann:elliott_allmann /var/www/swe6813/build
 
-echo "Cleaning up source directory"
-rm -rf build
+#echo "Cleaning up source directory"
+#rm -rf build
 
 echo "Restarting nginx"
 sudo systemctl restart nginx
