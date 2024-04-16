@@ -88,7 +88,7 @@ export default function ReviewForm({ followedGames, onError, reviewedUser }) {
     } else {
       console.log('rating not found')
     }
-  }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, reviewedUser]);
+  }, [reviewGame, reviewAttribute, reviewSkill, dispatch, state.user, reviewedUser, state.ratings]);
 
   return (
     <Paper

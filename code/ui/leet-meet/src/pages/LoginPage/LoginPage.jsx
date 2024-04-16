@@ -85,7 +85,12 @@ export default function LoginPage() {
           </Button> 
           <Typography align="center">
             Don't have an account?&nbsp;
-            <Link href="/register">Create one here</Link>
+            <Link 
+              component="button" 
+              onClick={() => navigate('/register')}
+            >
+              Create one here
+            </Link>
           </Typography>
         </Stack>
       </Paper>
